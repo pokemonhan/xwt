@@ -1,0 +1,99 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
+        "barryvdh/laravel-cors": "^0.11.3",
+        "fideloper/proxy": "^4.0",
+        "genealabs/laravel-model-caching": "0.4.*",
+        "graylog2/gelf-php": "^1.6",
+        "jenssegers/agent": "^2.6",
+        "laravel/framework": "5.8.*",
+        "laravel/tinker": "^1.0",
+        "laravelbook/ardent": "^3.6",
+        "moontoast/math": "1.1.2",
+        "orangehill/iseed": "^2.6",
+        "overtrue/laravel-lang": "~3.0",
+        "pda/pheanstalk": "^4.0",
+        "php-curl-class/php-curl-class": "^8.5",
+        "predis/predis": "^1.1",
+        "ricardofontanelli/laravel-telegram": "^1.2",
+        "tymon/jwt-auth": "1.0.0-rc.4.1",
+        "waavi/sanitizer": "~1.0",
+      "ext-json": "*"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "beyondcode/laravel-dump-server": "^1.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
+        "filp/whoops": "^2.0",
+        "fzaninotto/faker": "^1.4",
+        "mockery/mockery": "^1.0",
+        "nunomaduro/collision": "^2.0",
+        "nunomaduro/larastan": "^0.3.17",
+        "object-calisthenics/phpcs-calisthenics-rules": "^3.5",
+        "phpunit/phpunit": "^7.0",
+        "sirbrillig/phpcs-import-detection": "^1.1",
+        "slevomat/coding-standard": "^5.0",
+        "squizlabs/php_codesniffer": "^3.4",
+        "xethron/migrations-generator": "^2.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [],
+            "providers": [
+                "Barryvdh\\Cors\\ServiceProvider"
+            ],
+            "aliases": {
+                "Cors": "Barryvdh\\Cors\\HandleCors"
+            }
+        }
+    },
+    "autoload": {
+        "files": [
+            "app/helpers.php"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta"
+        ]
+    }
+}

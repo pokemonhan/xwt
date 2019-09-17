@@ -1,0 +1,77 @@
+#!/bin/sh
+container="884c5e50d9e1"
+docker=1
+projectfolder="/var/www/multisites"
+phpcsbin="$projectfolder/vendor/bin"
+phpcslocation="$phpcsbin/phpcs"
+phpstanlocation="$phpcsbin/phpstan"
+autoloadPath="$projectfolder/vendor/autoload.php"
+RULESET="/var/www/multisites/phpcs.xml"
+#helper="$projectfolder/_ide_helper.php"
+neonfile="$projectfolder/phpstan.neon"
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [[ "$STAGED_FILES" = "" ]]; then
+  exit 0
+fi
+
+PASS=true
+
+echo "\nValidating PHPCS:\n"
+
+# Check for phpcs
+result=$(docker exec -i ${container} which ${phpcslocation})
+echo $result
+$result &> /dev/null
+if [[ "$?" == 1 ]]; then
+  echo "\t\033[41mPlease install PHPCS\033[0m nValidating"
+  exit 1
+fi
+
+for FILE in $STAGED_FILES
+do
+  echo "RULESET are $RULESET and  FILE are $FILE"
+  dir=$(pwd)
+  echo $dir
+  tail=$(echo $dir | cut -d'/' -f5-)
+  filelocation=$projectfolder/$tail/$FILE
+  echo "Here is filelocation $filelocation and here is  phpcslocation $phpcslocation"
+  docker exec ${container} bash -c "cd $phpcsbin;\
+./phpcs --standard=$RULESET $filelocation"
+  EXIT_STATUS=$?
+  echo "exist status is $EXIT_STATUS"
+  ##################################################################################
+  echo "Starting To Run Code Quality"
+  #docker exec ${container} bash -c "cd $phpcsbin;\
+#./phpstan analyze --level=max --error-format=table -a $autoloadPath $filelocation"
+docker exec ${container} bash -c "cd $projectfolder;\
+php artisan code:analyse --error-format=table -a $autoloadPath -c $neonfile --paths=$filelocation"
+    STAN_STATUS=$?
+  echo "STAN status is $STAN_STATUS"
+    if [ "$STAN_STATUS" -eq "0" ]; then
+      echo 'passed'
+    else
+      echo "$STAN_STATUS"
+      echo "Code Quality Test Failed"
+      exit 1;
+    fi
+ ##################################################################################
+    if [ "$EXIT_STATUS" -eq "0" ]; then
+    echo "\t\033[32mPHPCS Passed: $FILE\033[0m result"
+  else
+    echo "\t\033[41mPHPCS Failed: $FILE\033[0m"
+    PASS=false
+  fi
+done
+
+echo "\nPHPCS validation completed!\n"
+
+if ! $PASS; then
+  echo "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass PHPCS but do not. Please fix the PHPCS errors and try again.\n"
+  exit 1
+else
+  echo "\033[42mCOMMIT SUCCEEDED\033[0m\n"
+fi
+
+exit $?

@@ -1,189 +1,191 @@
 <?xml version="1.0"?>
 <ruleset name="Laravel Standards">
-<description>Xuanwu Coding Standards</description>
-<rule ref="Generic.Classes.DuplicateClassName"/>
-<rule ref="Generic.CodeAnalysis.EmptyStatement"/>
-<rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
-<rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
-<rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
-<rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
-<rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
-<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
-<rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
-<!-- -->
-<rule ref="Generic.CodeAnalysis.EmptyPHPStatement"/>
-<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-<rule ref="Generic.Files.OneClassPerFile"/>
-<rule ref="Generic.Files.OneInterfacePerFile"/>
-<rule ref="Generic.Files.OneTraitPerFile"/>
-<rule ref="Generic.PHP.CharacterBeforePHPOpeningTag"/>
-<rule ref="Generic.PHP.LowerCaseKeyword"/>
-<rule ref="Generic.PHP.SAPIUsage"/>
-<rule ref="Generic.PHP.Syntax"/>
-<rule ref="Generic.VersionControl.GitMergeConflict"/>
-<rule ref="Squiz.Strings.DoubleQuoteUsage"/>
-<rule ref="ImportDetection.Imports.RequireImports.Symbol"/>
-<rule ref="ImportDetection.Imports.RequireImports.Import"/>
-<rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
-<rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
-<rule ref="SlevomatCodingStandard.Operators.DisallowEqualOperators"/>
-<rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
-<rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/>
-<rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
-<rule ref="SlevomatCodingStandard.Namespaces.UselessAlias"/>
-<rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
-<rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
-<rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
-<rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
-<!--<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>-->
-<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
-<rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration"/>
-<rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
-<rule ref="SlevomatCodingStandard.PHP.ShortList"/>
-<rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
-<rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility"/>
-<rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
-<rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
-<rule ref="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
-<rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
-<rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
-<rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
-<!-- <rule ref="SlevomatCodingStandard.PHP.RequireNowdoc"/> -->
-<!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
-<!-- <rule ref="Squiz.NamingConventions.ValidVariableName"/> -->
-<!-- <rule ref="Squiz.NamingConventions.ValidVariableName.PublicHasUnderscore"/> -->
-<!-- <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/> -->
-<!-- <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
-<!-- <rule ref="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/> -->
-<rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
-<rule ref="ObjectCalisthenics.Metrics.MaxNestingLevel">
+    <description>Xuanwu Coding Standards</description>
+    <rule ref="Generic.Classes.DuplicateClassName"/>
+    <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+    <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
+    <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
+    <rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
+    <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+    <rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+    <!-- -->
+    <rule ref="Generic.CodeAnalysis.EmptyPHPStatement"/>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.Files.OneClassPerFile"/>
+    <rule ref="Generic.Files.OneInterfacePerFile"/>
+    <rule ref="Generic.Files.OneTraitPerFile"/>
+    <rule ref="Generic.PHP.CharacterBeforePHPOpeningTag"/>
+    <rule ref="Generic.PHP.LowerCaseKeyword"/>
+    <rule ref="Generic.PHP.SAPIUsage"/>
+    <rule ref="Generic.PHP.Syntax"/>
+    <rule ref="Generic.VersionControl.GitMergeConflict"/>
+    <rule ref="Squiz.Strings.DoubleQuoteUsage"/>
+    <rule ref="ImportDetection.Imports.RequireImports.Symbol"/>
+    <rule ref="ImportDetection.Imports.RequireImports.Import"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
+    <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+    <rule ref="SlevomatCodingStandard.Operators.DisallowEqualOperators"/>
+    <rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
+    <rule ref="SlevomatCodingStandard.Functions.UnusedParameter"/>
+    <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UselessAlias"/>
+    <rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
+    <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
+    <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
+    <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <!--<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>-->
+    <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+    <rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
+    <rule ref="SlevomatCodingStandard.PHP.ShortList"/>
+    <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
+    <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+    <rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
+    <rule ref="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
+    <rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
+    <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <!-- <rule ref="SlevomatCodingStandard.PHP.RequireNowdoc"/> -->
+    <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
+    <!-- <rule ref="Squiz.NamingConventions.ValidVariableName"/> -->
+    <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.PublicHasUnderscore"/> -->
+    <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/> -->
+    <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
+    <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/> -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
+    <rule ref="ObjectCalisthenics.Metrics.MaxNestingLevel">
         <properties>
             <property name="maxNestingLevel" value="3"/>
         </properties>
-</rule>
-<rule ref="ObjectCalisthenics.NamingConventions.ElementNameMinimalLength">
+    </rule>
+    <rule ref="ObjectCalisthenics.NamingConventions.ElementNameMinimalLength">
         <properties>
             <property name="minLength" value="4"/>
             <property name="allowedShortNames" type="array" value="i,id,to,up,e,app"/>
         </properties>
-</rule>
-<rule ref="ObjectCalisthenics.Files.ClassTraitAndInterfaceLength">
+    </rule>
+    <rule ref="ObjectCalisthenics.Files.ClassTraitAndInterfaceLength">
         <properties>
             <property name="maxLength" value="500"/>
         </properties>
-</rule>
-<rule ref="ObjectCalisthenics.Files.FunctionLength">
+    </rule>
+    <rule ref="ObjectCalisthenics.Files.FunctionLength">
         <properties>
             <property name="maxLength" value="50"/>
         </properties>
-</rule>
-<rule ref="ObjectCalisthenics.Metrics.PropertyPerClassLimit">
+    </rule>
+    <rule ref="ObjectCalisthenics.Metrics.PropertyPerClassLimit">
         <properties>
             <property name="maxCount" value="20"/>
         </properties>
-</rule>
+    </rule>
     <!-- <rule ref="ObjectCalisthenics.Metrics.MethodPerClassLimit">
         <properties>
             <property name="maxCount" value="10"/>
         </properties>
     </rule> -->
 
-<!-- -->
-<rule ref="Generic.Commenting.Todo"/>
-<rule ref="Generic.Commenting.Fixme"/>
-<rule ref="Generic.ControlStructures.InlineControlStructure"/>
-<rule ref="Generic.Files.ByteOrderMark"/>
-<rule ref="Generic.Files.LineEndings"/>
-<rule ref="Generic.Files.LineLength">
-    <properties>
-        <property name="lineLimit" value="120"/>
-        <property name="absoluteLineLimit" value="150"/>
-    </properties>
-</rule>
-<rule ref="Generic.Formatting.DisallowMultipleStatements"/>
-<rule ref="Generic.Formatting.MultipleStatementAlignment"/>
-<rule ref="Generic.Formatting.SpaceAfterCast"/>
-<rule ref="Generic.Functions.CallTimePassByReference"/>
-<rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
-<rule ref="Generic.Metrics.CyclomaticComplexity">
-    <properties>
-        <property name="complexity" value="50"/>
-        <property name="absoluteComplexity" value="100"/>
-    </properties>
-</rule>
-<rule ref="Generic.Metrics.NestingLevel">
-    <properties>
-        <property name="nestingLevel" value="10"/>
-        <property name="absoluteNestingLevel" value="30"/>
-    </properties>
-</rule>
-<rule ref="Generic.NamingConventions.ConstructorName"/>
-<rule ref="Generic.PHP.LowerCaseConstant"/>
-<rule ref="Generic.PHP.DeprecatedFunctions"/>
-<rule ref="Generic.PHP.DisallowShortOpenTag"/>
-<rule ref="Generic.PHP.ForbiddenFunctions"/>
-<rule ref="Generic.PHP.NoSilencedErrors"/>
-<rule ref="Generic.Strings.UnnecessaryStringConcat"/>
-<rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
-<rule ref="Generic.WhiteSpace.ScopeIndent">
-    <properties>
-        <property name="indent" value="4"/>
-        <property name="tabIndent" value="true"/>
-    </properties>
-</rule>
-<rule ref="MySource.PHP.EvalObjectFactory"/>
-<rule ref="PSR1.Classes.ClassDeclaration"/>
-<rule ref="PSR1.Files.SideEffects"/>
-<rule ref="PSR2.Classes.ClassDeclaration"/>
-<rule ref="PSR2.Classes.PropertyDeclaration"/>
-<rule ref="PSR2.ControlStructures.ControlStructureSpacing"/>
-<rule ref="PSR2.ControlStructures.ElseIfDeclaration"/>
-<rule ref="PSR2.ControlStructures.SwitchDeclaration"/>
-<rule ref="PSR2.Files.EndFileNewline"/>
-<rule ref="PSR2.Methods.MethodDeclaration"/>
-<rule ref="PSR2.Namespaces.NamespaceDeclaration"/>
-<rule ref="PSR2.Namespaces.UseDeclaration"/>
-<rule ref="Zend.Files.ClosingTag"/>
-<rule ref="PSR1">
-    <exclude-pattern>*.php</exclude-pattern>
-    <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
-</rule>
-<rule ref="Generic">
-    <exclude-pattern>*.php</exclude-pattern>
-    <exclude name="Generic.Strings.UnnecessaryStringConcat.Found)"/>
-</rule>
+    <!-- -->
+    <rule ref="Generic.Commenting.Todo"/>
+    <rule ref="Generic.Commenting.Fixme"/>
+    <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+    <rule ref="Generic.Files.ByteOrderMark"/>
+    <rule ref="Generic.Files.LineEndings"/>
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="150"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
+    <rule ref="Generic.Formatting.MultipleStatementAlignment"/>
+    <rule ref="Generic.Formatting.SpaceAfterCast"/>
+    <rule ref="Generic.Functions.CallTimePassByReference"/>
+    <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+    <rule ref="Generic.Metrics.CyclomaticComplexity">
+        <properties>
+            <property name="complexity" value="50"/>
+            <property name="absoluteComplexity" value="100"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Metrics.NestingLevel">
+        <properties>
+            <property name="nestingLevel" value="10"/>
+            <property name="absoluteNestingLevel" value="30"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.NamingConventions.ConstructorName"/>
+    <rule ref="Generic.PHP.LowerCaseConstant"/>
+    <!-- 7.3.9 not supported -->
+    <!-- <rule ref="Generic.PHP.DeprecatedFunctions"/> -->
+    <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+    <rule ref="Generic.PHP.ForbiddenFunctions"/>
+    <rule ref="Generic.PHP.NoSilencedErrors"/>
+    <rule ref="Generic.Strings.UnnecessaryStringConcat"/>
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="4"/>
+            <property name="tabIndent" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="MySource.PHP.EvalObjectFactory"/>
+    <rule ref="PSR1.Classes.ClassDeclaration"/>
+    <rule ref="PSR1.Files.SideEffects"/>
+    <rule ref="PSR2.Classes.ClassDeclaration"/>
+    <rule ref="PSR2.Classes.PropertyDeclaration"/>
+    <rule ref="PSR2.ControlStructures.ControlStructureSpacing"/>
+    <rule ref="PSR2.ControlStructures.ElseIfDeclaration"/>
+    <rule ref="PSR2.ControlStructures.SwitchDeclaration"/>
+    <rule ref="PSR2.Files.EndFileNewline"/>
+    <rule ref="PSR2.Methods.MethodDeclaration"/>
+    <rule ref="PSR2.Namespaces.NamespaceDeclaration"/>
+    <rule ref="PSR2.Namespaces.UseDeclaration"/>
+    <rule ref="Zend.Files.ClosingTag"/>
+    <rule ref="PSR1">
+        <exclude-pattern>*.php</exclude-pattern>
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+    </rule>
+    <!-- 7.3.9 not supported -->
+    <!-- <rule ref="Generic">
+        <exclude-pattern>*.php</exclude-pattern>
+        <exclude name="Generic.Strings.UnnecessaryStringConcat.Found)"/>
+    </rule> -->
 
-<file>app</file>
-<file>config</file>
-<file>public</file>
-<file>resources</file>
-<file>routes</file>
-<file>tests</file>
+    <file>app</file>
+    <file>config</file>
+    <file>public</file>
+    <file>resources</file>
+    <file>routes</file>
+    <file>tests</file>
 
-<exclude-pattern>*/database/*</exclude-pattern>
-<exclude-pattern>*/cache/*</exclude-pattern>
-<exclude-pattern>*/*.js</exclude-pattern>
-<exclude-pattern>*/*.css</exclude-pattern>
-<exclude-pattern>*/*.xml</exclude-pattern>
-<exclude-pattern>*/*.blade.php</exclude-pattern>
-<exclude-pattern>*/autoload.php</exclude-pattern>
-<exclude-pattern>*/storage/*</exclude-pattern>
-<exclude-pattern>*/docs/*</exclude-pattern>
-<exclude-pattern>*/vendor/*</exclude-pattern>
-<exclude-pattern>*/migrations/*</exclude-pattern>
-<exclude-pattern>*/config/*</exclude-pattern>
-<exclude-pattern>*/public/index.php</exclude-pattern>
-<exclude-pattern>*/*.blade.php</exclude-pattern>
-<exclude-pattern>*/Middleware/*</exclude-pattern>
-<exclude-pattern>*/Console/Kernel.php</exclude-pattern>
-<exclude-pattern>*/Exceptions/Handler.php</exclude-pattern>
-<exclude-pattern>*/Http/Kernel.php</exclude-pattern>
-<exclude-pattern>*/Providers/*</exclude-pattern>
-<exclude-pattern>git-hooks/</exclude-pattern>
-<exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
-<arg name="colors"/>
-<arg value="spvnl"/>
-<ini name="memory_limit" value="128M"/>
-<rule ref="PSR2"/>
+    <exclude-pattern>*/database/*</exclude-pattern>
+    <exclude-pattern>*/cache/*</exclude-pattern>
+    <exclude-pattern>*/*.js</exclude-pattern>
+    <exclude-pattern>*/*.css</exclude-pattern>
+    <exclude-pattern>*/*.xml</exclude-pattern>
+    <exclude-pattern>*/*.blade.php</exclude-pattern>
+    <exclude-pattern>*/autoload.php</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/docs/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/migrations/*</exclude-pattern>
+    <exclude-pattern>*/config/*</exclude-pattern>
+    <exclude-pattern>*/public/index.php</exclude-pattern>
+    <exclude-pattern>*/*.blade.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/*</exclude-pattern>
+    <exclude-pattern>*/Console/Kernel.php</exclude-pattern>
+    <exclude-pattern>*/Exceptions/Handler.php</exclude-pattern>
+    <exclude-pattern>*/Http/Kernel.php</exclude-pattern>
+    <exclude-pattern>*/Providers/*</exclude-pattern>
+    <exclude-pattern>git-hooks/</exclude-pattern>
+    <exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
+    <arg name="colors"/>
+    <arg value="spvnl"/>
+    <ini name="memory_limit" value="128M"/>
+    <rule ref="PSR2"/>
 </ruleset>

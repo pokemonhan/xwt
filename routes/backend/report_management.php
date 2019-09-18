@@ -33,4 +33,10 @@ Route::group(['prefix' => 'reportManagement', 'namespace' => 'Report'], static f
         'user-trace',
         ['as' => $namePrefix . 'user-trace', 'uses' => $controller . 'userTrace']
     );
+    //提现记录报表
+    Route::match(
+        ['post','options'],
+        'withdraw-record',
+        ['as'=> $namePrefix . 'withdraw-record', 'uses' => $controller . 'withdrawRecord']
+    );
 });

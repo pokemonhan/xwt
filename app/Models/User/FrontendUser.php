@@ -13,11 +13,13 @@ use App\Models\Admin\Notice\FrontendMessageNotice;
 
 class FrontendUser extends Authenticatable implements JWTSubject
 {
-    use Notifiable, FrontendUserTraits;
+    use Notifiable;
+    use FrontendUserTraits;
 
-    const TYPE_TOP_AGENT = 1;
-    const TYPE_AGENT = 2;
-    const TYPE_USER = 3;
+    // 没用到  暂时注释
+    // const TYPE_TOP_AGENT = 1;
+    // const TYPE_AGENT = 2;
+    // const TYPE_USER = 3;
 
     protected $guarded = ['id'];
 
@@ -87,5 +89,10 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public function message()
     {
         return $this->hasMany(FrontendMessageNotice::class, 'receive_user_id', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(__CLASS__, 'parent_id', 'id');
     }
 }

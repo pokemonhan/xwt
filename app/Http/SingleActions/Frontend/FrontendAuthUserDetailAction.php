@@ -3,7 +3,6 @@
 namespace App\Http\SingleActions\Frontend;
 
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use App\Models\Admin\SystemConfiguration;
 use Illuminate\Http\JsonResponse;
 
 class FrontendAuthUserDetailAction
@@ -30,7 +29,7 @@ class FrontendAuthUserDetailAction
             'is_tester' => $user->is_tester,
             'last_login_time' => $user->last_login_time->toDateTimeString(),
             'levels' => $user->levels,
-            'can_withdraw' => $user->frozen_type <= 0, //$user->frozen_type > 0 ? false : true
+            'user_fronzen_type' => $user->frozen_type, //$user->frozen_type > 0 ? false : true
             'today_withdraw' => 0, //当日已提款金额
             'daysalary_percentage' => 0,
             'bonus_percentage' => 0,

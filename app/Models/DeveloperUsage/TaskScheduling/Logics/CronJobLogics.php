@@ -36,16 +36,6 @@ trait CronJobLogics
         }
         return ['success' => true, 'data' => $cronJobEloq];
     }
-
-    public static function updateOPenCronJob()
-    {
-        $cacheKey = 'cron_job_open';
-        $cronJobELoq = self::select('command', 'param', 'schedule')->where('status', self::STATUS_OPEN)->get();
-        if ($cronJobELoq->count() > 0) {
-            $data = $cronJobELoq->toArray();
-            self::saveTagsCacheData($cacheKey, $data);
-        }
-    }
     
     /**
      * 获取所有的的cron_job

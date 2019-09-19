@@ -62,7 +62,7 @@ class UserHandleDeactivateAction
 
     /**
      * @param array $allId
-     * @param FrontendUser $allSon
+     * @param object $allSon
      */
     public function getAllChildren(&$allId, $allSon)
     {

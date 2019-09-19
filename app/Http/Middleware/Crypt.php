@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
+use Closure;
 use Config;
 
 class Crypt
@@ -23,8 +23,13 @@ class Crypt
         $requestNum = count($request->request);
         //系统配置为不加密传输数据时直接放行
         $isCryptData = configure('is_crypt_data');
-        if((bool) $isCryptData === false){
-            return $next($request);
+        if ((bool) $isCryptData === false) {
+            //配置为不加密数据时传递的数据还是加密的，则返回100507让前端刷新该加密配置
+            if(isset($request['data'])){
+                return $this->returnMsgout(false, [], '100507');
+            }else{
+                return $next($request);
+            }
         }
         //空参放行
         if (!$requestNum) {
@@ -33,7 +38,7 @@ class Crypt
         //本地模式关闭参数唯一性判断
         if (config('app.env') !== "local") {
             //检验参数是否符合规范 系统只允许接入一个名为DATA的参数
-            if ($requestNum!==1 || !isset($request['data'])) {
+            if ($requestNum !== 1 || !isset($request['data'])) {
                 return $this->returnMsgout(false, [], '100507');
             }
         }
@@ -48,28 +53,28 @@ class Crypt
             return $this->returnMsgout(false, [], '100500');
         }
         $requestCryptData = explode(self::LIMIT, $inData);
-        if (count($requestCryptData)!=3) {
+        if (count($requestCryptData) != 3) {
             return $this->returnMsgout(false, [], '100501');
         }
-        $data = $requestCryptData[0];//固定位 数组 自生成
-        $iv =self::rsaDeCrypt($requestCryptData[1]);
-        if ($iv==false) {
+        $data = $requestCryptData[0]; //固定位 数组 自生成
+        $iv = self::rsaDeCrypt($requestCryptData[1]);
+        if ($iv == false) {
             return $this->returnMsgout(false, [], '100502');
         }
-        $key =self::rsaDeCrypt($requestCryptData[2]);
-        if ($key==false) {
+        $key = self::rsaDeCrypt($requestCryptData[2]);
+        if ($key == false) {
             return $this->returnMsgout(false, [], '100503');
         }
-        $deAesData = self::deAesCrypt($data, $key, $iv) ;
-        if ($deAesData==false) {
+        $deAesData = self::deAesCrypt($data, $key, $iv);
+        if ($deAesData == false) {
             return $this->returnMsgout(false, [], '100505');
         }
-        $deData = json_decode((string)$deAesData);
+        $deData = json_decode((string) $deAesData);
         if (is_null($deData)) {
             return $this->returnMsgout(false, [], '100504');
         }
         foreach ($deData as $k => $v) {
-            $request[$k]=$v;
+            $request[$k] = $v;
         }
         unset($request['data']);
         return $next($request);
@@ -88,7 +93,7 @@ class Crypt
     private function rsaDeCrypt($rsaData)
     {
         //中间件还未生成缓存 所以将私钥配置在此 以减少系统开销
-        $pkcs8_private="-----BEGIN PRIVATE KEY-----
+        $pkcs8_private = "-----BEGIN PRIVATE KEY-----
 MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAK3m6BabZZ2qQwjm
 IOBOZ1q9g9OnqGapuinLs3182ew2LAQT62iLReBCNB64TRh/tU4iIIjx5bNRpNZ8
 IrcP92YVNuxMrdSCqXpC5gpGFKf1CfG0SrO+TPmO/d1zexJq/yArc7HbYMFZRfks
@@ -105,11 +110,11 @@ s+RmDzYuKUoG0zIjmIZidcaTP1p2ngqCl/RXl1evVAmXet26uDPkFtmOGvFTngZM
 Web+LMihoBTa
 -----END PRIVATE KEY-----";
         $baseRsa = base64_decode($rsaData);
-        $flag = openssl_private_decrypt((string)$baseRsa, $deRsaCryptData, $pkcs8_private);
-        if ($flag==false) {
+        $flag = openssl_private_decrypt((string) $baseRsa, $deRsaCryptData, $pkcs8_private);
+        if ($flag == false) {
             return false;
         }
-          return $deRsaCryptData;
+        return $deRsaCryptData;
     }
     /**
      * AES解密 加密方式 AES-128-CBC
@@ -121,7 +126,7 @@ Web+LMihoBTa
     private function deAesCrypt($enAes, $key, $iv)
     {
         $baseEnAes = base64_decode($enAes);
-        $str =  openssl_decrypt((string)$baseEnAes, "AES-128-CBC", $key, OPENSSL_RAW_DATA, $iv);
+        $str = openssl_decrypt((string) $baseEnAes, "AES-128-CBC", $key, OPENSSL_RAW_DATA, $iv);
         return $str;
     }
 }

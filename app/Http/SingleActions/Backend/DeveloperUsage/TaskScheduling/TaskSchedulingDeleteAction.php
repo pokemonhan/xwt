@@ -31,7 +31,6 @@ class TaskSchedulingDeleteAction
         if ($cronJobEloq->errors()->messages()) {
             return $contll->msgOut(false, [], '', $cronJobEloq->errors()->messages());
         }
-        CronJob::updateOPenCronJob(); //更新任务调度缓存
         return $contll->msgOut(true);
     }
 }

@@ -32,7 +32,7 @@ class UserAgentCenterTeamManagementAction
 
         $userELoq = new FrontendUser();
         $userELoq = $this->getUserData($userELoq, $inputDatas, $contll->partnerUser->id, $pageSize);
-
+        $team = $userELoq->toArray();
         $data = [];
 
         foreach ($userELoq as $userItem) {
@@ -57,8 +57,8 @@ class UserAgentCenterTeamManagementAction
                 'team_balance' => $userTeamBalance, //团队余额
             ];
         }
-
-        return $contll->msgOut(true, $data);
+        $team['data'] = $data;
+        return $contll->msgOut(true, $team);
     }
 
     private function getUserData($userELoq, $inputDatas, $userId, $pageSize)

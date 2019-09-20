@@ -184,6 +184,16 @@
     <exclude-pattern>*/Providers/*</exclude-pattern>
     <exclude-pattern>git-hooks/</exclude-pattern>
     <exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
+
+    <exclude-pattern>app/Console/Commands/Tool/*</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/BackendApi/BackEndApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/FrontendApi/FrontendApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Requests/BaseFormRequest.php</exclude-pattern>
+    <exclude-pattern>app/Lib/Game/*</exclude-pattern>
+    <exclude-pattern>app/Lib/Logic/AccountChange.php</exclude-pattern>
+    <exclude-pattern>app/Models/Game/Lottery/Logics/*</exclude-pattern>
+    <exclude-pattern>app/Models/BaseModel.php</exclude-pattern>
+    
     <arg name="colors"/>
     <arg value="spvnl"/>
     <ini name="memory_limit" value="128M"/>

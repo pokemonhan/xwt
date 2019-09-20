@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' => 'user-agent-center'], function () {
+Route::group(['prefix' => 'user-agent-center'], static function () {
     $namePrefix = 'mobile-api.UserAgentCenterController.';
     $controller = 'UserAgentCenterController@';
 
@@ -37,5 +37,17 @@ Route::group(['prefix' => 'user-agent-center'], function () {
         ['post', 'options'],
         'link-del',
         ['as' => $namePrefix . 'link-del', 'uses' => $controller . 'linkDel']
+    );
+    //团队管理
+    Route::match(
+        ['get', 'options'],
+        'team-management',
+        ['as' => $namePrefix . 'team-management', 'uses' => $controller . 'teamManagement']
+    );
+    //团队报表
+    Route::match(
+        ['get', 'options'],
+        'team-report',
+        ['as' => $namePrefix . 'team-report', 'uses' => $controller . 'teamReport']
     );
 });

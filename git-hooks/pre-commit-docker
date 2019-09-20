@@ -1,12 +1,12 @@
 #!/bin/sh
-container="884c5e50d9e1"
+container="c93e8799546f"
 docker=1
-projectfolder="/var/www/multisites"
+projectfolder="/var/www/xuanwutenant"
 phpcsbin="$projectfolder/vendor/bin"
 phpcslocation="$phpcsbin/phpcs"
 phpstanlocation="$phpcsbin/phpstan"
 autoloadPath="$projectfolder/vendor/autoload.php"
-RULESET="/var/www/multisites/phpcs.xml"
+RULESET="$projectfolder/phpcs.xml"
 #helper="$projectfolder/_ide_helper.php"
 neonfile="$projectfolder/phpstan.neon"
 
@@ -46,7 +46,7 @@ do
   #docker exec ${container} bash -c "cd $phpcsbin;\
 #./phpstan analyze --level=max --error-format=table -a $autoloadPath $filelocation"
 docker exec ${container} bash -c "cd $projectfolder;\
-php artisan code:analyse --error-format=table -a $autoloadPath -c $neonfile --paths=$filelocation"
+php artisan code:analyse --error-format=prettyJson -a $autoloadPath -c $neonfile --paths=$filelocation"
     STAN_STATUS=$?
   echo "STAN status is $STAN_STATUS"
     if [ "$STAN_STATUS" -eq "0" ]; then

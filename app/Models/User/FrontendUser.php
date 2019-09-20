@@ -19,7 +19,8 @@ class FrontendUser extends Authenticatable implements JWTSubject
 
     public const TYPE_TOP_AGENT = 1;
     public const TYPE_AGENT = 2;
-    public const TYPE_USER = 3;
+    // 没用到  暂时注释
+    // const TYPE_USER = 3;
 
     protected $guarded = ['id'];
 
@@ -123,5 +124,10 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public function bonuses()
     {
         return $this->hasMany(UserBonus::class, 'user_id', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(__CLASS__, 'parent_id', 'id');
     }
 }

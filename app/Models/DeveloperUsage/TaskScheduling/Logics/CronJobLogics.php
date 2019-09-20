@@ -15,7 +15,7 @@ trait CronJobLogics
      */
     public static function insertCronJob($cronData): array
     {
-        if ($cronData['status'] == self::STATUS_OPEN) {
+        if ((int) $cronData['status'] === self::STATUS_OPEN) {
             $checkSchedule = self::checkSchedule($cronData['schedule']); //状态为开启时，cron表达式不是5位，强制关闭这条定时任务
             if ($checkSchedule === false) {
                 $cronData['status'] = self::STATUS_CLOSE;
@@ -35,34 +35,6 @@ trait CronJobLogics
             return ['success' => false, 'message' => $cronJobEloq->errors()->messages()];
         }
         return ['success' => true, 'data' => $cronJobEloq];
-    }
-
-    /**
-     * 获取开启状态的cron_job
-     * @return  array
-     */
-    public static function getOpenCronJob(): array
-    {
-        $cacheKey = 'cron_job_open';
-        $data = self::getTagsCacheData($cacheKey);
-        if (empty($data)) {
-            $cronJobELoq = self::select('command', 'param', 'schedule')->where('status', self::STATUS_OPEN)->get();
-            if ($cronJobELoq->count() > 0) {
-                $data = $cronJobELoq->toArray();
-                self::saveTagsCacheData($cacheKey, $data);
-            }
-        }
-        return $data;
-    }
-
-    public static function updateOPenCronJob()
-    {
-        $cacheKey = 'cron_job_open';
-        $cronJobELoq = self::select('command', 'param', 'schedule')->where('status', self::STATUS_OPEN)->get();
-        if ($cronJobELoq->count() > 0) {
-            $data = $cronJobELoq->toArray();
-            self::saveTagsCacheData($cacheKey, $data);
-        }
     }
     
     /**

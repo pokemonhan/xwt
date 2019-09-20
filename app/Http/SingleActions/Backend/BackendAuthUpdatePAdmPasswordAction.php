@@ -31,12 +31,13 @@ class BackendAuthUpdatePAdmPasswordAction
             ['name', '=', $inputDatas['name']],
         ])->first();
         if ($targetUserEloq !== null) {
-            $targetUserEloq->password = Hash::make($inputDatas['password']);
-            $targetUserEloq->save();
-            if ($targetUserEloq->errors()->messages()) {
-                return $contll->msgOut(false, [], '', $targetUserEloq->errors()->messages());
+            try {
+                $targetUserEloq->password = Hash::make($inputDatas['password']);
+                $targetUserEloq->save();
+                return $contll->msgOut(true);
+            } catch (\Exception $exception) {
+                return $contll->msgOut(false, [], $exception->getCode(), $exception->getMessage());
             }
-            return $contll->msgOut(true);
         } else {
             return $contll->msgOut(false, [], '100004');
         }

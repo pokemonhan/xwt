@@ -23,10 +23,8 @@ class ReportManagementController extends BackEndApiMainController
      * @param ReportManagementUserAccountChangeAction $action
      * @return  JsonResponse
      */
-    public function userAccountChange(
-        ReportManagementUserAccountChangeRequest $request,
-        ReportManagementUserAccountChangeAction $action
-    ): JsonResponse {
+    public function userAccountChange(ReportManagementUserAccountChangeRequest $request, ReportManagementUserAccountChangeAction $action) :JsonResponse
+    {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
     }
@@ -84,6 +82,6 @@ class ReportManagementController extends BackEndApiMainController
     public function withdrawRecord(ReportManagementWithdrawRecordRequest $request, ReportManagementWithdrawRecordAction $action) :JsonResponse
     {
         $inputDatas = $request->validated();
-        return $action->execute($this,$inputDatas);
+        return $action->execute($this, $inputDatas);
     }
 }

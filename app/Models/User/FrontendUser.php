@@ -16,9 +16,9 @@ class FrontendUser extends Authenticatable implements JWTSubject
     use Notifiable;
     use FrontendUserTraits;
 
+    public const TYPE_TOP_AGENT = 1;
+    public const TYPE_AGENT = 2;
     // 没用到  暂时注释
-    // const TYPE_TOP_AGENT = 1;
-    // const TYPE_AGENT = 2;
     // const TYPE_USER = 3;
 
     protected $guarded = ['id'];

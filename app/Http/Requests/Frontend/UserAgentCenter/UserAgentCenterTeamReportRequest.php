@@ -24,8 +24,8 @@ class UserAgentCenterTeamReportRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            //'parent_id' => 'integer',
-            'username' => 'string',
+            'parent_id' => 'integer',//父级id
+            'username' => 'string',//username
             'time_condtions' => 'string', //时间
             'type' => 'integer', //报表类型
             'page_size' => 'integer|between:10,30',

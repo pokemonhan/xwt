@@ -35,10 +35,16 @@
     <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
     <!--<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>-->
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
 <!--    <rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration"/>-->
 <!--    Prohibits multiple traits separated by commas in one use statement.-->
+    <rule ref="Squiz.Commenting.FunctionComment" />
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag" />
+    <rule ref="Squiz.Commenting.ClassComment" />
+    <rule ref="Squiz.Commenting.FileComment" />
+    <rule ref="Squiz.Commenting.VariableComment" />
     <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
     <rule ref="SlevomatCodingStandard.PHP.ShortList"/>
     <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
@@ -49,6 +55,10 @@
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash"/>
+    <rule ref="SlevomatCodingStandard.Commenting.DisallowOneLinePropertyDocComment"/>
     <!-- <rule ref="SlevomatCodingStandard.PHP.RequireNowdoc"/> -->
     <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName"/> -->

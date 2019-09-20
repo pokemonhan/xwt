@@ -7,6 +7,7 @@ use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterLinkDelRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserBonusRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserDaysalaryRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserProfitsRequest;
+use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamManagementRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterLinkDelAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterPrizeGroupAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserProfitsAction;
@@ -15,6 +16,7 @@ use App\Http\SingleActions\Frontend\User\AgentCenter\UserBonusAction;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterRegisterLinkRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterableLinkAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterLinkAction;
+use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamManagementAction;
 use Illuminate\Http\JsonResponse;
 
 class UserAgentCenterController extends FrontendApiMainController
@@ -60,10 +62,8 @@ class UserAgentCenterController extends FrontendApiMainController
      * @param UserAgentCenterRegisterLinkAction $action
      * @return JsonResponse
      */
-    public function registerLink(
-        UserAgentCenterRegisterLinkRequest $request,
-        UserAgentCenterRegisterLinkAction $action
-    ):JsonResponse {
+    public function registerLink(UserAgentCenterRegisterLinkRequest $request, UserAgentCenterRegisterLinkAction $action) :JsonResponse
+    {
         return $action->execute($this, $request->validated());
     }
 
@@ -95,10 +95,20 @@ class UserAgentCenterController extends FrontendApiMainController
      * @param UserAgentCenterLinkDelAction $action
      * @return JsonResponse
      */
-    public function linkDel(
-        UserAgentCenterLinkDelRequest $request,
-        UserAgentCenterLinkDelAction $action
-    ) :JsonResponse {
+    public function linkDel(UserAgentCenterLinkDelRequest $request, UserAgentCenterLinkDelAction $action) :JsonResponse
+    {
         return $action->execute($this, $request->validated());
+    }
+
+    /**
+     * 团队管理
+     * @param  UserAgentCenterTeamManagementRequest $request
+     * @param  UserAgentCenterTeamManagementAction  $action
+     * @return JsonResponse
+     */
+    public function teamManagement(UserAgentCenterTeamManagementRequest $request, UserAgentCenterTeamManagementAction $action) :JsonResponse
+    {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
     }
 }

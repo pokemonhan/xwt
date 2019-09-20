@@ -12,7 +12,6 @@ class UsersWithdrawHistorie extends BaseModel
 
     public const STATUS_FAIL = -3; //失败
     public const STATUS_REFUSE = -2; //拒绝
-    public const STATUS_BACK = -1; //驳回
     public const STATUS_AUDIT_WAIT = 0; //等待审核 或 未认领
     public const STATUS_CLAIMED = 4; //已认领
     public const STATUS_AUDIT_FAILURE = 1; //审核驳回

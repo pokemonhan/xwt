@@ -8,6 +8,7 @@ use App\Http\Requests\Frontend\UserAgentCenter\UserBonusRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserDaysalaryRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserProfitsRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamManagementRequest;
+use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamReportRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterLinkDelAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterPrizeGroupAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserProfitsAction;
@@ -17,6 +18,7 @@ use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterRegisterLinkReques
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterableLinkAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterLinkAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamManagementAction;
+use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamReportAction;
 use Illuminate\Http\JsonResponse;
 
 class UserAgentCenterController extends FrontendApiMainController
@@ -107,6 +109,18 @@ class UserAgentCenterController extends FrontendApiMainController
      * @return JsonResponse
      */
     public function teamManagement(UserAgentCenterTeamManagementRequest $request, UserAgentCenterTeamManagementAction $action) :JsonResponse
+    {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
+    }
+
+    /**
+     * 团队报表
+     * @param  UserAgentCenterTeamReportRequest $request
+     * @param  UserAgentCenterTeamReportAction  $action
+     * @return JsonResponse
+     */
+    public function teamReport(UserAgentCenterTeamReportRequest $request, UserAgentCenterTeamReportAction $action) :JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);

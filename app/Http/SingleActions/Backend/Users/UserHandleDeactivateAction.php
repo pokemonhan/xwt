@@ -34,7 +34,6 @@ class UserHandleDeactivateAction
         $allId[] = $inputDatas['user_id'];
         if ($userEloq->type === 2 || $userEloq->type === 1) {
             $allSon = $userEloq->children;
-            dd($allSon);
             $this->getAllChildren($allId, $allSon);
         }
         if ($userEloq !== null) {

@@ -22,10 +22,26 @@ use Exception;
 use App\Http\Requests\Frontend\Pay\RechargeList;
 use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
 
+/**
+ * Class PayRechargeAction
+ * @package App\Http\SingleActions\Payment
+ */
 class PayRechargeAction
 {
+    /**
+     * @var BackendPaymentConfig 充值信息配置表模型.
+     */
     protected $backendPaymentConfig;
+    /**
+     * @var BackendPaymentInfo 充值信息表模型.
+     */
     protected $backendPaymentInfo;
+
+    /**
+     * PayRechargeAction constructor.
+     * @param BackendPaymentConfig $backendPaymentConfig 充值信息配置表模型.
+     * @param BackendPaymentInfo   $backendPaymentInfo   充值信息表模型.
+     */
     public function __construct(BackendPaymentConfig $backendPaymentConfig, BackendPaymentInfo $backendPaymentInfo)
     {
         $this->backendPaymentConfig = $backendPaymentConfig;
@@ -34,7 +50,7 @@ class PayRechargeAction
 
     /**
      * 获取可用充值网关
-     * @param FrontendApiMainController $contll
+     * @param FrontendApiMainController $contll 前端主控制器obj.
      * @return JsonResponse
      */
     public function getRechargeChannel(FrontendApiMainController $contll): JsonResponse
@@ -46,39 +62,23 @@ class PayRechargeAction
 
     /**
      * 获取支付渠道 v2.0
-     * @param PayController $contll
+     * @param PayController $contll 自己的控制器.
      * @return JsonResponse
      */
     public function getRechargeChannelNew(PayController $contll) :JsonResponse
     {
         try {
-            $output = $this->backendPaymentInfo::join('backend_payment_configs', 'backend_payment_configs.id', '=', 'backend_payment_infos.config_id')
-                ->where('backend_payment_configs.status', $this->backendPaymentConfig::STATUS_ENABLE)
-                ->where('backend_payment_infos.status', $this->backendPaymentInfo::STATUS_ENABLE)
-                ->where('backend_payment_configs.direction', $this->backendPaymentConfig::DIRECTION_IN)
-                ->where('backend_payment_infos.direction', $this->backendPaymentInfo::DIRECTION_IN)
-                ->select(
-                    'backend_payment_configs.payment_type_sign', //支付种类的标记
-                    'backend_payment_configs.payment_type_name', //支付种类的名称
-                    'backend_payment_configs.request_mode',  //请求方式
-                    'backend_payment_infos.front_name', //前台名称
-                    'backend_payment_infos.front_remark',  //前台备注
-                    'backend_payment_infos.payment_sign',  //支付方式标记
-                    'backend_payment_infos.min',  //最小值
-                    'backend_payment_infos.max',  //最大值
-                )
-                ->orderByDesc('sort')
-                ->get();
+            $output = BackendPaymentInfo::getPaymentInfoLists();
             return $contll->msgOut(true, $output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $contll->msgOut(false, [], '400', '系统错误');
         }
     }
 
     /**
      * 发起充值 v2.0
-     * @param PayController $contll
-     * @param array $inputDatas
+     * @param PayController $contll     自己的控制器.
+     * @param array         $inputDatas 前端输入的变量.
      * @return mixed
      */
     public function recharge(PayController $contll, array $inputDatas)
@@ -92,7 +92,9 @@ class PayRechargeAction
         $amount = $inputDatas['amount'];
         $channel = $inputDatas['channel'];
         $from = $inputDatas['from'] ?? 'web';
-        $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from);
+        $payment_type_sign = $payment->payment_type_sign;
+        $payment_id = $payment->id;
+        $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from, $payment_type_sign, $payment_id);
         //第三步组装支付所用的数据 抛给生成的handle去处理
         $payParams = [
             'payment_sign' => $inputDatas['channel'],
@@ -104,10 +106,10 @@ class PayRechargeAction
 
     /**
      * 发起充值
-     * @param FrontendApiMainController $contll
-     * @param RechargeRequest $request
+     * @param FrontendApiMainController $contll  前端主控制器obj.
+     * @param RechargeRequest           $request 验证器.
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception 异常.
      */
     public function dorRecharge(FrontendApiMainController $contll, RechargeRequest $request) : JsonResponse
     {
@@ -115,7 +117,7 @@ class PayRechargeAction
         $channel = $request->input('channel') ?? '';
         $from = $request->input('from') ?? 'web';
 
-        $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from);
+        $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from, 'panda', 0);
 
         $pandaC = new  Panda() ;
         $result =  $pandaC->recharge($amount, $order->company_order_num, $channel, $from);
@@ -129,8 +131,9 @@ class PayRechargeAction
 
     /**
      * 处理回调
-     * @param RechargeCallbackRequest $request
-     * @throws \Exception
+     * @param RechargeCallbackRequest $request 验证器.
+     * @return void
+     * @throws Exception 异常.
      */
     public function rechageCallback(RechargeCallbackRequest $request)
     {
@@ -149,11 +152,12 @@ class PayRechargeAction
 
     /**
      * 回调业务处理
-     * @param  object $pandaC
-     * @param  array $data
+     * @param object $pandaC 支付类.
+     * @param array  $data   回调数据.
      * @return void
+     * @throws Exception 异常.
      */
-    private function businessProcessing($pandaC, $data)
+    private function businessProcessing(object $pandaC, array $data)
     {
         DB::beginTransaction();
         $pandaC::setRechargeOrderStatus($data, array_get($data, 'status'));
@@ -162,7 +166,7 @@ class PayRechargeAction
             try {
                 $params = [
                     'user_id' => $userInfo->user_id,
-                    'amount' => array_get($data, 'money')
+                    'amount' => array_get($data, 'money'),
                 ];
                 $account  = FrontendUsersAccount::where('user_id', $userInfo->user_id)->first();
 
@@ -180,8 +184,8 @@ class PayRechargeAction
     }
     /**
      * 用户充值申请列表
-     * @param FrontendApiMainController $contll
-     * @param RechargeList $request
+     * @param FrontendApiMainController $contll  前端主控制器.
+     * @param RechargeList              $request 验证器.
      * @return JsonResponse
      */
     public function rechargeList(FrontendApiMainController $contll, RechargeList $request) : JsonResponse
@@ -205,7 +209,7 @@ class PayRechargeAction
 
     /**
      * 充值到账列表
-     * @param FrontendApiMainController $contll
+     * @param FrontendApiMainController $contll 前端主控制器.
      * @return JsonResponse
      */
     public function realRechargeList(FrontendApiMainController $contll) : JsonResponse
@@ -227,8 +231,8 @@ class PayRechargeAction
 
     /**
      * 后台充值申请列表
-     * @param BackEndApiMainController $contll
-     * @param RechargeListRequest $request
+     * @param BackEndApiMainController $contll  后端主控制器.
+     * @param RechargeListRequest      $request 验证器.
      * @return JsonResponse
      */
     public function backRechargeList(BackEndApiMainController $contll, RechargeListRequest $request) : JsonResponse

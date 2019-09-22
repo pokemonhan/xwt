@@ -15,14 +15,15 @@ trait PayTraits
 {
 
     /**
-     * 生成充值订单
-     * @param FrontendUser $user
-     * @param float $amount
-     * @param string $channel
-     * @param string $from
-     * @return mixed
+     * @param FrontendUser $user              个人信息.
+     * @param integer      $amount            金额.
+     * @param string       $channel           通道.
+     * @param string       $from              来源.
+     * @param string       $payment_type_sign 支付方式种类.
+     * @param integer      $payment_id        支付方式id.
+     * @return boolean
      */
-    public static function createRechargeOrder(FrontendUser $user, $amount, $channel, $from = 'web')
+    public static function createRechargeOrder(FrontendUser $user, int $amount, string $channel, string $from, ?string $payment_type_sign, ?int $payment_id)
     {
         try {
             $data['user_id'] = $user->id;
@@ -30,6 +31,8 @@ trait PayTraits
             $data['is_tester'] = $user->is_tester;
             $data['top_agent'] = $user->top_agent;
             $data['channel'] = $channel;
+            $data['payment_type_sign'] = $payment_type_sign;
+            $data['payment_id'] = $payment_id;
             $data['amount'] = $amount;
             $data['company_order_num'] = BasePay::createRechargeOrderNum();
             $data['client_ip'] = real_ip();
@@ -45,10 +48,10 @@ trait PayTraits
     }
 
     /**
-     * 创建提现订单
-     * @param FrontendUser $user
-     * @param array $datas
-     * @return string
+     * @param FrontendUser $user  个人信息.
+     * @param array        $datas 订单信息.
+     * @return boolean
+     * @throws Exception 异常.
      */
     public static function createWithdrawOrder(FrontendUser $user, array $datas)
     {
@@ -97,8 +100,8 @@ trait PayTraits
 
     /**
      * 设置提现单的状态等数据
-     * @param array $datas
-     * @return bool
+     * @param array $datas 数据.
+     * @return boolean
      */
     public static function setWithdrawOrder(array $datas)
     {

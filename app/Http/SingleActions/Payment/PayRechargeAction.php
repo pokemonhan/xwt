@@ -3,10 +3,14 @@ namespace App\Http\SingleActions\Payment;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
+use App\Http\Controllers\FrontendApi\Pay\PayController;
 use App\Lib\Pay\Panda;
+use App\Models\Pay\BackendPaymentConfig;
+use App\Models\Pay\BackendPaymentInfo;
 use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 use App\Models\User\UserProfits;
+use App\Pay\Core\PayHandlerFactory;
 use Illuminate\Http\JsonResponse;
 use App\Models\User\UsersRechargeHistorie;
 use Illuminate\Support\Arr;
@@ -20,6 +24,14 @@ use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
 
 class PayRechargeAction
 {
+    protected $backendPaymentConfig;
+    protected $backendPaymentInfo;
+    public function __construct(BackendPaymentConfig $backendPaymentConfig, BackendPaymentInfo $backendPaymentInfo)
+    {
+        $this->backendPaymentConfig = $backendPaymentConfig;
+        $this->backendPaymentInfo = $backendPaymentInfo;
+    }
+
     /**
      * 获取可用充值网关
      * @param FrontendApiMainController $contll
@@ -30,6 +42,64 @@ class PayRechargeAction
         $pandaC = new  Panda() ;
         $result =  $pandaC->getRechargeChannel($contll->partnerUser, 'web');
         return $contll->msgOut(true, $result);
+    }
+
+    /**
+     * 获取支付渠道 v2.0
+     * @param PayController $contll
+     * @return JsonResponse
+     */
+    public function getRechargeChannelNew(PayController $contll) :JsonResponse
+    {
+        try {
+            $output = $this->backendPaymentInfo::join('backend_payment_configs', 'backend_payment_configs.id', '=', 'backend_payment_infos.config_id')
+                ->where('backend_payment_configs.status', $this->backendPaymentConfig::STATUS_ENABLE)
+                ->where('backend_payment_infos.status', $this->backendPaymentInfo::STATUS_ENABLE)
+                ->where('backend_payment_configs.direction', $this->backendPaymentConfig::DIRECTION_IN)
+                ->where('backend_payment_infos.direction', $this->backendPaymentInfo::DIRECTION_IN)
+                ->select(
+                    'backend_payment_configs.payment_type_sign', //支付种类的标记
+                    'backend_payment_configs.payment_type_name', //支付种类的名称
+                    'backend_payment_configs.request_mode',  //请求方式
+                    'backend_payment_infos.front_name', //前台名称
+                    'backend_payment_infos.front_remark',  //前台备注
+                    'backend_payment_infos.payment_sign',  //支付方式标记
+                    'backend_payment_infos.min',  //最小值
+                    'backend_payment_infos.max',  //最大值
+                )
+                ->orderByDesc('sort')
+                ->get();
+            return $contll->msgOut(true, $output);
+        } catch (\Exception $e) {
+            return $contll->msgOut(false, [], '400', '系统错误');
+        }
+    }
+
+    /**
+     * 发起充值 v2.0
+     * @param PayController $contll
+     * @param array $inputDatas
+     * @return mixed
+     */
+    public function recharge(PayController $contll, array $inputDatas)
+    {
+        //第一步验证金额是否符合通道所规定的最大最小值
+        $payment = $this->backendPaymentInfo::where('payment_sign', $inputDatas['channel'])->first();
+        if ($payment->min > $inputDatas['amount'] || $payment->max < $inputDatas['amount']) {
+            return $contll->msgOut(false, [], '400', '充值金额不符合规定');
+        }
+        //第二步生成订单
+        $amount = $inputDatas['amount'];
+        $channel = $inputDatas['channel'];
+        $from = $inputDatas['from'] ?? 'web';
+        $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from);
+        //第三步组装支付所用的数据 抛给生成的handle去处理
+        $payParams = [
+            'payment_sign' => $inputDatas['channel'],
+            'order_no' => $order->company_order_num,
+            'money' => $order->amount,
+        ];
+        return PayHandlerFactory::getInstance()->generatePayHandle($inputDatas['channel'], $payParams)->handle();
     }
 
     /**

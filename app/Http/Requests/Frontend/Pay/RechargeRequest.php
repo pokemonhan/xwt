@@ -24,9 +24,16 @@ class RechargeRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric|regex:/^[0-9]+(.[0-9]{1,2})?$/',
-            'channel'=> 'required|string',
+            'amount' => 'required|integer|min:1',
+            'channel'=> 'required|string|exists:backend_payment_infos,payment_sign',
             'from'=> 'filled|string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'amount.min' => '充值金额不能为零',
         ];
     }
 }

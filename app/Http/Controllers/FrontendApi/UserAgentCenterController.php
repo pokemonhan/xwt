@@ -7,6 +7,7 @@ use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterUserDaysalaryReque
 use App\Http\Requests\Frontend\UserAgentCenter\UserProfitsRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamManagementRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamReportRequest;
+use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTransferToChildRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserProfitsAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterUserDaysalaryAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserBonusAction;
@@ -18,6 +19,7 @@ use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterLinkDelRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterLinkDelAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamManagementAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamReportAction;
+use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTransferToChildAction;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -122,6 +124,18 @@ class UserAgentCenterController extends FrontendApiMainController
      * @return JsonResponse
      */
     public function teamReport(UserAgentCenterTeamReportRequest $request, UserAgentCenterTeamReportAction $action) :JsonResponse
+    {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
+    }
+
+    /**
+     * 转账给下级
+     * @param  UserAgentCenterTransferToChildRequest $request Request.
+     * @param  UserAgentCenterTransferToChildAction  $action  Action.
+     * @return JsonResponse
+     */
+    public function transferToChild(UserAgentCenterTransferToChildRequest $request, UserAgentCenterTransferToChildAction $action) :JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);

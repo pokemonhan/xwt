@@ -46,10 +46,12 @@ class UserAgentCenterTransferToChildAction
         if ($child->id === $user->id) {
             return $contll->msgOut(false, [], '100607');
         }
-        if (!$user->account->exists()) {
+        $userAccount = $user->account;
+        if ($userAccount === null) {
             return $contll->msgOut(false, [], '100606');
         }
-        if (!$child->account->exists()) {
+        $childAccount = $child->account;
+        if ($childAccount === null) {
             return $contll->msgOut(false, [], '100608');
         }
 
@@ -60,7 +62,6 @@ class UserAgentCenterTransferToChildAction
                 'to_id' => $child->id,
                 'amount' => $inputDatas['amount'],
             ];
-            $userAccount = $user->account;
             $result = $userAccount->operateAccount($params, 'recharge_to_child');
             if ($result !== true) {
                 DB::rollback();
@@ -72,7 +73,6 @@ class UserAgentCenterTransferToChildAction
                 'from_id' => $user->id,
                 'amount' => $inputDatas['amount'],
             ];
-            $childAccount = $child->account;
             $result = $childAccount->operateAccount($params, 'recharge_from_parent');
             if ($result !== true) {
                 DB::rollback();

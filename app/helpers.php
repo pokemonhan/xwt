@@ -7,7 +7,12 @@
  */
 
 if (!function_exists('configure')) {
-    function configure($sysKey = null, $default = null)
+    /**
+     * @param string $sysKey  系统的钥匙.
+     * @param string $default 默认值.
+     * @return object
+     */
+    function configure(?string $sysKey = null, ?string $default = null)
     {
         if (is_null($sysKey)) {
             return app('Configure');
@@ -18,13 +23,21 @@ if (!function_exists('configure')) {
 }
 
 if (!function_exists('curl_post')) {
-    function curl_post($requrl, $data, $user_agent = null, $conn_timeout = 7, $timeout = 60)
+    /**
+     * @param string  $requrl       请求地址.
+     * @param array   $data         请求数据.
+     * @param string  $user_agent   请求头.
+     * @param integer $conn_timeout 链接超时时间.
+     * @param integer $timeout      超时时间.
+     * @return boolean|string|null
+     */
+    function curl_post(string $requrl, array $data, ?string $user_agent = null, int $conn_timeout = 7, int $timeout = 60)
     {
-        $headers = array(
+        $headers = [
             'Accept: application/json',
             'Accept-Encoding: deflate',
             'Accept-Charset: utf-8;q=1',
-        );
+        ];
         if ($user_agent === null) {
             $user_agent = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0)
              AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36';
@@ -55,6 +68,9 @@ if (!function_exists('curl_post')) {
 }
 
 if (!function_exists('real_ip')) {
+    /**
+     * @return mixed|string
+     */
     function real_ip()
     {
         if (isset($_SERVER['HTTP_CLIENT_IP']) && !empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -74,7 +90,11 @@ if (!function_exists('real_ip')) {
     }
 }
 
-function objectToArray($object)
+/**
+ * @param object $object 参数.
+ * @return array
+ */
+function objectToArray(object $object)
 {
     if (is_object($object)) {
         $object = get_object_vars($object);

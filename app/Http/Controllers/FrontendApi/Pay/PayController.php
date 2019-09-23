@@ -24,6 +24,15 @@ class PayController extends FrontendApiMainController
     }
 
     /**
+     * 获取充值渠道 v2.0
+     * @param PayRechargeAction $action
+     * @return JsonResponse
+     */
+    public function getRechargeChannelNew(PayRechargeAction $action) :JsonResponse
+    {
+        return $action->getRechargeChannelNew($this);
+    }
+    /**
      * 发起充值
      * @param PayRechargeAction $action
      * @param RechargeRequest $request
@@ -35,6 +44,17 @@ class PayController extends FrontendApiMainController
         return $action->dorRecharge($this, $request) ;
     }
 
+    /**
+     * 发起充值新版
+     * @param PayRechargeAction $action
+     * @param RechargeRequest $request
+     * @return mixed
+     */
+    public function rechargeNew(PayRechargeAction $action, RechargeRequest $request)
+    {
+        $inputDatas = $request->validated();
+        return $action->recharge($this, $inputDatas);
+    }
     /**
      * 发起提现
      * @param PayWithdrawAction $action
@@ -59,9 +79,9 @@ class PayController extends FrontendApiMainController
         return $action->rechargeList($this, $request);
     }
 
-    public function realRechargeList(PayRechargeAction $action, RechargeList $request): JsonResponse
+    public function realRechargeList(PayRechargeAction $action): JsonResponse
     {
-        return $action->realRechargeList($this, $request);
+        return $action->realRechargeList($this);
     }
 
     /**

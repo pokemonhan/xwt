@@ -4,12 +4,15 @@ namespace App\Http\Requests\Frontend\UserAgentCenter;
 
 use App\Http\Requests\BaseFormRequest;
 
-class UserDaysalaryRequest extends BaseFormRequest
+/**
+ * 转账给下级
+ */
+class UserAgentCenterTransferToChildRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -24,9 +27,13 @@ class UserDaysalaryRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'username' => 'filled|string|alpha_dash',
-            'date_to'=>'filled|date',
-            'count' => 'filled|integer',
+            'user_id' => 'required|integer|exists:frontend_users,id',
+            'amount' => 'required|numeric',
         ];
     }
+
+    /*public function messages()
+    {
+
+    }*/
 }

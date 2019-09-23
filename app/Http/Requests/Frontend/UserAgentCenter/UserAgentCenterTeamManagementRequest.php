@@ -4,12 +4,15 @@ namespace App\Http\Requests\Frontend\UserAgentCenter;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * 团队管理
+ */
 class UserAgentCenterTeamManagementRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -24,8 +27,8 @@ class UserAgentCenterTeamManagementRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => 'integer',
-            'username' => 'string',
+            'parent_id' => 'integer',//父级id
+            'username' => 'string',//用户名
             'time_condtions' => 'string', //注册时间
             'price_group_condtions' => 'string', //奖金组
             'min_team_balance' => 'numeric|required_with:max_team_balance', //最小团队余额
@@ -33,6 +36,12 @@ class UserAgentCenterTeamManagementRequest extends BaseFormRequest
             'page_size' => 'integer|between:10,30',
         ];
     }
+
+    /**
+     * messages
+     *
+     * @return array
+     */
     public function messages()
     {
         return [

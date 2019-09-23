@@ -9,7 +9,7 @@ use App\Models\Pay\Logics\PaymentInfoTraits;
  * Class BackendPaymentInfo
  * @package App\Models\Pay
  */
-class BackendPaymentInfo extends BaseModel
+class PaymentInfo extends BaseModel
 {
     use PaymentInfoTraits;
     public const STATUS_ENABLE = 1; //启用

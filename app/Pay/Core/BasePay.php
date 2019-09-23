@@ -3,11 +3,17 @@
 
 namespace App\Pay\Core;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Pay\PaymentInfo;
 
+/**
+ * Class BasePay
+ * @package App\Pay\Core
+ */
 abstract class BasePay
 {
-    //支付前的预装信息
+    /**
+     * @var array 支付前预装信息.
+     */
     protected $payInfo = [
         'merchant_code' => null, //商户号
         'merchant_secret' => null, //商户秘钥
@@ -24,7 +30,9 @@ abstract class BasePay
         'attach' => null, //附加信息
     ];
 
-    //回调验签后返回给调用者的信息
+    /**
+     * @var array 回调验签后返回给调用者的信息.
+     */
     protected $verifyRes = [
         'flag' => false, //验签成功与否的标记
         'back_param' => 'success', //返回给支付厂商的应答
@@ -34,17 +42,22 @@ abstract class BasePay
         'real_money' => null, //实际付款金额
     ];
 
-    //同步返回给调用者的信息
+    /**
+     * @var array 同步返回给调用者的信息.
+     */
     protected $syncRes = [
         'pay_url' => null, //支付链接
         'order_no' => null, //订单号
         'money' => null, //金额
     ];
 
+    /**
+     * BasePay constructor.
+     * @param array $params 初始化参数.
+     */
     public function __construct(array $params)
     {
-        $payment = DB::table('backend_payment_infos')->where('payment_sign', $params['payment_sign'])->first();
-        dd($payment);
+        $payment = PaymentInfo::where('payment_sign', $params['payment_sign'])->first();
         $this->payInfo['merchant_code'] = $payment->merchant_code;
         $this->payInfo['merchant_secret'] = $payment->merchant_secret;
         $this->payInfo['public_key'] = $payment->public_key;
@@ -53,10 +66,16 @@ abstract class BasePay
         $this->payInfo['money'] = $params['money'];
         $this->payInfo['order_no'] = $params['order_no'];
         $this->payInfo['callback_url'] = $params['order_no'];
+//        dd($this->payInfo);
     }
 
-
+    /**
+     * @return mixed
+     */
     abstract public function handle();
 
+    /**
+     * @return mixed
+     */
     abstract public function verify();
 }

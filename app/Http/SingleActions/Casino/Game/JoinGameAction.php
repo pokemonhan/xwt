@@ -4,25 +4,32 @@ namespace App\Http\SingleActions\Casino\Game;
 use App\Http\Controllers\CasinoApi\CasinoApiMainController;
 use App\Models\Casino\CasinoGameApiLog;
 
+/**
+ * Class JoinGameAction
+ * @package App\Http\SingleActions\Casino\Game
+ */
 class JoinGameAction
 {
+    /**
+     * @var CasinoGameApiLog
+     */
     protected $model;
 
     /**
-     * @param  CasinoGameApiLog  $CasinoGameApiLog
+     * JoinGameAction constructor.
      */
-    public function __construct(CasinoGameApiLog $CasinoGameApiLog)
+    public function __construct()
     {
-        $this->model = $CasinoGameApiLog;
+        $this->model = new CasinoGameApiLog();
     }
 
     /**
      * 进入游戏
-     * @param  CasinoApiMainController  $contll
-     * @param  array $inputDatas
-     * @return JsonResponse
+     * @param  CasinoApiMainController $contll     基类.
+     * @param  array                   $inputDatas 参数.
+     * @return string
      */
-    public function execute(CasinoApiMainController $contll, array $inputDatas): JsonResponse
+    public function execute(CasinoApiMainController $contll, array $inputDatas)
     {
         $returnVal  = [
             'api'       => 'GetBalance',
@@ -35,31 +42,26 @@ class JoinGameAction
             $paramArr = [
                 'username'          => $contll->username,
                 'mainGamePlat'      => $inputDatas['mainGamePlat'],
-                'accountUserName'   => $contll->partnerUser->username,
+                'accountUserName'   => $contll->partnerUser->username ?? 'ling1',
                 'gamecode'          => $inputDatas['gamecode'],
-                'demo'              => $inputDatas['demo'],
+                'demo'              => $inputDatas['demo'] ?? 1,
                 'ip'                => real_ip(),
-                'isMobile'          => $inputDatas['isMobile'],
+                'isMobile'          => $inputDatas['isMobile'] ?? 1,
             ];
 
-            $returnVal['param'] = json_encode($paramArr);       // 日志
+            $returnVal['params'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
 
-            $apiUrl = $contll->apiUrl . '/joinGame?' . $paramStr . '&param=' . $paramEncode;
+            $apiUrl = $contll->apiUrl . '/joinGame?' . $paramStr . '&param=' . urlencode($paramEncode);
 
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
-            $data   = $contll->request('GET', $apiUrl);
-
-            $returnVal['return_content'] = json_encode($data);  // 日志
+            $returnVal['return_content'] = '直接跳转入游戏';  // 日志
             $this->model->saveItem($returnVal);
 
-            if ($data['success']) {
-                return $contll->msgOut(true, $data);
-            }
-            return $contll->msgOut(false, $data);
+            return $contll->msgOut(true, $apiUrl);
         } catch (\Exception $e) {
             $returnVal['return_content'] = json_encode([$e->getMessage(),$e->getLine(),$e->getFile()]);  // 日志
             $this->model->saveItem($returnVal);

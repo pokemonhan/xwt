@@ -4,12 +4,19 @@ namespace App\Http\SingleActions\Casino\Game;
 use App\Http\Controllers\CasinoApi\CasinoApiMainController;
 use App\Models\Casino\CasinoGameApiLog;
 
+/**
+ * Class TransferInAction
+ * @package App\Http\SingleActions\Casino\Game
+ */
 class TransferInAction
 {
+    /**
+     * @var CasinoGameApiLog
+     */
     protected $model;
 
     /**
-     * @param  CasinoGameApiLog  $CasinoGameApiLog
+     * @param  CasinoGameApiLog $CasinoGameApiLog Log.
      */
     public function __construct(CasinoGameApiLog $CasinoGameApiLog)
     {
@@ -18,16 +25,16 @@ class TransferInAction
 
     /**
      * transferIn
-     * @param  CasinoApiMainController  $contll
-     * @param  array $inputDatas
-     * @return JsonResponse
+     * @param  CasinoApiMainController $contll     基类.
+     * @param  array                   $inputDatas 参数.
+     * @return string
      */
-    public function execute(CasinoApiMainController $contll, array $inputDatas): JsonResponse
+    public function execute(CasinoApiMainController $contll, array $inputDatas)
     {
         $returnVal  = [
             'api'       => 'GetBalance',
-            'username'  => $contll->partnerUser->username,
-            'user_id'   => $contll->partnerUser->id,
+            'username'  => $contll->partnerUser->username ?? 'lin1',
+            'user_id'   => $contll->partnerUser->id ?? 16,
             'ip'        => real_ip(),
         ];
 
@@ -60,7 +67,7 @@ class TransferInAction
                 'accountUserName'   => $contll->partnerUser->username,
                 'price'             => $inputDatas['price'],
             ];
-            $returnVal['param'] = json_encode($paramArr);       // 日志
+            $returnVal['params'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
@@ -69,18 +76,19 @@ class TransferInAction
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
             $data   = $contll->request('GET', $apiUrl);
+            $dataDe = json_decode($data, 1);
 
-            $returnVal['return_content'] = json_encode($data);  // 日志
+            $returnVal['return_content'] = $data;  // 日志
 
-            if ($data['success']) {
+            if (!empty($dataDe) && $dataDe['success']) {
                 $this->model->saveItem($returnVal);
                 \DB::commit();
-                return $contll->msgOut(true, $data);
+                return $contll->msgOut(true, $dataDe);
             }
 
             \DB::rollBack();
             $this->model->saveItem($returnVal);
-            return $contll->msgOut(false, $data);
+            return $contll->msgOut(false, [$data]);
         } catch (\Exception $e) {
             \DB::rollBack();
             $returnVal['return_content'] = json_encode([$e->getMessage(),$e->getLine(),$e->getFile()]);  // 日志

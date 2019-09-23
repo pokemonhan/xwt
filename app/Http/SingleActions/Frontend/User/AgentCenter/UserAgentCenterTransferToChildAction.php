@@ -36,8 +36,8 @@ class UserAgentCenterTransferToChildAction
      */
     public function execute(FrontendApiMainController $contll, array $inputDatas): JsonResponse
     {
-        $user = (object) [];
-        $child = (object) [];
+        $user = new FrontendUser();
+        $child = new FrontendUser();
         $userAccount = null;
         $childAccount = null;
 
@@ -82,8 +82,8 @@ class UserAgentCenterTransferToChildAction
      * 验证信息
      * @param FrontendApiMainController $contll       Controller.
      * @param array                     $inputDatas   传递的参数.
-     * @param object                    $user         上级用户.
-     * @param object                    $child        下级用户.
+     * @param FrontendUser              $user         上级用户.
+     * @param FrontendUser              $child        下级用户.
      * @param mixed                     $userAccount  上级用户的Account表.
      * @param mixed                     $childAccount 下级用户的Account表.
      * @return array
@@ -91,8 +91,8 @@ class UserAgentCenterTransferToChildAction
     private function verification(
         FrontendApiMainController $contll,
         array $inputDatas,
-        object &$user,
-        object &$child,
+        FrontendUser &$user,
+        FrontendUser &$child,
         &$userAccount,
         &$childAccount
     ) {

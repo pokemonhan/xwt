@@ -1,8 +1,7 @@
 <?php
 namespace App\Models\Casino;
 
-use App\Models\BaseCasinoModel;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class CasinoGamePlatform
@@ -22,7 +21,7 @@ class CasinoGamePlatform extends BaseCasinoModel
      * @param integer $pageSize PageSize.
      * @return array
      */
-    public static function getList(array $c, int $pageSize = 20)
+    public function getList1(array $c, int $pageSize)
     {
         $query = self::orderBy('id', 'desc');
 
@@ -41,33 +40,19 @@ class CasinoGamePlatform extends BaseCasinoModel
      * @param array $data Data.
      * @return string
      */
-    public function saveItem(array $data)
+    public function saveItemAll(array $data)
     {
-        $validator  = Validator::make($data, $this->rules);
-
-        if ($validator->fails()) {
-            return $validator->errors()->first();
-        }
-
-        // Sign 不能重复
-        if (!$this->id) {
-            $count = self::where('main_game_plat_code', '=', $data['main_game_plat_code'])->count();
-            if ($count > 0) {
-                return '对不起, 标识(code)已经存在!!';
-            }
-        } else {
-            $count = self::where('main_game_plat_code', '=', $data['main_game_plat_code'])->where('id', '<>', $this->id)->count();
-            if ($count > 0) {
-                return '对不起, 标识(code)已经存在!!';
+        DB::beginTransaction();
+        foreach ($data as $v) {
+            if (!self::find($v['id'])) {
+                if (!self::insert($v)) {
+                    DB::rollBack();
+                    return 0;
+                }
             }
         }
-
-        $this->main_game_plat_name     = $data['main_game_plat_name'];
-        $this->main_game_plat_code     = $data['main_game_plat_code'];
-        $this->status                  = $data['status'] ? 1 : 0;
-        $this->save();
-
-        return true;
+        DB::commit();
+        return 1;
     }
 
     /**

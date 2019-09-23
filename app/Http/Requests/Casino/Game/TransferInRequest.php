@@ -9,14 +9,18 @@ namespace App\Http\Requests\Casino\Game;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class TransferInRequest
+ * @package App\Http\Requests\Casino\Game
+ */
 class TransferInRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
-    public function authorize(): bool
+    public function authorize(): boolean
     {
         return true;
     }
@@ -25,13 +29,11 @@ class TransferInRequest extends BaseFormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
-     * @throws Exception
      */
     public function rules(): array
     {
         return [
-            'mainGamePlat' => 'required|string|exists:def_main_game_plats,main_game_plat_code',
-            'accountUserName' => 'required|min:4|max:255|string',
+            'mainGamePlat' => 'required|string',
             'price' => 'required|numeric|min:1',
         ];
     }

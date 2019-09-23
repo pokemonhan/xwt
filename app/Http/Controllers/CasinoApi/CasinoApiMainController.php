@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\CasinoApi;
 
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class CasinoApiMainController
@@ -33,13 +32,13 @@ class CasinoApiMainController extends FrontendApiMainController
 
     /**
      * 传递参数加密
-     * @param string  $string    字符串
-     * @param string  $operation 加密/解密
-     * @param string  $platKey   公钥
-     * @param integer $expiry    时间
+     * @param string  $string    字符串.
+     * @param string  $operation 加密/解密.
+     * @param string  $platKey   公钥.
+     * @param integer $expiry    时间.
      * @return boolean
      */
-    public function authcode(string $string, string $operation, string $platKey, int $expiry = 0)
+    public function authcode(string $string, string $operation, string $platKey, int $expiry)
     {
         // 动态密匙长度，相同的明文会生成不同密文就是依靠动态密匙
         $ckey_length = 4;
@@ -115,16 +114,16 @@ class CasinoApiMainController extends FrontendApiMainController
 
     /**
      * api请求
-     * @param string  $method         GET POST
-     * @param string  $url            Url
-     * @param array   $params         请求参数
-     * @param string  $header         请求头
-     * @param boolean $cuestomerquest 请求类型
-     * @param integer $https          Https 1
-     * @param integer $locaIp         请求ip
+     * @param string  $method         GET POST.
+     * @param string  $url            Url.
+     * @param array   $params         请求参数.
+     * @param string  $header         请求头.
+     * @param boolean $cuestomerquest 请求类型.
+     * @param integer $https          Https 1.
+     * @param integer $locaIp         请求ip.
      * @return string
      */
-    public function request(string $method, string $url, array $params = [], string $header = '', boolean $cuestomerquest = false, int $https = 1, int $locaIp = 1)
+    public function request(string $method, string $url, array $params, string $header, bool $cuestomerquest, int $https, int $locaIp)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

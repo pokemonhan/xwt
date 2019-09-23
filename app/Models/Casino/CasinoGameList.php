@@ -1,12 +1,17 @@
 <?php
 namespace App\Models\Casino;
 
-use App\Models\BaseModel;
 use Illuminate\Support\Facades\Validator;
 
-class CasinoGameList extends BaseModel
+/**
+ * Class CasinoGameList
+ * @package App\Models\Casino
+ */
+class CasinoGameList extends BaseCasinoModel
 {
-
+    /**
+     * @var array
+     */
     public $rules = [
         'main_game_plat_code'           => 'required',
         'cn_name'                       => 'required|min:2｜max:64',
@@ -14,11 +19,11 @@ class CasinoGameList extends BaseModel
     ];
 
     /**
-     * @param $c
-     * @param $pageSize
-     * @return mixed
+     * @param array   $c        Data.
+     * @param integer $pageSize PageSize.
+     * @return array
      */
-    public static function getList($c, $pageSize = 20)
+    public static function getList(array $c, int $pageSize = 20)
     {
         $query = self::orderBy('id', 'desc');
 
@@ -34,8 +39,11 @@ class CasinoGameList extends BaseModel
         return ['data' => $data, 'total' => $total, 'currentPage' => $currentPage, 'totalPage' => intval(ceil($total / $pageSize))];
     }
 
-    // 保存
-    public function saveItem($data, $admin)
+    /**
+     * @param array $data Data.
+     * @return string
+     */
+    public function saveItem(array $data)
     {
         $validator  = Validator::make($data, $this->rules);
 
@@ -78,16 +86,16 @@ class CasinoGameList extends BaseModel
         $this->bonus_pool                   = $data['bonus_pool'] ?? '';
         $this->line_num                     = $data['line_num'] ?? '';
 
-
-        $this->add_admin_id             = $admin ? $admin->id : '999999';
         $this->save();
 
         return true;
     }
 
-
-    // 获取单个详细信息
-    public function getItem($id)
+    /**
+     * @param integer $id ID.
+     * @return integer
+     */
+    public function getItem(int $id)
     {
         $listData = self::where('id', $id)->first();
         if (!$listData) {
@@ -97,7 +105,9 @@ class CasinoGameList extends BaseModel
         return $listData;
     }
 
-    // 获取ｈｏｍｅ信息
+    /**
+     * @return array
+     */
     public function getHomeList()
     {
         // 获取所有的类型

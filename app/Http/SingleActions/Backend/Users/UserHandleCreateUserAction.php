@@ -63,7 +63,7 @@ class UserHandleCreateUserAction
             $user->account_id = $userAccountEloq->id;
             $user->save();
             $userInfo = new FrontendUsersSpecificInfo();
-            $userSpecificInfoData = ['user_id' => $userId];
+            $userSpecificInfoData = ['user_id' => $userId, 'register_type' => FrontendUsersSpecificInfo::REGISTER_TYPE_BACKEND_CREATE];
             $userInfo::create($userSpecificInfoData);
             DB::commit();
             $data['name'] = $user->username;

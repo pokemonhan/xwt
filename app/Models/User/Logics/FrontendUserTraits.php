@@ -57,7 +57,7 @@ trait FrontendUserTraits
     public function getTeamBalance()
     {
         $selfBalance = $this->account->balance;
-        $childrenBalance = $this->with('children.account')->get()->sum('balance');
+        $childrenBalance = $this->with('children.account:balance')->get()->sum('balance');
         $teamBalance = (float) ($selfBalance + $childrenBalance);
         return $teamBalance;
     }

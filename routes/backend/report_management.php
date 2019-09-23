@@ -39,4 +39,11 @@ Route::group(['prefix' => 'reportManagement', 'namespace' => 'Report'], static f
         'withdraw-record',
         ['as'=> $namePrefix . 'withdraw-record', 'uses' => $controller . 'withdrawRecord']
     );
+
+    //获取充值渠道和充值类型
+    Route::match(
+        ['get','options'],
+        'payment-info',
+        ['as'=> $namePrefix . 'payment-info', 'uses' => $controller . 'paymentInfo']
+    );
 });

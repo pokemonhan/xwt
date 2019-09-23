@@ -29,6 +29,10 @@ class NoticeDetailAction
         $searchAbleFields = ['type'];
         $orderFields = 'id';
         $orderFlow = 'desc';
+        if ((int) $inputDatas['type'] === FrontendMessageNoticesContent::TYPE_NOTICE) {
+            $orderFields = 'sort';
+            $orderFlow = 'asc';
+        }
         $datas = $contll->generateSearchQuery($this->model, $searchAbleFields, 0, null, [], $orderFields, $orderFlow);
         return $contll->msgOut(true, $datas);
     }

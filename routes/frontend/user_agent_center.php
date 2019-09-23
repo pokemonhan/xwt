@@ -49,4 +49,10 @@ Route::group(['prefix' => 'user-agent-center'], static function () {
         'team-management',
         ['as' => $namePrefix . 'team-management', 'uses' => $controller . 'teamManagement']
     );
+    //团队报表
+    Route::match(
+        ['get', 'options'],
+        'team-report',
+        ['as' => $namePrefix . 'team-report', 'uses' => $controller . 'teamReport']
+    );
 });

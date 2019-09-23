@@ -1,7 +1,7 @@
 <?php
 
 
-Route::group(['prefix' => 'pay', 'namespace' => 'Pay'], function () {
+Route::group(['prefix' => 'pay', 'namespace' => 'Pay'], static function () {
     $namePrefix = 'web-api.PayController.';
     $controller = 'PayController@';
 
@@ -9,9 +9,20 @@ Route::group(['prefix' => 'pay', 'namespace' => 'Pay'], function () {
     Route::match(['get', 'options'], 'get-recharge-channel', ['as' => $namePrefix . 'getRechargeChannel',
         'uses' => $controller . 'getRechargeChannel']);
 
+    //查询充值渠道 v2.0
+    Route::match(['get', 'options'], 'v2.0/get-recharge-channel', ['as' => $namePrefix . 'getRechargeChannelNew',
+        'uses' => $controller . 'getRechargeChannelNew']);
+
     //发起充值
     Route::match(['post', 'options'], 'recharge', ['as' => $namePrefix . 'recharge',
         'uses' => $controller . 'recharge']);
+
+    //发起充值 v2.0
+    Route::match(['post', 'options'], 'v2.0/recharge', ['as' => $namePrefix . 'rechargeNew',
+        'uses' => $controller . 'rechargeNew']);
+
+    //充值回调 v2.0
+//    Route::match(['post','options']);
     //充值回调
     Route::match(['post', 'options'], 'recharge_callback', ['as' => $namePrefix . 'recharge_callback',
         'uses' => 'PayRechargeCallbackController@rechargeCallback']);

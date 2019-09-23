@@ -70,4 +70,10 @@ class Project extends BaseModel
     {
         return $this->belongsTo(LotteryList::class, 'lottery_sign', 'en_name');
     }
+
+    //每个打码记录属于一个用户
+    public function frontendUser()
+    {
+        return $this->belongsTo(FrontendUser::class, 'user_id', 'id');
+    }
 }

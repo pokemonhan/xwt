@@ -42,7 +42,7 @@ class UserAgentCenterTeamManagementAction
             'id',
             'username',
             'prize_group',
-            'created_at as register_at ',
+            'created_at as register_at',
             'last_login_time',
         )
             ->where($where)

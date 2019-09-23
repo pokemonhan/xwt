@@ -1,13 +1,13 @@
 <?php
 namespace App\Http\Controllers\BackendApi\Casino;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BackendApi\BackEndApiMainController;
 
 /**
  * Class CasinoApiMainController
  * @package App\Http\Controllers\BackendApi\Casino
  */
-class CasinoApiMainController extends Controller
+class CasinoApiMainController extends BackEndApiMainController
 {
     /**
      * @var string
@@ -30,7 +30,7 @@ class CasinoApiMainController extends Controller
      * @param integer $expiry    时间.
      * @return boolean
      */
-    public function authcode(string $string, string $operation, string $platKey, int $expiry = 0)
+    public function authcode(string $string, string $operation, string $platKey, int $expiry)
     {
         // 动态密匙长度，相同的明文会生成不同密文就是依靠动态密匙
         $ckey_length = 4;
@@ -165,37 +165,5 @@ class CasinoApiMainController extends Controller
                 return $output;
                 break;
         }
-    }
-
-    /**
-     * @param  boolean $success     S.
-     * @param  string  $data        D.
-     * @param  string  $code        C.
-     * @param  string  $message     M.
-     * @param  string  $placeholder P.
-     * @param  string  $substituted S.
-     * @return boolean
-     */
-    public function msgOut(bool $success, string $data, string $code, string $message, string $placeholder, string $substituted)
-    {
-        $defaultSuccessCode = '200';
-        $defaultErrorCode = '404';
-        if ($success === true) {
-            $code = $code === '' ? $defaultSuccessCode : $code;
-        } else {
-            $code = $code === '' ? $defaultErrorCode : $code;
-        }
-        if ($placeholder === '' || $substituted === '') {
-            $message = $message === '' ? __('frontend-codes-map.' . $code) : $message;
-        } else {
-            $message = $message === '' ? __('frontend-codes-map.' . $code, [$placeholder => $substituted]) : $message;
-        }
-        $datas = [
-            'success' => $success,
-            'code' => $code,
-            'data' => $data,
-            'message' => $message,
-        ];
-        return response()->json($datas);
     }
 }

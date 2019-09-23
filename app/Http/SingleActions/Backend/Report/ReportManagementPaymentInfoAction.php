@@ -3,7 +3,7 @@
 namespace App\Http\SingleActions\Backend\Report;
 
 use App\Http\Controllers\BackendApi\Report\ReportManagementController;
-use App\Models\Pay\BackendPaymentInfo;
+use App\Models\Pay\PaymentInfo;
 
 /**
  * Class ReportManagementPaymentInfoAction
@@ -18,9 +18,9 @@ class ReportManagementPaymentInfoAction
 
     /**
      * ReportManagementPaymentInfoAction constructor.
-     * @param BackendPaymentInfo $backendPaymentInfo 模型.
+     * @param PaymentInfo $backendPaymentInfo 模型.
      */
-    public function __construct(BackendPaymentInfo $backendPaymentInfo)
+    public function __construct(PaymentInfo $backendPaymentInfo)
     {
         $this->model = $backendPaymentInfo;
     }

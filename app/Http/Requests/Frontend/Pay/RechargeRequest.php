@@ -4,12 +4,15 @@ namespace App\Http\Requests\Frontend\Pay;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class RechargeRequest
+ * @package App\Http\Requests\Frontend\Pay
+ */
 class RechargeRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -25,11 +28,14 @@ class RechargeRequest extends BaseFormRequest
     {
         return [
             'amount' => 'required|integer|min:1',
-            'channel'=> 'required|string|exists:backend_payment_infos,payment_sign',
+            'channel'=> 'required|string|exists:payment_infos,payment_sign',
             'from'=> 'filled|string',
         ];
     }
 
+    /**
+     * @return array
+     */
     public function messages()
     {
         return [

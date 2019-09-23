@@ -20,6 +20,9 @@ Route::group(['prefix' => 'pay', 'namespace' => 'Pay'], static function () {
     //发起充值 v2.0
     Route::match(['post', 'options'], 'v2.0/recharge', ['as' => $namePrefix . 'rechargeNew',
         'uses' => $controller . 'rechargeNew']);
+
+    //充值回调 v2.0
+//    Route::match(['post','options']);
     //充值回调
     Route::match(['post', 'options'], 'recharge_callback', ['as' => $namePrefix . 'recharge_callback',
         'uses' => 'PayRechargeCallbackController@rechargeCallback']);

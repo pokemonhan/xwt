@@ -36,7 +36,7 @@ trait PayTraits
             $data['amount'] = $amount;
             $data['company_order_num'] = BasePay::createRechargeOrderNum();
             $data['client_ip'] = real_ip();
-            $data['deposit_mode'] = 1;
+            $data['deposit_mode'] = 0;
             $data['status'] = UsersRechargeHistorie::MODE_AUTOMATIC;
             $data['source'] = $from;
             $resule = UsersRechargeHistorie::create($data);

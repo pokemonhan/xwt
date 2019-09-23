@@ -6,7 +6,7 @@ use App\Http\Controllers\FrontendApi\FrontendApiMainController;
 use App\Http\Controllers\FrontendApi\Pay\PayController;
 use App\Lib\Pay\Panda;
 use App\Models\Pay\BackendPaymentConfig;
-use App\Models\Pay\BackendPaymentInfo;
+use App\Models\Pay\PaymentInfo;
 use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 use App\Models\User\UserProfits;
@@ -33,19 +33,19 @@ class PayRechargeAction
      */
     protected $backendPaymentConfig;
     /**
-     * @var BackendPaymentInfo 充值信息表模型.
+     * @var PaymentInfo 充值信息表模型.
      */
-    protected $backendPaymentInfo;
+    protected $paymentInfo;
 
     /**
      * PayRechargeAction constructor.
      * @param BackendPaymentConfig $backendPaymentConfig 充值信息配置表模型.
-     * @param BackendPaymentInfo   $backendPaymentInfo   充值信息表模型.
+     * @param PaymentInfo          $paymentInfo          支付详情.
      */
-    public function __construct(BackendPaymentConfig $backendPaymentConfig, BackendPaymentInfo $backendPaymentInfo)
+    public function __construct(BackendPaymentConfig $backendPaymentConfig, PaymentInfo $paymentInfo)
     {
         $this->backendPaymentConfig = $backendPaymentConfig;
-        $this->backendPaymentInfo = $backendPaymentInfo;
+        $this->paymentInfo = $paymentInfo;
     }
 
     /**
@@ -67,12 +67,12 @@ class PayRechargeAction
      */
     public function getRechargeChannelNew(PayController $contll) :JsonResponse
     {
-        try {
-            $output = BackendPaymentInfo::getPaymentInfoLists();
+//        try {
+            $output = PaymentInfo::getPaymentInfoLists();
             return $contll->msgOut(true, $output);
-        } catch (Exception $e) {
-            return $contll->msgOut(false, [], '400', '系统错误');
-        }
+//        } catch (Exception $e) {
+//            return $contll->msgOut(false, [], '400', '系统错误');
+//        }
     }
 
     /**
@@ -84,7 +84,7 @@ class PayRechargeAction
     public function recharge(PayController $contll, array $inputDatas)
     {
         //第一步验证金额是否符合通道所规定的最大最小值
-        $payment = $this->backendPaymentInfo::where('payment_sign', $inputDatas['channel'])->first();
+        $payment = $this->paymentInfo::where('payment_sign', $inputDatas['channel'])->first();
         if ($payment->min > $inputDatas['amount'] || $payment->max < $inputDatas['amount']) {
             return $contll->msgOut(false, [], '400', '充值金额不符合规定');
         }
@@ -101,7 +101,7 @@ class PayRechargeAction
             'order_no' => $order->company_order_num,
             'money' => $order->amount,
         ];
-        return PayHandlerFactory::getInstance()->generatePayHandle($inputDatas['channel'], $payParams)->handle();
+        return (new PayHandlerFactory())->generatePayHandle($inputDatas['channel'], $payParams)->handle();
     }
 
     /**

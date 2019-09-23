@@ -4,68 +4,42 @@ namespace App\Http\Controllers\CasinoApi;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class CasinoApiMainController
+ * @package App\Http\Controllers\CasinoApi
+ */
 class CasinoApiMainController extends FrontendApiMainController
 {
-    public $secretkey   = '6a0c49f5c3c828e82bd6870610f48092';
-    public $apiUrl      = 'http://yibogj.com/';
-    public $username    = 'baowang';    // 代理名称
-    public $userIp      = '';    // 会员ip
-
-    public $callIpNum   = 0;    // ip访问次数
-    public $callIpTime  = 0;    // ip访问时间
-    public $callMax     = 30;      // 接口访问最大限制次数
-
-    public $cacheTimeName   = ''; // 缓存时间的名字
+    /**
+     * @var string
+     */
+    public $secretkey   = 'c518ae8a59bdb2fa89a943c7ab920669';
+    /**
+     * @var string
+     */
+    public $apiUrl      = 'http://52.69.242.200';
+    /**
+     * @var string
+     */
+    public $username    = 'xuanwu';
 
     /**
      * AdminMainController constructor.
      */
     public function __construct()
     {
-        $this->userIp           = real_ip();
-        $this->cacheTimeName    = $this->userIp . 'time';
-        // 记录ip访问次数
-        $this->callIpNum  = \Cache::get($this->userIp);
-        $this->callIpTime = \Cache::get($this->cacheTimeName);
-
-        $this->casinoApiLog();
-        // 1. 访问接口 频繁 禁止访问
-        // 1分钟之内访问大于 30次 则限制访问
-        if ($this->callIpNum > $this->callMax) {
-            return $this->msgOut(false, [], 100600, '访问频繁，请稍后再访问');
-        }
-
         parent::__construct();
     }
 
     /**
-     * api 访问频率控制
-     */
-    private function casinoApiLog(): void
-    {
-        \Cache::put($this->userIp, $this->callIpNum + 1);
-
-        // 未访问接口，接口时间为空， 初始化接口时间
-        if (empty($this->callIpTime)) {
-            \Cache::put($this->cacheTimeName, time());
-        }
-
-        // 距离上次访问超过一分钟初始化接口时间
-        if (time() - $this->callIpTime > 60 * 1000) {
-            \Cache::put($this->cacheTimeName, time());
-            \Cache::put($this->userIp, 0);
-        }
-    }
-
-    /**
      * 传递参数加密
-     * @param $string
-     * @param string $operation
-     * @param $platKey
-     * @param int $expiry
-     * @return bool|string
+     * @param string  $string    字符串
+     * @param string  $operation 加密/解密
+     * @param string  $platKey   公钥
+     * @param integer $expiry    时间
+     * @return boolean
      */
-    public function authcode($string, $operation, $platKey, $expiry = 0)
+    public function authcode(string $string, string $operation, string $platKey, int $expiry = 0)
     {
         // 动态密匙长度，相同的明文会生成不同密文就是依靠动态密匙
         $ckey_length = 4;
@@ -141,16 +115,16 @@ class CasinoApiMainController extends FrontendApiMainController
 
     /**
      * api请求
-     * @param string $method
-     * @param $url
-     * @param array $params
-     * @param null $header
-     * @param bool $cuestomerquest
-     * @param int $https
-     * @param int $locaIp
-     * @return bool|string
+     * @param string  $method         GET POST
+     * @param string  $url            Url
+     * @param array   $params         请求参数
+     * @param string  $header         请求头
+     * @param boolean $cuestomerquest 请求类型
+     * @param integer $https          Https 1
+     * @param integer $locaIp         请求ip
+     * @return string
      */
-    public function request($method, $url, $params = [], $header = null, $cuestomerquest = false, $https = 1, $locaIp = 1)
+    public function request(string $method, string $url, array $params = [], string $header = '', boolean $cuestomerquest = false, int $https = 1, int $locaIp = 1)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -165,7 +139,7 @@ class CasinoApiMainController extends FrontendApiMainController
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLINFO_HEADER_OUT, false);
 
-        if (!is_null($header)) {
+        if (!empty($header)) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         }
         if ($cuestomerquest) {
@@ -181,9 +155,9 @@ class CasinoApiMainController extends FrontendApiMainController
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                 }
                 $output = curl_exec($ch);
-                Log::channel('casino-success')->info(json_encode($output));
+//                Log::channel('casino-success')->info(json_encode($output));
                 if (curl_errno($ch)) {
-                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
+//                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
                     curl_close($ch);
                     return false;
                 }
@@ -191,9 +165,9 @@ class CasinoApiMainController extends FrontendApiMainController
                 break;
             case 'GET':
                 $output = curl_exec($ch);
-                Log::channel('casino-success')->info(json_encode($output));
+//                Log::channel('casino-success')->info(json_encode($output));
                 if (curl_errno($ch)) {
-                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
+//                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
                     curl_close($ch);
                     return false;
                 }

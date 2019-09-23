@@ -21,7 +21,7 @@ class CasinoController extends CasinoApiMainController
      * @param  JoinGameRequest  $request
      * @return JsonResponse
      */
-    public function joinGame(JoinGameRequest $request, JoinGameAction $action): JsonResponse
+    public function joinGame(JoinGameRequest $request, JoinGameAction $action)
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
@@ -32,7 +32,7 @@ class CasinoController extends CasinoApiMainController
      * @param  GetBalanceRequest    $request
      * @return JsonResponse
      */
-    public function getBalance(GetBalanceRequest $request, GetBalanceAction $action): JsonResponse
+    public function getBalance(GetBalanceRequest $request, GetBalanceAction $action)
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
@@ -43,7 +43,7 @@ class CasinoController extends CasinoApiMainController
      * @param  TransferInRequest    $request
      * @return JsonResponse
      */
-    public function transferIn(TransferInRequest $request, TransferInAction $action): JsonResponse
+    public function transferIn(TransferInRequest $request, TransferInAction $action)
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);

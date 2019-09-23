@@ -4,12 +4,19 @@ namespace App\Http\SingleActions\Casino\Game;
 use App\Http\Controllers\CasinoApi\CasinoApiMainController;
 use App\Models\Casino\CasinoGameApiLog;
 
+/**
+ * Class TransferToAction
+ * @package App\Http\SingleActions\Casino\Game
+ */
 class TransferToAction
 {
+    /**
+     * @var CasinoGameApiLog
+     */
     protected $model;
 
     /**
-     * @param  CasinoGameApiLog  $CasinoGameApiLog
+     * @param  CasinoGameApiLog $CasinoGameApiLog LOG.
      */
     public function __construct(CasinoGameApiLog $CasinoGameApiLog)
     {
@@ -18,9 +25,9 @@ class TransferToAction
 
     /**
      * 转出游戏平台
-     * @param  CasinoApiMainController  $contll
-     * @param  array $inputDatas
-     * @return JsonResponse
+     * @param  CasinoApiMainController $contll     基类.
+     * @param  array                   $inputDatas 参数.
+     * @return string
      */
     public function execute(CasinoApiMainController $contll, array $inputDatas): JsonResponse
     {
@@ -68,9 +75,10 @@ class TransferToAction
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
             $data   = $contll->request('GET', $apiUrl);
-            $returnVal['return_content'] = json_encode($data);  // 日志
+            $dataDe = json_decode($data, 1);
+            $returnVal['return_content'] = $data;  // 日志
 
-            if ($data['success']) {
+            if (!empty($dataDe) && $dataDe['success']) {
                 $this->model->saveItem($returnVal);
                 \DB::commit();
                 return $contll->msgOut(true, $data);

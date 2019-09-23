@@ -4,12 +4,19 @@ namespace App\Http\SingleActions\Casino\Game;
 use App\Http\Controllers\CasinoApi\CasinoApiMainController;
 use App\Models\Casino\CasinoGameApiLog;
 
+/**
+ * Class KickAction
+ * @package App\Http\SingleActions\Casino\Game
+ */
 class KickAction
 {
+    /**
+     * @var CasinoGameApiLog
+     */
     protected $model;
 
     /**
-     * @param  CasinoGameApiLog  $CasinoGameApiLog
+     * @param  CasinoGameApiLog $CasinoGameApiLog Log.
      */
     public function __construct(CasinoGameApiLog $CasinoGameApiLog)
     {
@@ -18,11 +25,11 @@ class KickAction
 
     /**
      * 踢线
-     * @param  CasinoApiMainController  $contll
-     * @param  array $inputDatas
-     * @return JsonResponse
+     * @param  CasinoApiMainController $contll     基类.
+     * @param  array                   $inputDatas 娱乐城.
+     * @return string
      */
-    public function execute(CasinoApiMainController $contll, array $inputDatas): JsonResponse
+    public function execute(CasinoApiMainController $contll, array $inputDatas)
     {
         $returnVal  = [
             'api'       => 'GetBalance',

@@ -1,19 +1,25 @@
 <?php
 namespace App\Models\Casino;
 
-use App\Models\BaseModel;
 use Illuminate\Support\Facades\Validator;
 
-class CasinoGameApiLog extends BaseModel
+/**
+ * Class CasinoGameApiLog
+ * @package App\Models\Casino
+ */
+class CasinoGameApiLog extends BaseCasinoModel
 {
+    /**
+     * @var array
+     */
     public $rules = [];
 
     /**
-     * @param $condition
-     * @param $pageSize
+     * @param array   $condition 参数.
+     * @param integer $pageSize  每页多少条.
      * @return mixed
      */
-    public static function getList($condition, $pageSize = 20)
+    public static function getGameList(array $condition, int $pageSize = 20)
     {
         $query = self::orderBy('id', 'desc');
 
@@ -27,9 +33,12 @@ class CasinoGameApiLog extends BaseModel
         return ['data' => $data, 'total' => $total, 'currentPage' => $currentPage, 'totalPage' => intval(ceil($total / $pageSize))];
     }
 
-
-    // 保存
-    public function saveItem($data, $listId = 0)
+    /**
+     * @param array   $data   更新数据.
+     * @param integer $listId 更新id.
+     * @return boolean
+     */
+    public function saveItem(array $data, int $listId = 0)
     {
         $validator  = Validator::make($data, $this->rules);
 
@@ -38,10 +47,14 @@ class CasinoGameApiLog extends BaseModel
             return 0;
         }
 
-        return $this->saveItemBase($data, $listId);
+        return $this->saveBase($data, $listId);
     }
 
-    public function getItem($id)
+    /**
+     * @param integer $id ID.
+     * @return integer
+     */
+    public function getItem(int $id)
     {
         $listData = self::where('id', $id)->first();
         if (!$listData) {

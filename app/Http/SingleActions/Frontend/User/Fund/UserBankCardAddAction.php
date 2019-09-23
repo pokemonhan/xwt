@@ -36,7 +36,10 @@ class UserBankCardAddAction
             $configEloq = $this->createConfig();
         }
         $maxNumber = $configEloq->value;
-        $nowNumber = $this->model::where('user_id', $contll->partnerUser->id)->count();
+        $nowNumber = $this->model::where([
+            ['user_id', $contll->partnerUser->id],
+            ['status', $this->model::INITIALIZATION_STATUS] //查询状态为可用银行卡数量
+        ])->count();
         if ($nowNumber >= $maxNumber) {
             return $contll->msgOut(false, [], '100202');
         }
@@ -107,7 +110,7 @@ class UserBankCardAddAction
             return $contll->msgOut(false, [], '100205');
         }
         //检验当前银行状态
-        $systemBankEloq = FrontendSystemBank::where('title',$inputDatas['bank_name'])->first();
+        $systemBankEloq = FrontendSystemBank::where('title', $inputDatas['bank_name'])->first();
         if ($systemBankEloq !== null) {
             if (!$systemBankEloq->status) {
                 return $contll->msgOut(false, [], '100210');

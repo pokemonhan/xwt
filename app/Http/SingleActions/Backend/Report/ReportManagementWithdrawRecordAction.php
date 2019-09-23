@@ -78,6 +78,12 @@ class ReportManagementWithdrawRecordAction
             return $contll->msgOut(false, [], '400', '系统错误');
         }
     }
+
+    /**
+     * 组装列表所需要的数据
+     * @param mixed $listDatas
+     * @return object
+     */
     private function assemblyData($listDatas) :object
     {
         $frontendUserModel = new FrontendUser();
@@ -98,8 +104,8 @@ class ReportManagementWithdrawRecordAction
             $listDatas[$key1]->remittance_amount = $withdrawHistoryOptModel->remittance_amount??null;
             $listDatas[$key1]->status = $withdrawHistoryOptModel->status??$this->usersWithdrawHistoriesModel::STATUS_AUDIT_WAIT;
             $listDatas[$key1]->order_no = $withdrawHistoryOptModel->order_no??null;
-            $listDatas[$key1]->ct_order_at = $withdrawHistoryOptModel->created_at??null;
-            $listDatas[$key1]->up_order_at = $withdrawHistoryOptModel->updated_at??null;
+            $listDatas[$key1]->ct_order_at = $withdrawHistoryOptModel->created_at->format('Y-m-d H:i:s')??null;
+            $listDatas[$key1]->up_order_at = $withdrawHistoryOptModel->updated_at->format('Y-m-d H:i:s')??null;
             $listDatas[$key1]->channel_sign = $withdrawHistoryOptModel->channel_sign??self::DEFAULT_CHANNEL;
             unset($val1->withdrawHistoryOpt);
             //隐藏前端不需要的字段

@@ -13,7 +13,7 @@ Route::match(
     ['as' => 'web-api.register', 'uses' => 'FrontendAuthController@register']
 );
 //管理总代用户与玩家
-Route::group(['prefix' => 'user'], function () {
+Route::group(['prefix' => 'user'], static function () {
     $namePrefix = 'web-api.FrontendAuthController.';
     $controller = 'FrontendAuthController@';
     //创建总代
@@ -52,5 +52,11 @@ Route::group(['prefix' => 'user'], function () {
         ['post', 'options'],
         'reset-specific-infos',
         ['as' => $namePrefix . 'reset-specific-infos', 'uses' => $controller . 'resetSpecificInfos']
+    );
+    //用户头像列表
+    Route::match(
+        ['get', 'options'],
+        'user_avatars_list',
+        ['as' => $namePrefix . 'user_avatars_list', 'uses' => $controller . 'userAvatarsList']
     );
 });

@@ -6,17 +6,21 @@ use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Models\User\UsersRechargeHistorie;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class ReportManagementUserRechargeHistoryAction
+ * @package App\Http\SingleActions\Backend\Report
+ */
 class ReportManagementUserRechargeHistoryAction
 {
     /**
      * 玩家充值报表
-     * @param   BackEndApiMainController  $contll
+     * @param   BackEndApiMainController $contll 后端主控制器.
      * @return  JsonResponse
      */
     public function execute(BackEndApiMainController $contll): JsonResponse
     {
         $rechargeHistoryEloq = new UsersRechargeHistorie();
-        $searchAbleFields = ['user_name', 'company_order_num', 'deposit_mode', 'status'];
+        $searchAbleFields = ['user_name', 'company_order_num', 'deposit_mode', 'status', 'channel' , 'payment_type_sign'];
         $field = 'updated_at';
         $type = 'desc';
         $datas = $contll->generateSearchQuery($rechargeHistoryEloq, $searchAbleFields, 0, null, [], $field, $type);

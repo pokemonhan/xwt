@@ -1,22 +1,28 @@
 <?php
 namespace App\Models\Casino;
 
-use App\Models\BaseModel;
 use Illuminate\Support\Facades\Validator;
 
-class CasinoGameCategorie extends BaseModel
+/**
+ * Class CasinoGameCategorie
+ * @package App\Models\Casino
+ */
+class CasinoGameCategorie extends BaseCasinoModel
 {
+    /**
+     * @var array
+     */
     public $rules = [
         'name'  => 'required|min:2|max:64',
         'code'  => 'required|min:2|max:64',
     ];
 
     /**
-     * @param $c
-     * @param $pageSize
-     * @return mixed
+     * @param array   $c        DATA.
+     * @param integer $pageSize PageSize.
+     * @return array
      */
-    public static function getList($c, $pageSize = 20)
+    public static function getList(array $c, int $pageSize = 20)
     {
         $query = self::orderBy('id', 'desc');
 
@@ -31,8 +37,11 @@ class CasinoGameCategorie extends BaseModel
         return ['data' => $data, 'total' => $total, 'currentPage' => $currentPage, 'totalPage' => intval(ceil($total / $pageSize))];
     }
 
-    // 保存
-    public function saveItem($data, $admin = null)
+    /**
+     * @param array $data DATA.
+     * @return string
+     */
+    public function saveItem(array $data)
     {
         $validator  = Validator::make($data, $this->rules);
 
@@ -57,13 +66,14 @@ class CasinoGameCategorie extends BaseModel
         $this->code                 = $data['code'];
         $this->home                 = isset($data['home']) ? 1 : 0;
         $this->status               = isset($data['status']) ? 1 : 0;
-        $this->add_admin_id         = $admin ? $admin->id : '999999';
         $this->save();
 
         return true;
     }
 
-    // 获取选项
+    /**
+     * @return array
+     */
     public static function getOptions()
     {
         $options = [];

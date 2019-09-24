@@ -69,12 +69,12 @@ class TransferToAction
             $returnVal['param'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
-            $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
+            $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
             $apiUrl = $contll->apiUrl . '/transferTo?' . $paramStr . '&param=' . $paramEncode;
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
-            $data   = $contll->request('GET', $apiUrl);
+            $data   = $contll->request('GET', $apiUrl, [], '', 0, 0, 0);
             $dataDe = json_decode($data, 1);
             $returnVal['return_content'] = $data;  // 日志
 

@@ -52,7 +52,7 @@ class JoinGameAction
             $returnVal['params'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
-            $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
+            $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
             $apiUrl = $contll->apiUrl . '/joinGame?' . $paramStr . '&param=' . urlencode($paramEncode);
 

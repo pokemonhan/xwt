@@ -4,7 +4,7 @@ namespace App\Http\Requests\Frontend\UserAgentCenter;
 
 use App\Http\Requests\BaseFormRequest;
 
-class UserDaysalaryRequest extends BaseFormRequest
+class UserAgentCenterTeamReportRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,18 @@ class UserDaysalaryRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'username' => 'filled|string|alpha_dash',
-            'date_to'=>'filled|date',
-            'count' => 'filled|integer',
+            'parent_id' => 'integer',//父级id
+            'username' => 'string',//username
+            'time_condtions' => 'string', //时间
+            'type' => 'integer', //报表类型
+            'page_size' => 'integer|between:10,30',
         ];
     }
+
+    /*public function messages()
+    {
+        return [
+            'min_team_balance.required_with' => '缺少最小团队余额',
+        ];
+    }*/
 }

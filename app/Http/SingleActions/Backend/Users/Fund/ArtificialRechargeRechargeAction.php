@@ -38,22 +38,12 @@ class ArtificialRechargeRechargeAction
         $auditFlowID = null;
         $newFund = null;
         DB::beginTransaction();
-        //普通管理员人工充值需要审核的操作    超管给用户充值不需审核
-        if ($contll->currentPartnerAccessGroup->role !== '*') {
-            $adminFundData = BackendAdminRechargePocessAmount::where('admin_id', $partnerAdmin->id)->first();
-            if ($adminFundData === null) {
-                return $contll->msgOut(false, [], '101100');
-            }
-            if ($adminFundData->fund < $amount) {
-                return $contll->msgOut(false, [], '101101');
-            }
-            $newFund = $adminFundData->fund - $amount; //扣除管理员额度
-            $adminFundEdit = ['fund' => $newFund];
-            $adminFundData->fill($adminFundEdit);
-            $adminFundData->save();
-            $auditFlowID = $this->insertAuditFlow($partnerAdmin->id, $partnerAdmin->name, $inputDatas['apply_note']); //插入审核表
-            $this->sendMessage(); //发送站内消息 提醒有权限的管理员审核
-        } else {
+        //超级管理、普通管理员人工充值需要审核的操作
+        $deduction = $this->deductionLimit($contll, $amount, $partnerAdmin, $inputDatas, $auditFlowID, $newFund);
+        if ($deduction !== null) {
+            return $deduction;
+        }
+        if ($contll->currentPartnerAccessGroup->role === '*') {
             if ($userEloq->account()->exists()) {
                 $account = $userEloq->account;
                 $params = [
@@ -79,6 +69,41 @@ class ArtificialRechargeRechargeAction
         return $contll->msgOut(true);
     }
 
+    /**
+     * @param BackEndApiMainController $contll
+     * @param float $amount
+     * @param BackendAdminUser $partnerAdmin
+     * @param array $inputDatas
+     * @param mixed $auditFlowID
+     * @return mixed
+     */
+    public function deductionLimit($contll, $amount, $partnerAdmin, $inputDatas, &$auditFlowID, &$newFund)
+    {
+        $adminFundData = BackendAdminRechargePocessAmount::where('admin_id', $partnerAdmin->id)->first();
+        if ($adminFundData === null) {
+            return $contll->msgOut(false, [], '101100');
+        }
+        if ($adminFundData->fund < $amount) {
+            return $contll->msgOut(false, [], '101101');
+        }
+        $newFund = $adminFundData->fund - $amount; //扣除管理员额度
+        $adminFundEdit = ['fund' => $newFund];
+        $adminFundData->fill($adminFundEdit);
+        $adminFundData->save();
+        $auditFlowID = $this->insertAuditFlow($partnerAdmin->id, $partnerAdmin->name, $inputDatas['apply_note']); //插入审核表
+        $this->sendMessage(); //发送站内消息 提醒有权限的管理员审核
+    }
+
+    /**
+     * @param BackendAdminUser $partnerAdmin
+     * @param FrontendUser $userEloq
+     * @param float $amount
+     * @param mixed $auditFlowID
+     * @param float $newFund
+     * @param string $role
+     * @param string $uuid
+     * @return array
+     */
     public function compileRecharge($partnerAdmin, $userEloq, $amount, $auditFlowID, $newFund, $role, $uuid)
     {
         //用户 users_recharge_histories 表

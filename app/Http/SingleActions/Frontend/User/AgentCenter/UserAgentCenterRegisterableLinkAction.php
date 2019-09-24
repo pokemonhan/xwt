@@ -44,7 +44,16 @@ class UserAgentCenterRegisterableLinkAction
             $data['max_user_prize_group'] = $userInfo->prize_group;
         }
 
-        //有效开户链接
+        $links = $this->getLinks($userInfo, $count);
+
+        $data['links'] = $links;
+
+        return $contll->msgOut(true, $data);
+    }
+
+    //有效开户链接
+    public function getLinks($userInfo, $count)
+    {
         $links = $this->model->where('status', 1)
             ->where('user_id', $userInfo->id)
             ->where(
@@ -52,7 +61,7 @@ class UserAgentCenterRegisterableLinkAction
                     $query->whereNull('expired_at')->orWhere('expired_at', '>=', time());
                 }
             )
-            ->select('id', 'prize_group', 'valid_days', 'is_agent', 'channel', 'created_count', 'url', 'created_at')
+            ->select('id', 'prize_group', 'valid_days', 'user_type', 'channel', 'created_count', 'url', 'created_at')
             ->orderBy('expired_at', 'desc')
             ->paginate($count)->toArray();
 
@@ -70,8 +79,8 @@ class UserAgentCenterRegisterableLinkAction
                 ->get()
                 ->toArray();
 
-            foreach ($registeredUsers as $lc) {
-                $linkCounts[$lc['register_link_id']] = $lc;
+            foreach ($registeredUsers as $userItem) {
+                $linkCounts[$userItem['register_link_id']] = $userItem;
             }
         }
 
@@ -82,9 +91,6 @@ class UserAgentCenterRegisterableLinkAction
                 $value['register_count'] = 0;
             }
         }
-
-        $data['links'] = $links;
-
-        return $contll->msgOut(true, $data);
+        return $links;
     }
 }

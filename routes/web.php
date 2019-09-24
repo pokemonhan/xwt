@@ -16,7 +16,7 @@
 $controller = 'HomeController@';
 Route::any('list', ['as' => 'withdrawList', 'uses' => $controller . 'index']);
 });*/
-Route::group(['namespace' => 'WebControllers\Auth'], function () {
+Route::group(['namespace' => 'WebControllers\Auth'], static function () {
     Route::match(['get', 'options'], 'login', ['as' => 'web-blade.login', 'uses' => 'LoginController@showLoginForm']);
     Route::match(['post', 'options'], 'login', ['as' => 'web-blade.login.post', 'uses' => 'LoginController@login']);
     Route::match(['post', 'options'], 'logout', ['as' => 'web-blade.logout', 'uses' => 'LoginController@logout']);
@@ -37,9 +37,9 @@ Route::group(['namespace' => 'WebControllers\Auth'], function () {
 });*/
 });
 //Auth::routes();
-Route::group(['middleware' => ['auth'], 'namespace' => 'WebControllers'], function () {
+Route::group(['middleware' => ['auth'], 'namespace' => 'WebControllers'], static function () {
     Route::get('/', ['as' => 'web-blade.home', 'uses' => 'HomeController@index']);
-    Route::group(['prefix' => 'menu'], function () {
+    Route::group(['prefix' => 'menu'], static function () {
         Route::get('/', ['as' => 'web-blade.menu.setting', 'uses' => 'MenuSettingController@index']);
         Route::post('/add', ['as' => 'web-blade.menu.add', 'uses' => 'MenuSettingController@add']);
         Route::post('/edit', ['as' => 'web-blade.menu.edit', 'uses' => 'MenuSettingController@edit']);

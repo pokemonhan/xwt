@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Laravel Standards">
+<ruleset name="Xuanwu Standards">
     <description>Xuanwu Coding Standards</description>
     <rule ref="Generic.Classes.DuplicateClassName"/>
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
@@ -35,9 +35,16 @@
     <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
     <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
     <rule ref="SlevomatCodingStandard.Variables.UnusedVariable"/>
+    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
     <!--<rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>-->
     <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
-    <rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration"/>
+<!--    <rule ref="SlevomatCodingStandard.Classes.TraitUseDeclaration"/>-->
+<!--    Prohibits multiple traits separated by commas in one use statement.-->
+    <rule ref="Squiz.Commenting.FunctionComment" />
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag" />
+    <rule ref="Squiz.Commenting.ClassComment" />
+<!--    <rule ref="Squiz.Commenting.FileComment" />-->
+    <rule ref="Squiz.Commenting.VariableComment" />
     <rule ref="SlevomatCodingStandard.ControlStructures.NewWithParentheses"/>
     <rule ref="SlevomatCodingStandard.PHP.ShortList"/>
     <rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
@@ -48,6 +55,10 @@
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
     <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
+    <rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash"/>
+    <rule ref="SlevomatCodingStandard.Commenting.DisallowOneLinePropertyDocComment"/>
     <!-- <rule ref="SlevomatCodingStandard.PHP.RequireNowdoc"/> -->
     <!-- <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/> -->
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName"/> -->
@@ -56,6 +67,7 @@
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/> -->
     <rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
+    <rule ref="Squiz.Functions.FunctionDeclaration"/>
     <rule ref="ObjectCalisthenics.Metrics.MaxNestingLevel">
         <properties>
             <property name="maxNestingLevel" value="3"/>
@@ -105,7 +117,7 @@
     <rule ref="Generic.Formatting.SpaceAfterCast"/>
     <rule ref="Generic.Functions.CallTimePassByReference"/>
     <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+    <!-- <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/> -->
     <rule ref="Generic.Metrics.CyclomaticComplexity">
         <properties>
             <property name="complexity" value="50"/>
@@ -184,6 +196,16 @@
     <exclude-pattern>*/Providers/*</exclude-pattern>
     <exclude-pattern>git-hooks/</exclude-pattern>
     <exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
+
+    <exclude-pattern>app/Console/Commands/Tool/*</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/BackendApi/BackEndApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/FrontendApi/FrontendApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Requests/BaseFormRequest.php</exclude-pattern>
+    <exclude-pattern>app/Lib/Game/*</exclude-pattern>
+    <exclude-pattern>app/Lib/Logic/AccountChange.php</exclude-pattern>
+    <exclude-pattern>app/Models/Game/Lottery/Logics/*</exclude-pattern>
+    <exclude-pattern>app/Models/BaseModel.php</exclude-pattern>
+    
     <arg name="colors"/>
     <arg value="spvnl"/>
     <ini name="memory_limit" value="128M"/>

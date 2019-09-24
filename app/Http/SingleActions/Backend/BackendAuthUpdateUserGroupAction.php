@@ -29,13 +29,14 @@ class BackendAuthUpdateUserGroupAction
         $targetUserEloq = $this->model::find($inputDatas['id']);
         $result = [];
         if ($targetUserEloq !== null) {
-            $targetUserEloq->group_id = $inputDatas['group_id'];
-            $targetUserEloq->save();
-            if ($targetUserEloq->errors()->messages()) {
-                return $contll->msgOut(false, [], '', $targetUserEloq->errors()->messages());
+            try {
+                $targetUserEloq->group_id = $inputDatas['group_id'];
+                $targetUserEloq->save();
+                $result = $targetUserEloq->toArray();
+                return $contll->msgOut(true, $result);
+            } catch (\Exception $exception) {
+                return $contll->msgOut(false, [], $exception->getCode(), $exception->getMessage());
             }
-            $result = $targetUserEloq->toArray();
         }
-        return $contll->msgOut(true, $result);
     }
 }

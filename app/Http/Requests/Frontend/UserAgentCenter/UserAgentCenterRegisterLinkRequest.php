@@ -27,7 +27,7 @@ class UserAgentCenterRegisterLinkRequest extends BaseFormRequest
             'expire' => 'required|integer',
             'channel'=>'required',
             'prize_group'=>'required|integer',
-            'is_agent'=>'required|in:0,1',
+            'user_type'=>'required|in:2,3', // 2代理  3用户
         ];
     }
 }

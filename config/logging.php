@@ -221,6 +221,54 @@ return [
             'level' => 'debug',
             'days' => 14,
         ],
+        'pay-info' => [ //发起支付前参数信息
+            'driver' => 'daily',
+            'path' => storage_path('logs/pay-info/pay-info.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'sign-clear' => [ //签名明文
+            'driver' => 'daily',
+            'path' => storage_path('logs/sign-clear/sign-clear.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'sign' => [ //签名
+            'driver' => 'daily',
+            'path' => storage_path('logs/sign/sign.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'post-data' => [ //请求数据
+            'driver' => 'daily',
+            'path' => storage_path('logs/post-data/post-data.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'curl-res' => [ //同步返回数据
+            'driver' => 'daily',
+            'path' => storage_path('logs/curl-res/curl-res.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'callback-data' => [ //异步返回数据
+            'driver' => 'daily',
+            'path' => storage_path('logs/callback-data/callback-data.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'callback-exception' => [ //异步回调异常日志
+            'driver' => 'daily',
+            'path' => storage_path('logs/callback-exception/callback-exception.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'callback-log' => [ //回调日志
+            'driver' => 'daily',
+            'path' => storage_path('logs/callback-log/callback-log.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
     ],
 
 ];

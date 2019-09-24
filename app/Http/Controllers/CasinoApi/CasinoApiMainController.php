@@ -74,27 +74,27 @@ class CasinoApiMainController extends FrontendApiMainController
         $rndkey = [];
 
         // 产生密匙簿
-        for ($i = 0; $i <= 255; $i++) {
-            $rndkey[$i] = ord($cryptkey[$i % $key_length]);
+        for ($key_num = 0; $key_num <= 255; $key_num++) {
+            $rndkey[$key_num] = ord($cryptkey[$key_num % $key_length]);
         }
 
         // 用固定的算法，打乱密匙簿，增加随机性，好像很复杂，实际上对并不会增加密文的强度
-        for ($j = $i = 0; $i < 256; $i++) {
-            $j = ($j + $boxRandom[$i] + $rndkey[$i]) % 256;
-            $tmp = $boxRandom[$i];
-            $boxRandom[$i] = $boxRandom[$j];
-            $boxRandom[$j] = $tmp;
+        for ($key_j_num = $key_i_num = 0; $key_i_num < 256; $key_i_num++) {
+            $key_j_num = ($key_j_num + $boxRandom[$key_i_num] + $rndkey[$key_i_num]) % 256;
+            $tmp = $boxRandom[$key_i_num];
+            $boxRandom[$key_i_num] = $boxRandom[$key_j_num];
+            $boxRandom[$key_j_num] = $tmp;
         }
 
         // 核心加解密部分
-        for ($a = $j = $i = 0; $i < $string_length; $i++) {
-            $a = ($a + 1) % 256;
-            $j = ($j + $boxRandom[$a]) % 256;
-            $tmp = $boxRandom[$a];
-            $boxRandom[$a] = $boxRandom[$j];
-            $boxRandom[$j] = $tmp;
+        for ($a_key_num = $j_key_num = $i_key_num = 0; $i_key_num < $string_length; $i_key_num++) {
+            $a_key_num = ($a_key_num + 1) % 256;
+            $j_key_num = ($j_key_num + $boxRandom[$a_key_num]) % 256;
+            $tmp = $boxRandom[$a_key_num];
+            $boxRandom[$a_key_num] = $boxRandom[$j_key_num];
+            $boxRandom[$j_key_num] = $tmp;
             // 从密匙簿得出密匙进行异或，再转成字符
-            $result .= chr(ord($string[$i]) ^ $boxRandom[($boxRandom[$a] + $boxRandom[$j]) % 256]);
+            $result .= chr(ord($string[$i_key_num]) ^ $boxRandom[($boxRandom[$a_key_num] + $boxRandom[$j_key_num]) % 256]);
         }
 
         if ($operation === 'DECODE') {
@@ -125,49 +125,49 @@ class CasinoApiMainController extends FrontendApiMainController
      */
     public function request(string $method, string $url, array $params, string $header, bool $cuestomerquest, int $https, int $locaIp)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
+        $ch_hook = curl_init();
+        curl_setopt($ch_hook, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch_hook, CURLOPT_URL, $url);
         if ($https) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch_hook, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch_hook, CURLOPT_SSL_VERIFYHOST, false);
         }
         if ($locaIp) {
-            curl_setopt($ch, CURLOPT_INTERFACE, config('game.pub.AddressIp'));
+            curl_setopt($ch_hook, CURLOPT_INTERFACE, config('game.pub.AddressIp'));
         }
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, false);
+        curl_setopt($ch_hook, CURLOPT_HEADER, false);
+        curl_setopt($ch_hook, CURLINFO_HEADER_OUT, false);
 
         if (!empty($header)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch_hook, CURLOPT_HTTPHEADER, $header);
         }
         if ($cuestomerquest) {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($ch_hook, CURLOPT_CUSTOMREQUEST, $method);
         }
         $output ='';
         switch ($method) {
             case 'POST':
-                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch_hook, CURLOPT_POST, true);
                 if (is_array($params)) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+                    curl_setopt($ch_hook, CURLOPT_POSTFIELDS, http_build_query($params));
                 } else {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+                    curl_setopt($ch_hook, CURLOPT_POSTFIELDS, $params);
                 }
-                $output = curl_exec($ch);
+                $output = curl_exec($ch_hook);
 //                Log::channel('casino-success')->info(json_encode($output));
-                if (curl_errno($ch)) {
+                if (curl_errno($ch_hook)) {
 //                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
-                    curl_close($ch);
+                    curl_close($ch_hook);
                     return false;
                 }
                 return $output;
                 break;
             case 'GET':
-                $output = curl_exec($ch);
+                $output = curl_exec($ch_hook);
 //                Log::channel('casino-success')->info(json_encode($output));
-                if (curl_errno($ch)) {
+                if (curl_errno($ch_hook)) {
 //                    Log::channel('casino-err')->info(json_encode(curl_error($ch)));
-                    curl_close($ch);
+                    curl_close($ch_hook);
                     return false;
                 }
                 return $output;

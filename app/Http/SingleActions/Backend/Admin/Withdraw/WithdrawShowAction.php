@@ -12,19 +12,59 @@ use App\Models\User\UsersWithdrawHistorie;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class WithdrawShowAction
+ * @package App\Http\SingleActions\Backend\Admin\Withdraw
+ */
 class WithdrawShowAction
 {
-    protected $userWithdrawHistory; //用户提现记录
-    protected $userWithdrawHistoryOpt; //用户提现记录对应的操作
-    protected $frontendUser; //用户
-    protected $frontendUserAccount; //用户账户
-    protected $userRechargeHistories; //用户充值记录
-    protected $userProjects; //用户打码记录
-    protected $userCommissions; //用户的返点记录
-    protected $userDaySalaries; //用户的日工资记录
-    protected $userBonuses; //用户的分红记录
-    protected $bank; //对应银行
+    /**
+     * @var object $userWithdrawHistory 用户提现记录.
+     */
+    protected $userWithdrawHistory;
+    /**
+     * @var object $userWithdrawHistoryOpt 用户提现记录对应的操作.
+     */
+    protected $userWithdrawHistoryOpt;
+    /**
+     * @var object $frontendUser 用户.
+     */
+    protected $frontendUser;
+    /**
+     * @var object $frontendUserAccount 用户账户.
+     */
+    protected $frontendUserAccount;
+    /**
+     * @var object $userRechargeHistories 用户充值记录.
+     */
+    protected $userRechargeHistories;
+    /**
+     * @var object $userProjects 用户打码记录.
+     */
+    protected $userProjects;
+    /**
+     * @var object $userCommissions 用户的返点记录.
+     */
+    protected $userCommissions;
+    /**
+     * @var object $userDaySalaries 用户的日工资记录.
+     */
+    protected $userDaySalaries;
+    /**
+     * @var object $userBonuses 用户的分红记录.
+     */
+    protected $userBonuses;
+    /**
+     * @var object $bank 对应银行.
+     */
+    protected $bank;
+    /**
+     * @var object $model 模型.
+     */
     protected $model;
+    /**
+     * @var array $outputData 数据.
+     */
     private $outputData = [
         'id' => null, //提现记录id
         'user_id' => null, //用户的id
@@ -60,7 +100,9 @@ class WithdrawShowAction
         'channel' => null, //渠道
         'ip' => null, //网络地址
     ];
-    //各种统计的数据
+    /**
+     * @var array $total 各种统计的数据.
+     */
     private $total = [
         'r_w_ratio_total' => null, //充提比
         'recharge_total' => null, //充值合计
@@ -80,14 +122,18 @@ class WithdrawShowAction
     ];
     /**
      * WithdrawShowAction constructor.
-     * @param UsersWithdrawHistorie $usersWithdrawHistorie
+     * @param UsersWithdrawHistorie $usersWithdrawHistorie 提现记录.
      */
     public function __construct(UsersWithdrawHistorie $usersWithdrawHistorie)
     {
         $this->model = $usersWithdrawHistorie;
     }
-    //初始化
-    private function initVarEnv($inputDatas)
+
+    /**
+     * @param array $inputDatas 数据.
+     * @return void
+     */
+    private function initVarEnv(array $inputDatas)
     {
         $this->userWithdrawHistory = $this->model::where('id', $inputDatas['id'])->first(); //提现记录
         $this->userWithdrawHistoryOpt = $this->userWithdrawHistory->withdrawHistoryOpt;
@@ -101,6 +147,11 @@ class WithdrawShowAction
         $this->bank = $this->userWithdrawHistory->bank; //对应的银行
     }
 
+    /**
+     * @param WithdrawController $contll     控制器.
+     * @param array              $inputDatas 数据.
+     * @return JsonResponse
+     */
     public function execute(WithdrawController $contll, array $inputDatas) : JsonResponse
     {
         $this->initVarEnv($inputDatas);
@@ -114,20 +165,20 @@ class WithdrawShowAction
             $this->outputData['remark'] = $this->userWithdrawHistory->description;
             $this->outputData['order_id'] = $this->userWithdrawHistory->order_id;
             $this->outputData['user_balance'] = $this->frontendUserAccount->balance + $this->frontendUserAccount->frozen;
-            $this->outputData['usable_balance'] = (float) $this->frontendUserAccount->balance;
-            $this->outputData['can_withdraw_balance'] = (float) $this->frontendUserAccount->balance;
+            $this->outputData['usable_balance'] = (float) ($this->frontendUserAccount->balance??0);
+            $this->outputData['can_withdraw_balance'] = (float) ($this->frontendUserAccount->balance??0);
             $this->outputData['is_tester'] = $this->userWithdrawHistory->is_tester;
             $this->outputData['that_day_recharge_amount'] = $this->getRechargeTotalByTime(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
             $this->outputData['that_day_withdraw_amount'] = $this->getWithdrawTotalByTime(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
             $this->outputData['that_day_bet_amount'] = $this->getBetTotalByTime(Carbon::now()->startOfDay(), Carbon::now()->endOfDay());
             $this->outputData['created_at'] = $this->userWithdrawHistory->created_at->format('Y-m-d H:i:s');
-            $this->outputData['amount'] = $this->userWithdrawHistory->amount;
-            $this->outputData['bank_name'] = $this->bank->bank_name;
-            $this->outputData['card_number'] = $this->userWithdrawHistory->card_number;
-            $this->outputData['card_username'] = $this->userWithdrawHistory->card_username;
-            $this->outputData['province'] = $this->bank->province->region_name;
-            $this->outputData['branch'] = $this->bank->branch;
-            $this->outputData['branch_address'] = ($this->outputData['province'] . ' ' ?? '') . $this->bank->branch;
+            $this->outputData['amount'] = $this->userWithdrawHistory->amount??0;
+            $this->outputData['bank_name'] = $this->bank->bank_name??'';
+            $this->outputData['card_number'] = $this->userWithdrawHistory->card_number??'';
+            $this->outputData['card_username'] = $this->userWithdrawHistory->card_username??'';
+            $this->outputData['province'] = $this->bank->province->region_name??'';
+            $this->outputData['branch'] = $this->bank->branch??'';
+            $this->outputData['branch_address'] = ($this->outputData['province'] . ' ' ?? '') . $this->outputData['branch'];
             $this->outputData['fail_remark'] = $this->userWithdrawHistoryOpt->fail_remark ?? null;
             $this->outputData['check_remark'] = $this->userWithdrawHistoryOpt->check_remark ?? null;
             $this->outputData['status'] = $this->userWithdrawHistoryOpt->status ?? UsersWithdrawHistorie::STATUS_AUDIT_WAIT;
@@ -145,8 +196,13 @@ class WithdrawShowAction
         return $contll->msgOut(true, array_merge($this->outputData, $this->total));
     }
 
-    //得到时间段内的各种统计数据
-    private function getTotalByTime($start_time, $end_time)
+    /**
+     * 得到时间段内的各种统计数据
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return void
+     */
+    private function getTotalByTime(string $start_time, string $end_time)
     {
         $recharge_total = $this->getRechargeTotalByTime($start_time, $end_time);
         $withdraw_total = $this->getWithdrawTotalByTime($start_time, $end_time);
@@ -168,7 +224,14 @@ class WithdrawShowAction
         $this->total['activity_gift_money_total'] = 0;
     }
     //得到对应时间段内此用户的充值统计 type | 0 不分类 | 1 在线充值 | 2 人工充值 | 3 转账充值
-    private function getRechargeTotalByTime($start_time, $end_time, $type = 0) :float
+    /**
+     * 得到时间段内的各种统计数据
+     * @param string  $start_time 开始时间.
+     * @param string  $end_time   结束时间.
+     * @param integer $type       类型.
+     * @return float
+     */
+    private function getRechargeTotalByTime(string $start_time, string $end_time, int $type = 0) :float
     {
         $total = 0;
         if ($type === 0) {
@@ -182,36 +245,68 @@ class WithdrawShowAction
         }
         return $total;
     }
-    //得到对应时间段内此用户的提款统计
-    private function getWithdrawTotalByTime($start_time, $end_time) :float
+    /**
+     * 得到对应时间段内此用户的提款统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getWithdrawTotalByTime(string $start_time, string $end_time) :float
     {
         return $this->model::where('user_id', $this->userWithdrawHistory->user_id)->where('status', UsersWithdrawHistorie::STATUS_SUCCESS)->whereBetween('created_at', [$start_time, $end_time])->sum('amount');
     }
-    //得到对应时间段内此用户的打码统计
-    private function getBetTotalByTime($start_time, $end_time) :float
+    /**
+     * 得到对应时间段内此用户的打码统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getBetTotalByTime(string $start_time, string $end_time) :float
     {
         return $this->userProjects->whereIn('status', [Project::STATUS_LOST, Project::STATUS_WON, Project::STATUS_PRIZE_SENT])->whereBetween('created_at', [$start_time, $end_time])->sum('total_cost');
     }
-    //得到对应时间段内此用户的奖金统计
-    private function getBonusTotalByTime($start_time, $end_time) :float
+    /**
+     * 得到对应时间段内此用户的奖金统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getBonusTotalByTime(string $start_time, string $end_time) :float
     {
         return $this->userProjects->where('status', Project::STATUS_PRIZE_SENT)->whereBetween('created_at', [$start_time, $end_time])->sum('bonus');
     }
-    //得到对应时间段内此用户的盈亏统计
-    private function getWinTotalByTime($start_time, $end_time) :float
+    /**
+     * 得到对应时间段内此用户的盈亏统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getWinTotalByTime(string $start_time, string $end_time) :float
     {
         $commissionTotal = $this->getCommissionTotalByTime($this->userCommissions, $start_time, $end_time);
         $bonusTotal = $this->getBonusTotalByTime($start_time, $end_time);
         $betTotal = $this->getBetTotalByTime($start_time, $end_time);
         return (float) sprintf('%0.4f', $bonusTotal + $commissionTotal - $betTotal);
     }
-    //得到对应时间段内此用户的返点统计
-    private function getCommissionTotalByTime($userCommissions, $start_time, $end_time) :float
+    /**
+     * 得到对应时间段内此用户的返点统计
+     * @param object $userCommissions 用户返点.
+     * @param string $start_time      开始时间.
+     * @param string $end_time        结束时间.
+     * @return float
+     */
+    private function getCommissionTotalByTime(object $userCommissions, string $start_time, string $end_time) :float
     {
         return $userCommissions->where('status', UserCommissions::STATUS_DONE)->whereBetween('created_at', [$start_time, $end_time])->sum('amount');
     }
-    //得到对应时间段内此用户的代理佣金统计
-    private function getAgentCommissionTotalByTime($start_time, $end_time) :float
+
+    /**
+     * 得到对应时间段内此用户的代理佣金统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getAgentCommissionTotalByTime(string $start_time, string $end_time) :float
     {
         $agentCommissionTotal = 0;
         $subMembers = FrontendUser::where('parent_id', $this->frontendUser->id)->get();
@@ -220,13 +315,25 @@ class WithdrawShowAction
         }
         return $agentCommissionTotal;
     }
-    //得到对应时间段内此用户的日工资统计
-    private function getDaySalariesTotalByTime($start_time, $end_time) :float
+
+    /**
+     * 得到对应时间段内此用户的日工资统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getDaySalariesTotalByTime(string $start_time, string $end_time) :float
     {
         return $this->userDaySalaries->where('status', UserDaysalary::STATUS_YES)->whereBetween('date', [$start_time, $end_time])->sum('daysalary');
     }
-    //得到对应时间段内此用户的分红统计
-    private function getDividendTotalByTime($start_time, $end_time) :float
+
+    /**
+     * 得到对应时间段内此用户的分红统计
+     * @param string $start_time 开始时间.
+     * @param string $end_time   结束时间.
+     * @return float
+     */
+    private function getDividendTotalByTime(string $start_time, string $end_time) :float
     {
         return $this->userBonuses->whereBetween('created_at', [$start_time, $end_time])->sum('bonus_total');
     }

@@ -67,6 +67,7 @@
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
     <!-- <rule ref="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps"/> -->
     <rule ref="Squiz.NamingConventions.ValidVariableName.StringNotCamelCaps"/>
+    <rule ref="Squiz.Functions.FunctionDeclaration"/>
     <rule ref="ObjectCalisthenics.Metrics.MaxNestingLevel">
         <properties>
             <property name="maxNestingLevel" value="3"/>
@@ -116,7 +117,7 @@
     <rule ref="Generic.Formatting.SpaceAfterCast"/>
     <rule ref="Generic.Functions.CallTimePassByReference"/>
     <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
-    <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+    <!-- <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/> -->
     <rule ref="Generic.Metrics.CyclomaticComplexity">
         <properties>
             <property name="complexity" value="50"/>

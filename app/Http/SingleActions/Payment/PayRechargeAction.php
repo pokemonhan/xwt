@@ -3,24 +3,23 @@ namespace App\Http\SingleActions\Payment;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use App\Http\Controllers\FrontendApi\Pay\PayController;
+use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
+use App\Http\Requests\Frontend\Pay\RechargeCallbackRequest;
+use App\Http\Requests\Frontend\Pay\RechargeList;
+use App\Http\Requests\Frontend\Pay\RechargeRequest;
 use App\Lib\Pay\Panda;
 use App\Models\Pay\BackendPaymentConfig;
 use App\Models\Pay\PaymentInfo;
 use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 use App\Models\User\UserProfits;
-use App\Pay\Core\PayHandlerFactory;
-use Illuminate\Http\JsonResponse;
 use App\Models\User\UsersRechargeHistorie;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Frontend\Pay\RechargeRequest;
-use App\Http\Requests\Frontend\Pay\RechargeCallbackRequest;
+use App\Pay\Core\PayHandlerFactory;
 use Exception;
-use App\Http\Requests\Frontend\Pay\RechargeList;
-use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class PayRechargeAction
@@ -62,10 +61,10 @@ class PayRechargeAction
 
     /**
      * 获取支付渠道 v2.0
-     * @param PayController $contll 自己的控制器.
+     * @param FrontendApiMainController $contll 自己的控制器.
      * @return JsonResponse
      */
-    public function getRechargeChannelNew(PayController $contll) :JsonResponse
+    public function getRechargeChannelNew(FrontendApiMainController $contll) :JsonResponse
     {
         try {
             $output = PaymentInfo::getPaymentInfoLists();
@@ -77,11 +76,11 @@ class PayRechargeAction
 
     /**
      * 发起充值 v2.0
-     * @param PayController $contll     自己的控制器.
-     * @param array         $inputDatas 前端输入的变量.
+     * @param FrontendApiMainController $contll     自己的控制器.
+     * @param array                     $inputDatas 前端输入的变量.
      * @return mixed
      */
-    public function recharge(PayController $contll, array $inputDatas)
+    public function recharge(FrontendApiMainController $contll, array $inputDatas)
     {
         //第一步验证金额是否符合通道所规定的最大最小值
         $payment = $this->paymentInfo::where('payment_sign', $inputDatas['channel'])->first();

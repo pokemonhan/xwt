@@ -63,26 +63,26 @@ class FrontendAuthRegisterAction
         if ($resource['success'] === false) {
             return $contll->msgOut(false, [], $resource['code']);
         }
-
-        $verifyData = $this->verifyData($inputDatas, $registerType);
+        $link = $resource['link'];
+        $userRid = $resource['rid'];
+        $verifyData = $this->verifyData($resource['data'], $registerType);
         if ($verifyData['success'] === false) {
             return $contll->msgOut(false, [], $verifyData['code']);
         }
-
-        $inputDatas['password'] = bcrypt($inputDatas['password']);
-        $inputDatas['register_ip'] = request()->ip();
-        $inputDatas['pic_path'] = UserPublicAvatar::getRandomAvatar();
-        $inputDatas['sign'] = $inputDatas['platform_sign'];
-        unset($inputDatas['keyword'], $inputDatas['platform_sign'], $inputDatas['host'], $inputDatas['register_type']);
+        $verifyData['data']['password'] = bcrypt($verifyData['data']['password']);
+        $verifyData['data']['register_ip'] = request()->ip();
+        $verifyData['data']['pic_path'] = UserPublicAvatar::getRandomAvatar();
+        $verifyData['data']['sign'] = $verifyData['data']['platform_sign'];
+        unset($verifyData['data']['keyword'], $verifyData['data']['platform_sign'], $verifyData['data']['host'], $verifyData['data']['register_type']);
         //插入信息
         DB::beginTransaction();
         try {
-            $user = $this->model::create($inputDatas);
+            $user = $this->model::create($verifyData['data']);
             $this->insertExtendedData($user, $registerType, $link, $userRid);
             $data['name'] = $user->username;
             //普通注册，用户登录
             if ($registerType === 0) {
-                $this->userLogin($contll, $data);
+                $data = $this->userLogin($contll, $data);
             }
             return $contll->msgOut(true, $data);
         } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class FrontendAuthRegisterAction
      * @param FrontendUsersRegisterableLink $link         注册地址.
      * @return array
      */
-    private function diffeTypeOperate(FrontendApiMainController $contll, array &$inputDatas, int $registerType, string &$userRid, FrontendUsersRegisterableLink &$link)
+    private function diffeTypeOperate(FrontendApiMainController $contll, array $inputDatas, int $registerType, string $userRid, FrontendUsersRegisterableLink $link)
     {
         if ($registerType === 0) {
             $resource = $this->ordinary($inputDatas); //0.普通注册
@@ -140,7 +140,7 @@ class FrontendAuthRegisterAction
      * @param array $inputDatas 注册请求数据.
      * @return array
      */
-    private function ordinary(array &$inputDatas)
+    private function ordinary(array $inputDatas)
     {
         $hostPlatform = configure('host_platform_settings');
         $hostPlatform = json_decode($hostPlatform, true);
@@ -153,8 +153,8 @@ class FrontendAuthRegisterAction
         isset($plat['platform_sign']) && $inputDatas['platform_sign'] = $plat['platform_sign'];
         $inputDatas['type'] = 3; //用户类型你:1直属2代理3会员
         $inputDatas['prize_group'] = configure('min_bet_prize_group'); //普通注册默认平台最低奖金组
-        unset($inputDatas['re_password']);
-        return $this->returnArr(true);
+        unset($inputDatas['re_password']); //不需要该数据
+        return $this->returnArr(true, '', $inputDatas);
     }
 
     /**
@@ -164,9 +164,9 @@ class FrontendAuthRegisterAction
      * @param string                    $userRid    用户rid.
      * @return array
      */
-    private function artificial(FrontendApiMainController $contll, array &$inputDatas, string &$userRid)
+    private function artificial(FrontendApiMainController $contll, array $inputDatas, string $userRid)
     {
-        $inputDatas['prize_group'] = (int) $inputDatas['prize_group'] ?? 0;
+        $inputDatas['prize_group'] = (int) ($inputDatas['prize_group'] ?? 0);
         if ($inputDatas['prize_group'] === 0) {
             return $this->returnArr(false, '100015');
         }
@@ -182,6 +182,7 @@ class FrontendAuthRegisterAction
         $inputDatas['platform_id'] = $contll->currentPlatformEloq->platform_id;
         $inputDatas['platform_sign'] = $contll->currentPlatformEloq->platform_sign;
         $userRid = $userInfo->rid;
+
         //平台最低奖金组
         $minPrizeGroup = configure('min_bet_prize_group');
         //平台最高奖金组
@@ -196,7 +197,7 @@ class FrontendAuthRegisterAction
         ) {
             return $this->returnArr(false, '100016');
         }
-        return $this->returnArr(true);
+        return $this->returnArr(true, '', $inputDatas, $userRid);
     }
 
     /**
@@ -206,7 +207,7 @@ class FrontendAuthRegisterAction
      * @param FrontendUsersRegisterableLink $link       注册地址.
      * @return array
      */
-    private function linkScanCode(array &$inputDatas, string &$userRid, FrontendUsersRegisterableLink &$link)
+    private function linkScanCode(array $inputDatas, string $userRid, FrontendUsersRegisterableLink $link)
     {
         $keyword = $inputDatas['keyword'] ?? '';
 
@@ -215,8 +216,7 @@ class FrontendAuthRegisterAction
         }
 
         $link = FrontendUsersRegisterableLink::where('keyword', $keyword)->first();
-
-        if (is_null($link)) {
+        if ($link === null) {
             return $this->returnArr(false, '100018');
         }
 
@@ -230,20 +230,23 @@ class FrontendAuthRegisterAction
         if (!$parent) {
             return $this->returnArr(false, '100021');
         }
-
-        $userRid = $parent->rid;
         $inputDatas['top_id'] = $parent->top_id;
-        return $this->returnArr(true);
+        $userRid = $parent->rid;
+
+        return $this->returnArr(true, '', $inputDatas, $userRid, $link);
     }
 
     /**
      * @param boolean $success 布尔值.
      * @param string  $code    提示.
+     * @param array   $data    数据.
+     * @param string  $userRid UserRid.
+     * @param string  $link    Link.
      * @return array
      */
-    private function returnArr(bool $success = false, string $code = '')
+    private function returnArr(bool $success = false, string $code = '', array $data = [], string $userRid = '', string $link = '')
     {
-        return ['success' => $success, 'code' => $code];
+        return ['success' => $success, 'code' => $code, 'data' => $data, 'rid' => $userRid, 'link' => $link];
     }
 
     /**
@@ -275,17 +278,17 @@ class FrontendAuthRegisterAction
                 return $this->returnArr(false, '100022');
             }
         }
-        return $this->returnArr(true);
+        return $this->returnArr(true, '', $inputDatas);
     }
 
     /**
-     * @param Model                         $user         用户.
-     * @param integer                       $registerType 注册类型.
-     * @param FrontendUsersRegisterableLink $link         注册地址.
-     * @param string                        $userRid      用户rid.
+     * @param Model   $user         用户.
+     * @param integer $registerType 注册类型.
+     * @param mixed   $link         注册地址.
+     * @param string  $userRid      用户rid.
      * @return void
      */
-    private function insertExtendedData(Model $user, int $registerType, FrontendUsersRegisterableLink $link, string $userRid)
+    private function insertExtendedData(Model $user, int $registerType, $link, string $userRid)
     {
         $userRid !== '' && $userRid .= '|';
         $userRid .= $user->id;
@@ -333,9 +336,9 @@ class FrontendAuthRegisterAction
     /**
      * @param FrontendApiMainController $contll 前台api主控制器.
      * @param array                     $data   用户数据.
-     * @return void
+     * @return array
      */
-    private function userLogin(FrontendApiMainController $contll, array &$data)
+    private function userLogin(FrontendApiMainController $contll, array $data)
     {
         $credentials = request(['username', 'password']);
         $token = $contll->currentAuth->attempt($credentials);
@@ -347,5 +350,6 @@ class FrontendAuthRegisterAction
             'token_type' => 'Bearer',
             'expires_at' => $expireAt,
         ];
+        return $data;
     }
 }

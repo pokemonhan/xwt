@@ -66,12 +66,8 @@ class PayRechargeAction
      */
     public function getRechargeChannelNew(FrontendApiMainController $contll) :JsonResponse
     {
-        try {
-            $output = PaymentInfo::getPaymentInfoLists();
-            return $contll->msgOut(true, $output);
-        } catch (Exception $e) {
-            return $contll->msgOut(false, [], '400', '系统错误');
-        }
+        $output = PaymentInfo::getPaymentInfoLists();
+        return $contll->msgOut(true, $output);
     }
 
     /**

@@ -241,10 +241,10 @@ class FrontendAuthRegisterAction
      * @param string  $code    提示.
      * @param array   $data    数据.
      * @param string  $userRid UserRid.
-     * @param string  $link    Link.
+     * @param mixed   $link    Link.
      * @return array
      */
-    private function returnArr(bool $success = false, string $code = '', array $data = [], string $userRid = '', string $link = '')
+    private function returnArr(bool $success = false, string $code = '', array $data = [], string $userRid = '', $link = '')
     {
         return ['success' => $success, 'code' => $code, 'data' => $data, 'rid' => $userRid, 'link' => $link];
     }

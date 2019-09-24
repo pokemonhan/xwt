@@ -17,10 +17,10 @@ class CasinoGameList extends BaseCasinoModel
     public function saveItemAll(array $data)
     {
         DB::beginTransaction();
-        foreach ($data as $v) {
-            if (!self::find($v['id'])) {
-                unset($v['deleted_at']);
-                if (!self::insert($v)) {
+        foreach ($data as $dataItem) {
+            if (!self::find($dataItem['id'])) {
+                unset($dataItem['deleted_at']);
+                if (!self::insert($dataItem)) {
                     DB::rollBack();
                     return 0;
                 }

@@ -10,30 +10,60 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class WithdrawStatusAction
+ * @package App\Http\SingleActions\Backend\Admin\Withdraw
+ */
 class WithdrawStatusAction
 {
+    /**
+     * @var UsersWithdrawHistorie $model 模型.
+     */
     protected $model;
+    /**
+     * @var UsersWithdrawHistoryOpt $userWithdrawHistoryOptModel 提现记录操作的模型.
+     */
     protected $userWithdrawHistoryOptModel;
-    protected $userWithdrawHistory; //用户提现记录
-    protected $userWithdrawHistoryOpt; //用户提现记录对应的操作
+    /**
+     * @var object $userWithdrawHistory 用户提现记录.
+     */
+    protected $userWithdrawHistory;
+    /**
+     * @var object $userWithdrawHistoryOpt 用户提现记录对应的操作.
+     */
+    protected $userWithdrawHistoryOpt;
+    /**
+     * @var object $contll 控制器.
+     */
     protected $contll;
 
     /**
      * WithdrawStatusAction constructor.
-     * @param UsersWithdrawHistorie $usersWithdrawHistorie
-     * @param UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt
+     * @param UsersWithdrawHistorie   $usersWithdrawHistorie   用户提现记录.
+     * @param UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt 用户提现记录对应的操作.
      */
     public function __construct(UsersWithdrawHistorie $usersWithdrawHistorie, UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt)
     {
         $this->model = $usersWithdrawHistorie;
         $this->userWithdrawHistoryOptModel = $usersWithdrawHistoryOpt;
     }
-    //初始化
-    public function initVarEnv($inputDatas)
+
+    /**
+     * 初始化
+     * @param array $inputDatas 参数.
+     * @return void
+     */
+    public function initVarEnv(array $inputDatas)
     {
         $this->userWithdrawHistory = $this->model::where('id', $inputDatas['id'])->first(); //提现记录
         $this->userWithdrawHistoryOpt = $this->userWithdrawHistory->withdrawHistoryOpt;
     }
+
+    /**
+     * @param WithdrawController $contll     控制器.
+     * @param array              $inputDatas 参数.
+     * @return JsonResponse
+     */
     public function execute(WithdrawController $contll, array $inputDatas) :JsonResponse
     {
         $flag = false;
@@ -72,11 +102,11 @@ class WithdrawStatusAction
 
     /**
      * 接手处理
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function takeOver($inputDatas) :bool
+    private function takeOver(array $inputDatas) :bool
     {
         if (!isset($this->userWithdrawHistoryOpt) && (int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_WAIT) {
             DB::beginTransaction();
@@ -103,11 +133,11 @@ class WithdrawStatusAction
 
     /**
      * 驳回
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function turnDown($inputDatas) :bool
+    private function turnDown(array $inputDatas) :bool
     {
         $this->takeOver($inputDatas);  //先认领
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_CLAIMED) {
@@ -134,11 +164,11 @@ class WithdrawStatusAction
 
     /**
      * 审核通过
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function passed($inputDatas) :bool
+    private function passed(array $inputDatas) :bool
     {
         $this->takeOver($inputDatas); //先认领
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_CLAIMED) {
@@ -166,11 +196,11 @@ class WithdrawStatusAction
 
     /**
      * 手动成功
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function toSuccess($inputDatas) :bool
+    private function toSuccess(array $inputDatas) :bool
     {
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_SUCCESS) {
             DB::beginTransaction();
@@ -189,11 +219,11 @@ class WithdrawStatusAction
 
     /**
      * 手动失败
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function toFail($inputDatas) :bool
+    private function toFail(array $inputDatas) :bool
     {
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_SUCCESS) {
             DB::beginTransaction();

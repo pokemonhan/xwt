@@ -67,12 +67,12 @@ class PayRechargeAction
      */
     public function getRechargeChannelNew(PayController $contll) :JsonResponse
     {
-//        try {
+        try {
             $output = PaymentInfo::getPaymentInfoLists();
             return $contll->msgOut(true, $output);
-//        } catch (Exception $e) {
-//            return $contll->msgOut(false, [], '400', '系统错误');
-//        }
+        } catch (Exception $e) {
+            return $contll->msgOut(false, [], '400', '系统错误');
+        }
     }
 
     /**
@@ -96,10 +96,21 @@ class PayRechargeAction
         $payment_id = $payment->id;
         $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from, $payment_type_sign, $payment_id);
         //第三步组装支付所用的数据 抛给生成的handle去处理
+        if (!empty($inputDatas['bank_code']) && !empty($banks_code = $payment->paymentConfig->banks_code)) { //获得支付厂商的bank_code
+            $banks_code = explode('|', $banks_code);
+            foreach ($banks_code as $item) {
+                [$bank_code1,$bank_code2] = explode('=', $item);
+                if ($bank_code1 === $inputDatas['bank_code']) {
+                    $inputDatas['bank_code'] = $bank_code2;
+                }
+            }
+        }
         $payParams = [
             'payment_sign' => $inputDatas['channel'],
             'order_no' => $order->company_order_num,
             'money' => $order->amount,
+            'source' => $from,
+            'bank_code' => $inputDatas['bank_code']??'',
         ];
         return (new PayHandlerFactory())->generatePayHandle($inputDatas['channel'], $payParams)->handle();
     }

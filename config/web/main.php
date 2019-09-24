@@ -199,7 +199,21 @@ return [
             'expire_time'   => 0,
             'name'          => '前端网站基本信息缓存',
             'tags'          => 'frontend'
+        ],
+        //============================娱乐城 BEGIN============================
+        'casino_game_plats'    => [
+            'key'           => 'casino_game_plats',
+            'expire_time'   => 0,
+            'name'          => '娱乐城游戏类型',
+            'tags'          => 'casino'
+        ],
+        'casino_popular_web'    => [
+            'key'           => 'casino_popular_web',
+            'expire_time'   => 0,
+            'name'          => '娱乐城首页热门游戏',
+            'tags'          => 'casino'
         ]
+        //============================娱乐城 END=============================
     ],
 
 

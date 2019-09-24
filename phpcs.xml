@@ -189,7 +189,15 @@
     <exclude-pattern>*/config/*</exclude-pattern>
     <exclude-pattern>*/public/index.php</exclude-pattern>
     <exclude-pattern>*/*.blade.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/*</exclude-pattern>
+    <exclude-pattern>*/Middleware/Authenticate.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/CheckForMaintenanceMode.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/EnableCors.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/EncryptCookies.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/JWTRefresh.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/RedirectIfAuthenticated.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/TrimStrings.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/TrustProxies.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/VerifyCsrfToken.php</exclude-pattern>
     <exclude-pattern>*/Console/Kernel.php</exclude-pattern>
     <exclude-pattern>*/Exceptions/Handler.php</exclude-pattern>
     <exclude-pattern>*/Http/Kernel.php</exclude-pattern>

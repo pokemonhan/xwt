@@ -4,6 +4,7 @@
 namespace App\Pay\Core;
 
 use App\Models\Pay\PaymentInfo;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class BasePay
@@ -28,6 +29,7 @@ abstract class BasePay
         'app_id' => null, //设备号
         'payment_vendor_url' => null, //第三方域名
         'attach' => null, //附加信息
+        'source' => null, //来源
     ];
 
     /**
@@ -62,11 +64,17 @@ abstract class BasePay
         $this->payInfo['merchant_secret'] = $payment->merchant_secret;
         $this->payInfo['public_key'] = $payment->public_key;
         $this->payInfo['private_key'] = $payment->private_key;
-        $this->payInfo['bank_code'] = ''; //待开发
-        $this->payInfo['money'] = $params['money'];
-        $this->payInfo['order_no'] = $params['order_no'];
-        $this->payInfo['callback_url'] = $params['order_no'];
-//        dd($this->payInfo);
+        $this->payInfo['bank_code'] = $params['bank_code'];
+        $this->payInfo['money'] = $params['money']??'';
+        $this->payInfo['order_no'] = $params['order_no']??'';
+        $this->payInfo['callback_url'] = $payment->back_url;
+        $this->payInfo['redirect_url'] = configure('redirect_url');
+        $this->payInfo['request_url'] = $payment->request_url;
+        $this->payInfo['app_id'] = $payment->app_id;
+        $this->payInfo['payment_vendor_url'] = $payment->payment_vendor_url;
+        $this->payInfo['attach'] = $payment->payment_sign;
+        $this->payInfo['source'] = $params['source']??'';
+        Log::channel('pay-info')->info($this->payInfo);
     }
 
     /**
@@ -75,7 +83,8 @@ abstract class BasePay
     abstract public function handle();
 
     /**
-     * @return mixed
+     * @param array|null $data 回调参数.
+     * @return array
      */
-    abstract public function verify();
+    abstract public function verify(?array $data) :array;
 }

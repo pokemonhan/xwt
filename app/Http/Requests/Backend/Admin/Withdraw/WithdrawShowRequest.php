@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\Admin\Withdraw;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class WithdrawShowRequest
+ * @package App\Http\Requests\Backend\Admin\Withdraw
+ */
 class WithdrawShowRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {

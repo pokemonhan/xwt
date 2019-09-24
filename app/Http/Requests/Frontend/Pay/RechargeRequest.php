@@ -29,6 +29,7 @@ class RechargeRequest extends BaseFormRequest
         return [
             'amount' => 'required|integer|min:1',
             'channel'=> 'required|string|exists:payment_infos,payment_sign',
+            'bank_code' => 'string',
             'from'=> 'filled|string',
         ];
     }

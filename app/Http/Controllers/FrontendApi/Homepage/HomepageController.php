@@ -15,18 +15,26 @@ use App\Http\SingleActions\Frontend\Homepage\HomepageReadMessageAction;
 use App\Http\SingleActions\Frontend\Homepage\HomepageShowHomepageModelAction;
 use App\Http\SingleActions\Frontend\Homepage\HompageActivityAction;
 use App\Http\SingleActions\Frontend\Homepage\HompageBannerAction;
+use App\Http\SingleActions\Frontend\Homepage\HompageCasinoGameAction;
 use App\Http\SingleActions\Frontend\Homepage\HompageLotteryNoticeListAction;
 use App\Http\SingleActions\Frontend\Homepage\HompagePopularLotteriesAction;
 use App\Http\SingleActions\Frontend\Homepage\HompagePopularMethodsAction;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class HomepageController
+ * @package App\Http\Controllers\FrontendApi\Homepage
+ */
 class HomepageController extends FrontendApiMainController
 {
+    /**
+     * @var integer
+     */
     private $bannerFlag = 1; //网页端banner
 
     /**
      * 需要展示的前台模块
-     * @param  HomepageShowHomepageModelAction $action
+     * @param  HomepageShowHomepageModelAction $action F.
      * @return JsonResponse
      */
     public function showHomepageModel(HomepageShowHomepageModelAction $action): JsonResponse
@@ -36,7 +44,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 首页轮播图列表
-     * @param  HompageBannerAction  $action
+     * @param  HompageBannerAction $action F.
      * @return JsonResponse
      */
     public function banner(HompageBannerAction $action): JsonResponse
@@ -46,7 +54,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 热门彩票一
-     * @param  HompagePopularLotteriesAction $action
+     * @param  HompagePopularLotteriesAction $action F.
      * @return JsonResponse
      */
     public function popularLotteries(HompagePopularLotteriesAction $action): JsonResponse
@@ -56,17 +64,25 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 热门彩票二-玩法
-     * @param  HompagePopularMethodsAction $action
+     * @param  HompagePopularMethodsAction $action F.
      * @return JsonResponse
      */
     public function popularMethods(HompagePopularMethodsAction $action): JsonResponse
     {
         return $action->execute($this);
     }
-
+    /**
+     * 首页热门游戏--娱乐城
+     * @param  HompageCasinoGameAction $action F.
+     * @return JsonResponse
+     */
+    public function casinoGame(HompageCasinoGameAction $action): JsonResponse
+    {
+        return $action->execute($this);
+    }
     /**
      * 热门活动
-     * @param  HompageActivityAction $action
+     * @param  HompageActivityAction $action F.
      * @return JsonResponse
      */
     public function activity(HompageActivityAction $action): JsonResponse
@@ -75,8 +91,8 @@ class HomepageController extends FrontendApiMainController
     }
 
     /**
-     * 公告|站内信 列表
-     * @param  HomepageNoticeAction   $action
+     * @param HomePageNoticeRequest $request 参数.
+     * @param HomepageNoticeAction  $action  F.
      * @return JsonResponse
      */
     public function notice(HomePageNoticeRequest $request, HomepageNoticeAction $action): JsonResponse
@@ -87,8 +103,8 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 站内信 已读处理
-     * @param  HomepageReadMessageRequest $request
-     * @param  HomepageReadMessageAction  $action
+     * @param  HomepageReadMessageRequest $request 参数.
+     * @param  HomepageReadMessageAction  $action  F.
      * @return JsonResponse
      */
     public function readMessage(HomepageReadMessageRequest $request, HomepageReadMessageAction $action): JsonResponse
@@ -99,7 +115,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 首页中奖排行榜
-     * @param  HomepageRankingAction $action
+     * @param  HomepageRankingAction $action F.
      * @return JsonResponse
      */
     public function ranking(HomepageRankingAction $action): JsonResponse
@@ -109,7 +125,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 开奖公告列表
-     * @param  HompageLotteryNoticeListAction $action
+     * @param  HompageLotteryNoticeListAction $action F.
      * @return JsonResponse
      */
     public function lotteryNoticeList(HompageLotteryNoticeListAction $action): JsonResponse
@@ -119,6 +135,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 活动列表
+     * @param HomepageActivityListAction $action F.
      * @return JsonResponse
      */
     public function activityList(HomepageActivityListAction $action): JsonResponse
@@ -129,7 +146,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 获取网站基本信息
-     * @param  HomepageGetWebInfoAction $action
+     * @param  HomepageGetWebInfoAction $action F.
      * @return JsonResponse
      */
     public function getWebInfo(HomepageGetWebInfoAction $action): JsonResponse
@@ -139,7 +156,7 @@ class HomepageController extends FrontendApiMainController
 
     /**
      * 获取首页基本内容
-     * @param  HomepageGetBasicContentAction $action
+     * @param  HomepageGetBasicContentAction $action F.
      * @return JsonResponse
      */
     public function getBasicContent(HomepageGetBasicContentAction $action): JsonResponse
@@ -147,7 +164,11 @@ class HomepageController extends FrontendApiMainController
         return $action->execute($this);
     }
 
-    //获取热门游戏列表
+    /**
+     * 获取热门游戏列表
+     * @param HomepageGetPopularGameAction $action F.
+     * @return JsonResponse
+     */
     public function getPopularGame(HomepageGetPopularGameAction $action): JsonResponse
     {
         return $action->execute($this);

@@ -62,6 +62,12 @@ class Kernel extends HttpKernel
             'bindings',
             'cors',
         ],
+        'casino-api' => [
+            'throttle:300,1',
+            'bindings',
+            'cors',
+            'crypt',
+        ],
     ];
 
     /**

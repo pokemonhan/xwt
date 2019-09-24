@@ -31,11 +31,17 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public const TYPE_AGENT = 2;
     // 没用到  暂时注释
     // const TYPE_USER = 3;
+    
     /**
      * @var array $guarded
      */
     protected $guarded = ['id'];
 
+    /**
+     * 自定义字段
+     * @var array $appends
+     */
+    protected $appends = ['total_members', 'team_balance'];
     /**
      * The attributes that should be hidden for arrays.
      * @var array
@@ -177,5 +183,23 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public function children()
     {
         return $this->hasMany($this, 'parent_id', 'id');
+    }
+
+    /**
+     * 团队总人数
+     * @return integer
+     */
+    public function getTotalMembersAttribute()
+    {
+        return $this->specific->total_members ?? 0;
+    }
+
+    /**
+     * 团队总余额
+     * @return float
+     */
+    public function getTeamBalanceAttribute()
+    {
+        return $this->getTeamBalance();
     }
 }

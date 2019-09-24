@@ -47,8 +47,12 @@ class UserAgentCenterTeamManagementAction
         )
             ->where($where)
             ->orderBy('created_at', 'desc')
-            ->paginate($pageSize)
-            ->makeHidden(['account', 'specific']);
+            ->paginate($pageSize);
+
+        $data = $team->makeHidden(['account', 'specific']);
+        $teamArr = $team->toArray();
+        $teamArr['data'] = $data;
+
         return $contll->msgOut(true, $team);
     }
 

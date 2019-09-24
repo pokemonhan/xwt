@@ -53,12 +53,12 @@ class UserAgentCenterUserDaysalaryAction
 
     /**
      * 区间合计
-     * @param UserDaysalary $selfDaysalary 用户的日工资Eloq.
-     * @param string        $username      搜索的用户名.
-     * @param array         $where         搜索条件.
+     * @param mixed  $selfDaysalary 用户的日工资Eloq.
+     * @param string $username      搜索的用户名.
+     * @param array  $where         搜索条件.
      * @return object
      */
-    private function getDataSum(UserDaysalary $selfDaysalary, string $username, array $where)
+    private function getDataSum($selfDaysalary, string $username, array $where)
     {
         $dataSum = (object) [];
 
@@ -77,11 +77,11 @@ class UserAgentCenterUserDaysalaryAction
 
     /**
      * 用户自己的日工资
-     * @param FrontendUser  $userInfo      当前用户Eloq.
-     * @param UserDaysalary $selfDaysalary 用户日工资Eloq.
+     * @param FrontendUser $userInfo      当前用户Eloq.
+     * @param mixed        $selfDaysalary 用户日工资Eloq.
      * @return object
      */
-    private function getDataSelf(FrontendUser $userInfo, UserDaysalary $selfDaysalary)
+    private function getDataSelf(FrontendUser $userInfo, $selfDaysalary)
     {
         $self = (object) [];
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Models\Casino;
 
+use App\Models\Casino\Cache\CasinoGameCache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -65,5 +66,60 @@ class CasinoGameList extends BaseCasinoModel
             $data[$categoryName[$v->category]][] = $v->toArray();
         }
         return $data;
+    }
+    
+    /**
+     * 更新 web端热门彩种缓存
+     * @return array
+     */
+    public static function webCasinoCache(): array
+    {
+        $cacheKey   = 'casino_popular_web';
+        // 首页推荐游戏类型
+        $cateGorieHome  = CasinoGameCategorie::where('home', 1)->get(['code','name']);
+        $categoryIn     = [];
+        foreach ($cateGorieHome as $item) {
+            $categoryIn[] = $item->code;
+        }
+        $casinoPlatElog = self::whereIn('category', $categoryIn)->get();
+
+        return self::updateCache($cacheKey, $casinoPlatElog, $cateGorieHome);
+    }
+
+    /**
+     * @param string $cacheKey      缓存key.
+     * @param object $dataEloq      所欲游戏.
+     * @param object $cateGorieHome 游戏类型.
+     * @return array
+     */
+    public static function updateCache(string $cacheKey, object $dataEloq, object $cateGorieHome): array
+    {
+        $datas = [];
+        $maxCache = 6;
+        $cacheNum = [];
+        foreach ($dataEloq as $key => $dataIthem) {
+            foreach ($cateGorieHome as $itemCode) {
+                $cateCode = $itemCode->code;
+                if ($dataIthem->category === $cateCode) {
+                    if (!empty($cacheNum[$cateCode]) && $cacheNum[$cateCode] >= $maxCache) {
+                        continue;
+                    }
+                    $datas[$cateCode]['cateGorie']      = $itemCode->name;
+                    $datas[$cateCode][$key]['cn_name']  = $dataIthem->cn_name ?? null;
+                    $datas[$cateCode][$key]['en_name']  = $dataIthem->en_name ?? null;
+                    $datas[$cateCode][$key]['icon_path'] = config('casino.game_img_url') . $dataIthem->img ?? null;
+                    $datas[$cateCode][$key]['game_code'] = $dataIthem->pc_game_code ?? $dataIthem->mobile_game_code;
+                    $datas[$cateCode][$key]['main_game_plat_code'] = $dataIthem->main_game_plat_code ?? null;
+
+                    if (!empty($cacheNum[$cateCode])) {
+                        $cacheNum[$cateCode] = $cacheNum[$cateCode] + 1;
+                    } else {
+                        $cacheNum[$cateCode] = 1;
+                    }
+                }
+            }
+        }
+        CasinoGameCache::saveTagsCacheData($cacheKey, $datas);
+        return $datas;
     }
 }

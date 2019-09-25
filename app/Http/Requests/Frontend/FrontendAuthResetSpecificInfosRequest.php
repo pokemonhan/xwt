@@ -4,12 +4,15 @@ namespace App\Http\Requests\Frontend;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class FrontendAuthResetSpecificInfosRequest
+ * @package App\Http\Requests\Frontend
+ */
 class FrontendAuthResetSpecificInfosRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -18,13 +21,13 @@ class FrontendAuthResetSpecificInfosRequest extends BaseFormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
      * @return array
      */
     public function rules(): array
     {
         return [
             'nickname' => 'nullable|string', //称昵
+            'pic_path' => 'nullable|string',//用户头像
             'realname' => 'nullable|string', //真实姓名
             'mobile' => ['nullable', 'regex:/^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/'], //手机号码
             'email' => 'nullable|email', //邮箱

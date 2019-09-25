@@ -11,14 +11,16 @@ namespace App\Http\Requests\Frontend\Game\Lottery;
 use App\Http\Requests\BaseFormRequest;
 use App\Rules\Frontend\Lottery\Bet\BallsCodeRule;
 use App\Rules\Frontend\Lottery\Bet\MethodCountsRule;
-use Exception;
 
+/**
+ * 投注
+ */
 class LotteriesBetRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -29,27 +31,24 @@ class LotteriesBetRequest extends BaseFormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
-     * @throws Exception
      */
     public function rules(): array
     {
         return [
             'lottery_sign' => 'required|string|min:4|max:10|exists:lottery_lists,en_name',
             'trace_issues.*' => 'required|integer|between:1,1000',
-//            'balls'=>[
-//                new BallsCodeRule($this->get('lottery_sign'), $this->get('balls'))
-//            ],
+            'balls' => 'required',
             'balls.*.method_id' => 'required|exists:lottery_methods,method_id',
             'balls.*.method_group' => 'required|exists:lottery_methods,method_group',
             'balls.*.method_name' => 'required',
             'balls.*.codes' =>
                 [
-                    new BallsCodeRule($this->get('lottery_sign'), $this->get('balls'))
+                    new BallsCodeRule($this->get('lottery_sign'), $this->get('balls')),
                 ],
             'balls.*.count' => [
                 'required',
                 'integer',
-                new MethodCountsRule($this->get('balls'))
+                new MethodCountsRule($this->get('balls')),
             ],
             'balls.*.times' => 'required|integer',
             'balls.*.cost' => 'required|regex:/^\d+(\.\d{1,3})?$/',

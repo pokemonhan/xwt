@@ -3,17 +3,23 @@
 namespace App\Http\SingleActions\Frontend\User\AgentCenter;
 
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use Illuminate\Http\JsonResponse;
 use App\Models\User\FrontendUser;
-use App\Models\User\Fund\FrontendUsersAccount;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 
+/**
+ * 团队管理
+ */
 class UserAgentCenterTeamManagementAction
 {
+    /**
+     * [Model]
+     * @var FrontendUser
+     */
     protected $model;
 
     /**
-     * @param  FrontendUser  $frontendUser
+     * @param FrontendUser $frontendUser FrontendUser.
      */
     public function __construct(FrontendUser $frontendUser)
     {
@@ -22,46 +28,41 @@ class UserAgentCenterTeamManagementAction
 
     /**
      * 团队管理
-     * @param  FrontendApiMainController $contll
-     * @param  array $inputDatas
+     * @param  FrontendApiMainController $contll     Controller.
+     * @param  array                     $inputDatas 传递的参数.
      * @return JsonResponse
      */
-    public function execute(FrontendApiMainController $contll, $inputDatas): JsonResponse
+    public function execute(FrontendApiMainController $contll, array $inputDatas): JsonResponse
     {
-        $pageSize = $inputDatas['page_size'] ?? 15;
+        $pageSize = (int) ($inputDatas['page_size'] ?? 15);
 
-        $userELoq = new FrontendUser();
-        $userELoq = $this->getUserData($userELoq, $inputDatas, $contll->partnerUser->id, $pageSize);
-        $team = $userELoq->toArray();
-        $data = [];
+        $where = $this->getWhere($contll, $inputDatas);
 
-        foreach ($userELoq as $userItem) {
-            $specific = $userItem->specific;
-            $userTeam = $userItem->children;
-            $userTeamId = $userTeam->pluck('id')->toArray();
-            $userTeamBalance = FrontendUsersAccount::whereIn('user_id', $userTeamId)->sum('balance');
-            if (isset($inputDatas['min_team_balance']) && isset($inputDatas['max_team_balance'])) {
-                if ($userTeamBalance < $inputDatas['min_team_balance'] || $userTeamBalance > $inputDatas['max_team_balance']) {
-                    continue;
-                }
-            }
-            $userLastLoginTime = $userItem->last_login_time === null ? null : $userItem->last_login_time->toDateTimeString();
+        $team = FrontendUser::select(
+            'id',
+            'username',
+            'prize_group',
+            'created_at as register_at',
+            'last_login_time',
+        )
+            ->where($where)
+            ->orderBy('created_at', 'desc')
+            ->paginate($pageSize);
 
-            $data[] = [
-                'id' => $userItem->id,
-                'username' => $userItem->username,
-                'prize_group' => $userItem->prize_group,
-                'total_members' => $specific->total_members ?? 0,
-                'register_at' => $userItem->created_at->toDateTimeString(),
-                'last_login_time' => $userLastLoginTime,
-                'team_balance' => $userTeamBalance, //团队余额
-            ];
-        }
-        $team['data'] = $data;
+        $data = $team->makeHidden(['account', 'specific']);
+        $teamArr = $team->toArray();
+        $teamArr['data'] = $data;
+
         return $contll->msgOut(true, $team);
     }
 
-    private function getUserData($userELoq, $inputDatas, $userId, $pageSize)
+    /**
+     * 获取where条件
+     * @param  FrontendApiMainController $contll     Controller.
+     * @param  array                     $inputDatas 传递的参数.
+     * @return array
+     */
+    private function getWhere(FrontendApiMainController $contll, array $inputDatas)
     {
         $where = [];
 
@@ -70,12 +71,12 @@ class UserAgentCenterTeamManagementAction
             $parentUser = FrontendUser::find($inputDatas['parent_id']);
             if ($parentUser !== null) {
                 $ridArr = explode('|', $parentUser->rid);
-                if (in_array($userId, $ridArr)) {
+                if (in_array($contll->partnerUser->id, $ridArr)) {
                     $where[] = ['parent_id', $inputDatas['parent_id']];
                 }
             }
         } else {
-            $where[] = ['parent_id', $userId];
+            $where[] = ['parent_id', $contll->partnerUser->id];
         }
 
         //username
@@ -95,6 +96,6 @@ class UserAgentCenterTeamManagementAction
             $where = array_merge($where, $priceGroupCondtions);
         }
 
-        return $userELoq->where($where)->orderBy('created_at', 'desc')->paginate($pageSize);
+        return $where;
     }
 }

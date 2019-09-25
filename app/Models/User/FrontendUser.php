@@ -22,7 +22,13 @@ class FrontendUser extends Authenticatable implements JWTSubject
     use Notifiable;
     use FrontendUserTraits;
 
+    /**
+     * @var TYPE_TOP_AGENT
+     */
     public const TYPE_TOP_AGENT = 1;
+    /**
+     * @var TYPE_AGENT
+     */
     public const TYPE_AGENT = 2;
     // 没用到  暂时注释
     // const TYPE_USER = 3;
@@ -33,8 +39,12 @@ class FrontendUser extends Authenticatable implements JWTSubject
     protected $guarded = ['id'];
 
     /**
+     * 自定义字段
+     * @var array $appends
+     */
+    protected $appends = ['total_members', 'team_balance'];
+    /**
      * The attributes that should be hidden for arrays.
-     *
      * @var array
      */
     protected $hidden = [
@@ -43,7 +53,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
 
     /**
      * The attributes that should be cast to native types.
-     *
      * @var array
      */
     protected $casts = [
@@ -55,7 +64,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
-     *
      * @return mixed
      */
     public function getJWTIdentifier()
@@ -65,7 +73,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
 
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
-     *
      * @return array
      */
     public function getJWTCustomClaims()
@@ -167,11 +174,30 @@ class FrontendUser extends Authenticatable implements JWTSubject
     }
 
     /**
+     * 找子级
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children()
     {
-        return $this->hasMany(__CLASS__, 'parent_id', 'id');
+        return $this->hasMany($this, 'parent_id', 'id');
+    }
+
+    /**
+     * 团队总人数
+     * @return integer
+     */
+    public function getTotalMembersAttribute()
+    {
+        return $this->specific->total_members ?? 0;
+    }
+
+    /**
+     * 团队总余额
+     * @return float
+     */
+    public function getTeamBalanceAttribute()
+    {
+        return $this->getTeamBalance();
     }
 
     /**

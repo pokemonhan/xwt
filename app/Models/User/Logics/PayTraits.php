@@ -64,7 +64,7 @@ trait PayTraits
             $data['parent_id'] = $user->parent_id;
             $data['rid'] = $user->rid;
             $data['amount'] = $datas['amount'];
-//            $data['card_id'] = $datas['card_id'];
+            $data['card_id'] = $datas['card_id'];
             $data['card_number'] = $datas['card_number'];
             $data['card_username'] = $datas['card_username'];
             $data['bank_sign'] = $datas['bank_sign'];

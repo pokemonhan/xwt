@@ -4,6 +4,7 @@ namespace App\Http\SingleActions\Payment;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
 use App\Lib\Pay\Panda;
 use App\Models\Finance\Withdraw;
+use App\Models\User\FrontendUser;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 //use App\Models\User\Fund\FrontendUsersBankCard;
 use Illuminate\Http\JsonResponse;
@@ -16,15 +17,19 @@ use Illuminate\Support\Facades\Request;
 use App\Http\Requests\Frontend\Pay\RechargeList;
 use App\Http\Requests\Frontend\Pay\WithdrawRequest;
 
+/**
+ * Class PayWithdrawAction
+ * @package App\Http\SingleActions\Payment
+ */
 class PayWithdrawAction
 {
 
     /**
      * 发起提现
-     * @param FrontendApiMainController $contll
-     * @param WithdrawRequest $request
+     * @param FrontendApiMainController $contll  前端主控制器.
+     * @param WithdrawRequest           $request 验证器.
      * @return JsonResponse
-     * @throws \Exception
+     * @throws \Exception 异常.
      */
     public function applyWithdraw(FrontendApiMainController $contll, WithdrawRequest $request) : JsonResponse
     {
@@ -36,14 +41,13 @@ class PayWithdrawAction
 
         $user = $contll->currentAuth->user();
 
-        $fundPassword   = request('fund_password',  '');
-
+        $fundPassword = request('fund_password', '');
         if (!$fundPassword || !Hash::check($fundPassword, $user->fund_password)) {
-            return $contll->msgOut(false, '对不起, 无效的资金密码!');
+            return $contll->msgOut(false, [], '403', '对不起, 无效的资金密码!');
         }
         // 提现维护
-        $withdrawMaintain = configure('finance_withdraw_maintain', 0);
-        if ($withdrawMaintain === 1) {
+        $withdrawMaintain = configure('finance_withdraw_maintain', '0');
+        if ((int) $withdrawMaintain === 1) {
             return $contll->msgOut(false, '对不起, 提现维护中!');
         }
         // 检查是否提现时间
@@ -77,7 +81,11 @@ class PayWithdrawAction
         }
     }
 
-    private function WithdrawVerification($user)
+    /**
+     * @param object $user 用户.
+     * @return boolean|string
+     */
+    private function WithdrawVerification(object $user)
     {
         // 检查提现未完成的单子
         $notFinishedOrder = Withdraw::where('user_id', $user->id)->whereIn('status', [0, 1, 2, 3])->count();
@@ -131,8 +139,84 @@ class PayWithdrawAction
     }
 
     /**
+     * 发起提现 v2.0
+     * @param FrontendApiMainController $contll     前端主控制器.
+     * @param array                     $inputDatas 数据.
+     * @return JsonResponse
+     * @throws \Exception 异常.
+     */
+    public function applyWithdrawNew(FrontendApiMainController $contll, array $inputDatas) :JsonResponse
+    {
+        $user = $contll->currentAuth->user();
+        $bank = $user->banks()->where('id', $inputDatas['card_id'])->first();
+        // 提现维护
+        $withdrawMaintain = configure('finance_withdraw_maintain', '0');
+        if ((int) $withdrawMaintain === 1) {
+            return $contll->msgOut(false, [], '400', '对不起, 提现维护中!');
+        }
+        // 检查是否提现时间
+        if (!$this->isDrawTime()) {
+            return $contll->msgOut(false, [], '400', '对不起, 当前时间不在提现开放时间内!');
+        }
+        // 测试账户不能提现
+        if ($user->is_tester) {
+            return $contll->msgOut(false, [], '400', '对不起, 测试用户不能提现!');
+        }
+        //  检查资金是否锁定 账户是否是冻结
+        if ($user->frozen_type === FrontendUser::FROZEN_TYPE_NO_WITHDRAWAL) {
+            return $contll->msgOut(false, [], '400', '对不起, 冻结用户不能提现!');
+        }
+        // 检查提现未完成的单子
+        $notFinishedOrder = UsersWithdrawHistorie::where('user_id', $user->id)->whereIn('status', [UsersWithdrawHistorie::STATUS_AUDIT_WAIT, UsersWithdrawHistorie::STATUS_CLAIMED,UsersWithdrawHistorie::STATUS_AUDIT_SUCCESS])->count();
+        if ($notFinishedOrder > 0) {
+            return $contll->msgOut(false, [], '400', '对不起, 您用未完成的提现订单, 请联系客服处理!!');
+        }
+        //资金密码是否正确
+        if (!$inputDatas['fund_password'] || !Hash::check($inputDatas['fund_password'], $user->fund_password)) {
+            return $contll->msgOut(false, [], '403', '对不起, 无效的资金密码!');
+        }
+        //账户资金是否充足
+        $userBalance = $user->account->balance??0;
+        if ($userBalance < $inputDatas['amount']) {
+            return $contll->msgOut(false, [], '400', '对不起, 用户资金不足!!');
+        }
+        $data['amount']         = $inputDatas['amount'];
+        $data['bank_sign']      = $bank->bank_sign??'';
+        $data['card_number']    = $bank->card_number??'';
+        $data['card_username']  = $bank->owner_name;
+        $data['card_id']        = $bank->id;
+        $data['from']           = $inputDatas['from'] ?? 'web';
+        $result = UsersWithdrawHistorie::createWithdrawOrder($contll->currentAuth->user(), $data);
+        if ($result) {
+            return $contll->msgOut(true, $result);
+        } else {
+            return $contll->msgOut(false, $result);
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDrawTime() :bool
+    {
+        $drawTimeRange = configure('finance_withdraw_time_range', '00:00:00-02:00:00|09:30:00-24:00:00');
+        $range = explode('|', $drawTimeRange);
+
+        $nowSeconds = time();
+        $nowDay     = date('Y-m-d ');
+        foreach ($range as $item) {
+            $r_time = explode('-', $item);
+
+            if ($nowSeconds >= strtotime($nowDay . $r_time[0]) && $nowSeconds <= strtotime($nowDay . $r_time[1])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 提现详情
-     * @param BackEndApiMainController $contll
+     * @param BackEndApiMainController $contll 控制器.
      * @return JsonResponse
      */
     public function detail(BackEndApiMainController $contll) : JsonResponse
@@ -149,7 +233,7 @@ class PayWithdrawAction
 
     /**
      * 后台审核通过 提现
-     * @param BackEndApiMainController $contll
+     * @param BackEndApiMainController $contll 控制器.
      * @return JsonResponse
      */
     public function auditSuccess(BackEndApiMainController $contll) : JsonResponse
@@ -179,7 +263,7 @@ class PayWithdrawAction
 
     /**
      * 后台审核不通过 提现
-     * @param BackEndApiMainController $contll
+     * @param BackEndApiMainController $contll 控制器.
      * @return JsonResponse
      */
     public function auditFailure(BackEndApiMainController $contll) : JsonResponse
@@ -200,7 +284,7 @@ class PayWithdrawAction
 
     /**
      * 后台提现申请列表
-     * @param BackEndApiMainController $contll
+     * @param BackEndApiMainController $contll 控制器.
      * @return JsonResponse
      */
     public function backWithdrawList(BackEndApiMainController $contll) : JsonResponse
@@ -214,8 +298,8 @@ class PayWithdrawAction
 
     /**
      * 用户提现申请列表
-     * @param FrontendApiMainController $contll
-     * @param RechargeList $request
+     * @param FrontendApiMainController $contll  控制器.
+     * @param RechargeList              $request 验证器.
      * @return JsonResponse
      */
     public function withdrawList(FrontendApiMainController $contll, RechargeList $request) : JsonResponse
@@ -240,8 +324,8 @@ class PayWithdrawAction
 
     /**
      * 提现到账列表
-     * @param FrontendApiMainController $contll
-     * @param RechargeList $request
+     * @param FrontendApiMainController $contll  控制器.
+     * @param RechargeList              $request 验证器.
      * @return JsonResponse
      */
     public function realWithdrawList(FrontendApiMainController $contll, RechargeList $request) : JsonResponse

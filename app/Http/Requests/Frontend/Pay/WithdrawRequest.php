@@ -4,12 +4,16 @@ namespace App\Http\Requests\Frontend\Pay;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class WithdrawRequest
+ * @package App\Http\Requests\Frontend\Pay
+ */
 class WithdrawRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -24,11 +28,20 @@ class WithdrawRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric|regex:/^[0-9]+(.[0-9]{1,2})?$/',
-            'bank_sign'=> 'required|string',
-            'card_number'=> 'required|string',
-            'card_username'=> 'required|string',
+            'amount' => 'required|integer',
+            'card_id' => 'required|integer',
             'from'=> 'filled|string',
+            'fund_password'=> 'required|string',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function messages() :array
+    {
+        return [
+            'fund_password.required' => '请填写资金密码',
         ];
     }
 }

@@ -90,19 +90,15 @@ class ReportManagementWithdrawRecordAction
      */
     public function execute(ReportManagementController $contll, array $inputDatas) :JsonResponse
     {
-        try {
-            $searchAbleFields = ['username', 'order_id', 'is_tester'];
-            if (isset($inputDatas['status'])) {
-                array_push($searchAbleFields, 'status');
-            }
-            $orderFields = 'id';
-            $orderFlow = 'desc';
-            $listDatas = $contll->generateSearchQuery($this->usersWithdrawHistoriesModel, $searchAbleFields, 0, null, [], $orderFields, $orderFlow);
-            $listDatas = $this->assemblyData($listDatas); //组装数据
-            return $contll->msgOut(true, $listDatas);
-        } catch (\Exception $e) {
-            return $contll->msgOut(false, [], '400', '系统错误');
+        $searchAbleFields = ['username', 'order_id', 'is_tester'];
+        if (isset($inputDatas['status'])) {
+            array_push($searchAbleFields, 'status');
         }
+        $orderFields = 'id';
+        $orderFlow = 'desc';
+        $listDatas = $contll->generateSearchQuery($this->usersWithdrawHistoriesModel, $searchAbleFields, 0, null, [], $orderFields, $orderFlow);
+        $listDatas = $this->assemblyData($listDatas); //组装数据
+        return $contll->msgOut(true, $listDatas);
     }
 
     /**
@@ -114,6 +110,11 @@ class ReportManagementWithdrawRecordAction
         $frontendUserModel = new FrontendUser();
         $frontendUserBankModel = new FrontendUsersBankCard();
         $usersRegionModel = new UsersRegion();
+        $usersRegion = $usersRegionModel->select('region_name', 'id')->where('region_level', 1)->get();
+        $usersRegions = [];
+        foreach ($usersRegion as $item) {
+            $usersRegions[$item['id']] = $item['region_name'];
+        }
         foreach ($listDatas as $key1 => $val1) {
             $withdrawHistoryOptModel = $val1->withdrawHistoryOpt;
             $listDatas[$key1]->is_big_money = $val1->amount > $this->big_money ? 1 : 0;
@@ -121,7 +122,7 @@ class ReportManagementWithdrawRecordAction
             $bankInfo = $frontendUserBankModel->where('id', $val1->card_id)->first();
             $listDatas[$key1]->bank_name = $bankInfo->bank_name ?? null;
             $listDatas[$key1]->province_id = $bankInfo->province_id ?? null;
-            $listDatas[$key1]->province_name = $usersRegionModel->select('region_name')->where('id', $bankInfo->province_id)->first()->region_name ?? null;
+            $listDatas[$key1]->province_name = !empty($bankInfo->province_id) ? $usersRegions[$bankInfo->province_id] : null;
             $listDatas[$key1]->branch = $bankInfo->branch??null;
             $listDatas[$key1]->claimant = $withdrawHistoryOptModel->claimant??null;
             $listDatas[$key1]->claim_time = $withdrawHistoryOptModel->claim_time??null;

@@ -6,6 +6,7 @@ use App\Models\Admin\FrontendUsersPrivacyFlow;
 use App\Models\Project;
 use App\Models\SystemPlatform;
 use App\Models\User\Fund\FrontendUsersAccount;
+use App\Models\User\Fund\FrontendUsersBankCard;
 use App\Models\User\Logics\FrontendUserTraits;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -31,7 +32,7 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public const TYPE_AGENT = 2;
     // 没用到  暂时注释
     // const TYPE_USER = 3;
-    
+    public const FROZEN_TYPE_NO_WITHDRAWAL = 3;
     /**
      * @var array $guarded
      */
@@ -94,7 +95,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(FrontendUsersAccount::class, 'user_id', 'id');
     }
-
     /**
      * 用户冻结历史
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -103,7 +103,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FrontendUsersPrivacyFlow::class, 'user_id', 'id')->orderBy('created_at', 'desc');
     }
-
     /**
      * 用户个人资料
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -112,7 +111,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(FrontendUsersSpecificInfo::class, 'user_id', 'id');
     }
-
     /**
      * 用户站内信
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -121,7 +119,6 @@ class FrontendUser extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FrontendMessageNotice::class, 'receive_user_id', 'id');
     }
-
     /**
      * 提现记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -201,5 +198,14 @@ class FrontendUser extends Authenticatable implements JWTSubject
     public function getTeamBalanceAttribute()
     {
         return $this->getTeamBalance();
+    }
+
+    /**
+     * 玩家绑定的银行卡
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function banks()
+    {
+        return $this->hasMany(FrontendUsersBankCard::class, 'user_id', 'id');
     }
 }

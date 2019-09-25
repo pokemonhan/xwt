@@ -24,6 +24,9 @@ Route::group(['prefix' => 'pay', 'namespace' => 'Pay'], static function () {
     //充值回调
     Route::match(['post', 'options'], 'recharge_callback', ['as' => $namePrefix . 'recharge_callback',
         'uses' => 'PayRechargeCallbackController@rechargeCallback']);
+    //发起提现 v2.0
+    Route::match(['post', 'options'], 'v2.0/withdraw', ['as' => $namePrefix . 'withdrawNew',
+        'uses' => $controller . 'withdrawNew']);
 
     //发起提现
     Route::match(['post', 'options'], 'withdraw', ['as' => $namePrefix . 'withdraw',

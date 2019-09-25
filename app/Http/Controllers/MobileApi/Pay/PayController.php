@@ -73,6 +73,18 @@ class PayController extends FrontendApiMainController
         return $action->applyWithdraw($this, $request) ;
     }
 
+    /**
+     * 发起提现 v2.0
+     * @param PayWithdrawAction $action  逻辑处理.
+     * @param WithdrawRequest   $request 验证器.
+     * @return JsonResponse
+     * @throws \Exception 异常.
+     */
+    public function withdrawNew(PayWithdrawAction $action, WithdrawRequest $request) : JsonResponse
+    {
+        $inputDatas = $request->validated();
+        return $action->applyWithdrawNew($this, $inputDatas) ;
+    }
 
     /**
      * 用户充值申请列表

@@ -17,7 +17,7 @@ class Crypt
     /**
      * Handle an incoming request.
      * @param Request  $request 传递的参数.
-     * @param \Closure $next    Closure.
+     * @param Closure $next    Closure.
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -123,10 +123,10 @@ Web+LMihoBTa
     /**
      * 验证
      * @param Request  $request 传递的参数.
-     * @param \Closure $next    Closure.
+     * @param Closure $next    Closure.
      * @return array
      */
-    private function verification(Request $request, Closure $next)
+    private function verification(Request $request, Closure $next): array
     {
         //系统配置为不加密传输数据时直接放行
         $isCryptData = configure('is_crypt_data');

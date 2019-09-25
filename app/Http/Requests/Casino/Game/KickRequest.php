@@ -20,7 +20,7 @@ class KickRequest extends BaseFormRequest
      *
      * @return boolean
      */
-    public function authorize(): boolean
+    public function authorize(): bool
     {
         return true;
     }

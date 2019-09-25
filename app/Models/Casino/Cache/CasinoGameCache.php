@@ -16,10 +16,10 @@ class CasinoGameCache
     /**
      * 保存tags缓存
      * @param  string $key   Key.
-     * @param  string $value Val.
+     * @param  array  $value Val.
      * @throws Exception
      */
-    public static function saveTagsCacheData(string $key, string $value)
+    public static function saveTagsCacheData(string $key, array $value)
     {
         $cacheConfig = self::getCacheConfig($key);
         if (!empty($cacheConfig) && isset($cacheConfig['tags'], $cacheConfig['key'])) {

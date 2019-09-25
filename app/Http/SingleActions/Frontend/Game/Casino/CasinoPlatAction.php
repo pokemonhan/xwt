@@ -2,8 +2,6 @@
 namespace App\Http\SingleActions\Frontend\Game\Casino;
 
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use App\Lib\BaseCache;
-use App\Models\Casino\CasinoGamePlatform;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -12,8 +10,6 @@ use Illuminate\Http\JsonResponse;
  */
 class CasinoPlatAction
 {
-    use BaseCache;
-
     /**
      * 游戏-平台
      * @param  FrontendApiMainController $contll F.
@@ -21,12 +17,7 @@ class CasinoPlatAction
      */
     public function execute(FrontendApiMainController $contll): JsonResponse
     {
-        $casino_game_plats_key = 'casino_game_plats';
-        $datas = self::getTagsCacheData($casino_game_plats_key);
-        if (empty($datas)) {
-            $datas = CasinoGamePlatform::get();
-            $datas = self::saveTagsCacheData($casino_game_plats_key, $datas);
-        }
+        $datas = config('casino.categories');
         return $contll->msgOut(true, $datas);
     }
 }

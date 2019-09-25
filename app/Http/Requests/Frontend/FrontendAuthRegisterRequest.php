@@ -28,7 +28,7 @@ class FrontendAuthRegisterRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|alpha_dash|unique:frontend_users',
+            'username' => 'required|alpha_num|between:4,12|alpha_dash|unique:frontend_users',
             'password' => ['required', 'string', 'between:6,16', 'regex:/^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[a-zA-Z0-9]+$/'],
             're_password' => 'string',
             'keyword' => 'alpha_num',

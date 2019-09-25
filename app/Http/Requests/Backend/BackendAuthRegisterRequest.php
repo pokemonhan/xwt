@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class BackendAuthRegisterRequest
+ * @package App\Http\Requests\Backend
+ */
 class BackendAuthRegisterRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -26,18 +30,20 @@ class BackendAuthRegisterRequest extends BaseFormRequest
         return [
             'name' => 'required|unique:backend_admin_users',
             'email' => 'required|email|unique:backend_admin_users',
-            'password' => 'required',
+            'password' => ['required', 'string', 'between:6,16', 'regex:/^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[a-zA-Z0-9]+$/'],
             'is_test' => 'required|numeric',
             'group_id' => 'required|numeric|exists:backend_admin_access_groups,id',
         ];
     }
 
-    /*public function messages()
-{
-return [
-'lottery_sign.required' => 'lottery_sign is required!',
-'trace_issues.required' => 'trace_issues is required!',
-'balls.required' => 'balls is required!'
-];
-}*/
+    /**
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'password.between' => '管理员密码必须是6---16位之间',
+            'password.regex' => '管理员密码必须是字母+数字组合，不能有特殊字符',
+        ];
+    }
 }

@@ -1,6 +1,55 @@
 <?xml version="1.0"?>
 <ruleset name="Xuanwu Standards">
     <description>Xuanwu Coding Standards</description>
+    <file>app</file>
+    <file>config</file>
+    <file>public</file>
+    <file>resources</file>
+    <file>routes</file>
+    <file>tests</file>
+
+    <arg name="colors"/>
+    <arg value="spvnl"/>
+    <ini name="memory_limit" value="128M"/>
+
+    <exclude-pattern>*/database/migrations/*</exclude-pattern>
+    <exclude-pattern>*/cache/*</exclude-pattern>
+    <exclude-pattern>*/*.js</exclude-pattern>
+    <exclude-pattern>*/*.css</exclude-pattern>
+    <exclude-pattern>*/*.xml</exclude-pattern>
+    <exclude-pattern>*/*.blade.php</exclude-pattern>
+    <exclude-pattern>*/autoload.php</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/docs/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/config/*</exclude-pattern>
+    <exclude-pattern>*/public/index.php</exclude-pattern>
+    <exclude-pattern>*/*.blade.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/Authenticate.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/CheckForMaintenanceMode.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/EnableCors.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/EncryptCookies.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/JWTRefresh.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/RedirectIfAuthenticated.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/TrimStrings.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/TrustProxies.php</exclude-pattern>
+    <exclude-pattern>*/Middleware/VerifyCsrfToken.php</exclude-pattern>
+    <exclude-pattern>*/Console/Kernel.php</exclude-pattern>
+    <exclude-pattern>*/Exceptions/Handler.php</exclude-pattern>
+    <exclude-pattern>*/Http/Kernel.php</exclude-pattern>
+    <exclude-pattern>*/Providers/*</exclude-pattern>
+    <exclude-pattern>git-hooks/</exclude-pattern>
+    <exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
+    <exclude-pattern>app/Console/Commands/Tool/*</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/BackendApi/BackEndApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Controllers/FrontendApi/FrontendApiMainController.php</exclude-pattern>
+    <exclude-pattern>app/Http/Requests/BaseFormRequest.php</exclude-pattern>
+    <exclude-pattern>app/Lib/Game/*</exclude-pattern>
+    <exclude-pattern>app/Lib/Logic/AccountChange.php</exclude-pattern>
+    <exclude-pattern>app/Models/Game/Lottery/Logics/*</exclude-pattern>
+    <exclude-pattern>app/Models/BaseModel.php</exclude-pattern>
+
+    <rule ref="PSR2"/>
     <rule ref="Generic.Classes.DuplicateClassName"/>
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
@@ -177,55 +226,4 @@
         <exclude-pattern>*.php</exclude-pattern>
         <exclude name="Generic.Strings.UnnecessaryStringConcat.Found)"/>
     </rule> -->
-
-    <file>app</file>
-    <file>config</file>
-    <file>public</file>
-    <file>resources</file>
-    <file>routes</file>
-    <file>tests</file>
-
-    <exclude-pattern>*/database/*</exclude-pattern>
-    <exclude-pattern>*/cache/*</exclude-pattern>
-    <exclude-pattern>*/*.js</exclude-pattern>
-    <exclude-pattern>*/*.css</exclude-pattern>
-    <exclude-pattern>*/*.xml</exclude-pattern>
-    <exclude-pattern>*/*.blade.php</exclude-pattern>
-    <exclude-pattern>*/autoload.php</exclude-pattern>
-    <exclude-pattern>*/storage/*</exclude-pattern>
-    <exclude-pattern>*/docs/*</exclude-pattern>
-    <exclude-pattern>*/vendor/*</exclude-pattern>
-    <exclude-pattern>*/migrations/*</exclude-pattern>
-    <exclude-pattern>*/config/*</exclude-pattern>
-    <exclude-pattern>*/public/index.php</exclude-pattern>
-    <exclude-pattern>*/*.blade.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/Authenticate.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/CheckForMaintenanceMode.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/EnableCors.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/EncryptCookies.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/JWTRefresh.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/RedirectIfAuthenticated.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/TrimStrings.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/TrustProxies.php</exclude-pattern>
-    <exclude-pattern>*/Middleware/VerifyCsrfToken.php</exclude-pattern>
-    <exclude-pattern>*/Console/Kernel.php</exclude-pattern>
-    <exclude-pattern>*/Exceptions/Handler.php</exclude-pattern>
-    <exclude-pattern>*/Http/Kernel.php</exclude-pattern>
-    <exclude-pattern>*/Providers/*</exclude-pattern>
-    <exclude-pattern>git-hooks/</exclude-pattern>
-    <exclude-pattern>app/Models/Game/Lottery/Logics/IssueCacheCalcLogics.php</exclude-pattern>
-
-    <exclude-pattern>app/Console/Commands/Tool/*</exclude-pattern>
-    <exclude-pattern>app/Http/Controllers/BackendApi/BackEndApiMainController.php</exclude-pattern>
-    <exclude-pattern>app/Http/Controllers/FrontendApi/FrontendApiMainController.php</exclude-pattern>
-    <exclude-pattern>app/Http/Requests/BaseFormRequest.php</exclude-pattern>
-    <exclude-pattern>app/Lib/Game/*</exclude-pattern>
-    <exclude-pattern>app/Lib/Logic/AccountChange.php</exclude-pattern>
-    <exclude-pattern>app/Models/Game/Lottery/Logics/*</exclude-pattern>
-    <exclude-pattern>app/Models/BaseModel.php</exclude-pattern>
-    
-    <arg name="colors"/>
-    <arg value="spvnl"/>
-    <ini name="memory_limit" value="128M"/>
-    <rule ref="PSR2"/>
 </ruleset>

@@ -146,7 +146,9 @@ class CreateCommonGameLottery extends Migration
             $table->string('method_id',32)->collation('utf8mb4_unicode_ci')->comment('玩法标识');
             $table->string('method_name',32)->collation('utf8mb4_unicode_ci')->comment('玩法中文名');
             $table->string('method_group',32)->collation('utf8mb4_unicode_ci')->comment('玩法组');
+            $table->string('method_group_name',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法组中文名');
             $table->string('method_row',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法行');
+            $table->string('method_row_name',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法行中文名');
             $table->integer('group_sort')->default(0);
             $table->integer('row_sort')->default(0);
             $table->integer('method_sort')->default(0);
@@ -197,18 +199,19 @@ class CreateCommonGameLottery extends Migration
         Schema::create('lottery_methods_standards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('series_id',32)->comment('系列标识');
-            $table->string('lottery_name',32)->comment('彩种中文名');
-            $table->string('lottery_id',32)->comment('彩种标识');
             $table->string('method_id',32)->comment('玩法标识');
             $table->string('method_name',32)->comment('玩法中文名');
             $table->string('method_group',32)->comment('玩法组');
+            $table->string('method_group_name',32)->nullable()->comment('玩法组中文名');
             $table->string('method_row',32)->nullable()->comment('玩法行');
+            $table->string('method_row_name',32)->nullable()->comment('玩法行中文名');
             $table->integer('group_sort')->default(0);
             $table->integer('row_sort')->default(0);
             $table->integer('method_sort')->default(0);
             $table->tinyInteger('show')->default(1)->comment('展示状态 （0不显示 1显示）');
             $table->tinyInteger('status')->default(0)->comment('开启状态 （0关闭 1开启）');
             $table->integer('total')->nullable();
+
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';

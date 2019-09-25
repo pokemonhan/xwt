@@ -57,6 +57,46 @@ class CreateCommonActivity extends Migration
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';
         });
+
+        //后台活动列表
+        Schema::create('backend_dyn_activity_lists', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name',200)->default('')->comment('活动名称');
+            $table->string('uname',200)->default('')->comment('活动的别名,用于确定活动的处理器');
+            $table->string('pc_pic',255)->default('')->comment('pc端活动的导入图');
+            $table->string('wap_pic',)->default('')->comment('wap端活动的导入图');
+            $table->string('rule_file')->default('')->comment('规则文件名');
+            $table->timestamp('start_time')->useCurrent()->comment('活动开始时间');
+            $table->timestamp('end_time')->useCurrent()->comment('活动结束时间');
+            $table->tinyInteger('status')->default(0)->comment('活动的状态');
+            $table->integer('sort')->default(0)->comment('排序');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
+            $table->index('name','backend_dyn_activity_lists_name');
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
+        });
+
+        Schema::create('backend_dyn_activity_prizes', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name',200)->default('')->comment('奖品名称');
+            $table->integer('activity_id')->default(0)->comment('所属的活动id');
+            $table->string('pic',255)->default('')->comment('奖品的图像');
+            $table->decimal('value',20,2)->default(0.00)->comment('单个奖品的价值');
+            $table->decimal('probability',20,2)->default(0.00)->comment('中奖的概率');
+            $table->integer('amount')->default(0)->comment('奖品数量');
+            $table->tinyInteger('is_entity')->default(0)->comment('是否是实体奖品');
+            $table->integer('grade')->default(1)->comment('奖品等级');
+            $table->integer('sort')->default(0)->comment('排序');
+            $table->tinyInteger('status')->default(0)->comment('奖品的状态');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
+            $table->index('name','backend_dyn_activity_prizes_name');
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
+        });
     }
 
     /**

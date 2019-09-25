@@ -37,7 +37,9 @@ class LotteriesBetRequest extends BaseFormRequest
         return [
             'lottery_sign' => 'required|string|min:4|max:10|exists:lottery_lists,en_name',
             'trace_issues.*' => 'required|integer|between:1,1000',
-            'balls' => 'required|array',
+//            'balls'=>[
+//                new BallsCodeRule($this->get('lottery_sign'), $this->get('balls'))
+//            ],
             'balls.*.method_id' => 'required|exists:lottery_methods,method_id',
             'balls.*.method_group' => 'required|exists:lottery_methods,method_group',
             'balls.*.method_name' => 'required',
@@ -81,7 +83,7 @@ class LotteriesBetRequest extends BaseFormRequest
     public function filters(): array
     {
         return [
-            // 'balls' => 'cast:array',
+            'balls' => 'cast:array',
             'trace_issues' => 'cast:array',
         ];
     }

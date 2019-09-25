@@ -27,8 +27,15 @@ class CasinoListAction
         $offset   = ($page - 1) * $pageSize;
         $platCode = $inputDatas['platCode'] ?? 'pt';
         $categorie = $inputDatas['categorie'] ?? 'e-game';
+        $type = $inputDatas['type'] ?? '';
 
-        $data = CasinoGameList::where('category', $categorie)->where('main_game_plat_code', $platCode)->skip($offset)->take($pageSize)->get();
+        $data = CasinoGameList::where('category', $categorie)->where('main_game_plat_code', $platCode);
+
+        if (!empty(type)) {
+            $data = $data->where('type', $type);
+        }
+        $data = $data->skip($offset)->take($pageSize)->get();
+
         return $contll->msgOut(true, $data);
     }
 }

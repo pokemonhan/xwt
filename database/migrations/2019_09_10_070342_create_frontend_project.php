@@ -46,6 +46,9 @@ class CreateFrontendProject extends Migration
             $table->tinyInteger('status')->default(0)->comment('0 等待追号 1正在追号  2追号完成   3玩家撤销  4管理员撤销  5系统撤销  6中奖停止');
             $table->tinyInteger('finished_status')->default(0);
             $table->timestamp('cancel_time')->default(Facades\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->integer('challenge')->nullable()->default(0)->comment('单挑模式');
+            $table->decimal('challenge_prize',15,4)->nullable()->default(0.0000)->comment('单挑奖金');
+            $table->integer('issue_end_time')->nullable();
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
@@ -98,6 +101,8 @@ class CreateFrontendProject extends Migration
             $table->index('rid','traces_rid_index');
             $table->index('method_sign','traces_method_sign_index');
             $table->index('method_name','traces_method_name_index');
+            $table->integer('challenge')->nullable()->default(0)->comment('单挑模式');
+            $table->decimal('challenge_prize',15,4)->nullable()->default(0.0000)->comment('单挑奖金');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
@@ -114,7 +119,7 @@ class CreateFrontendProject extends Migration
             $table->integer('parent_id');
             $table->tinyInteger('is_tester')->default(0);
             $table->string('series_id',32)->comment('彩种系列标识');
-            $table->integer('basic_method_id')->nullable()->comment('lottery_basic_methods表id');
+            $table->string('basic_method_id',25)->nullable()->comment('lottery_basic_methods表id');
             $table->string('lottery_sign',32)->comment('彩种标识');
             $table->string('method_sign',32)->comment('玩法标识');
             $table->string('method_group',32)->comment('玩法组');
@@ -122,7 +127,7 @@ class CreateFrontendProject extends Migration
             $table->integer('user_prize_group')->comment('用户奖金组');
             $table->integer('bet_prize_group')->comment('彩票奖金组');
             $table->integer('trace_id')->default(0);
-            $table->integer('level')->nullable();
+            $table->string('level',25)->nullable();
             $table->decimal('mode',15,4)->comment('模式 （元：1.0000   角：0.1000   分0.0100）');
             $table->unsignedInteger('times')->comment('倍数');
             $table->decimal('price',15,4);
@@ -157,6 +162,9 @@ class CreateFrontendProject extends Migration
             $table->index(['lottery_sign', 'time_bought'],'projects_lottery_sign_time_bought_index');
             $table->index(['issue', 'user_id'],'projects_issue_user_id_index');
             $table->index('top_id','projects_top_id_index');
+            $table->decimal('bonus_expected',15,4)->nullable()->default(0.0000)->comment('预估能中奖奖金');
+            $table->integer('challenge')->nullable()->default(0)->comment('单挑模式');
+            $table->decimal('challenge_prize',15,4)->nullable()->default(0.0000)->comment('单挑奖金');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
@@ -171,5 +179,6 @@ class CreateFrontendProject extends Migration
      */
     public function down()
     {
+
     }
 }

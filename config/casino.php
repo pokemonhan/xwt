@@ -18,8 +18,6 @@ return [
                 ['key' => 'bg', 'val' => 'BG'],
                 ['key' => 'bbin', 'val' => '波音'],
                 ['key' => 'pt', 'val' => 'PT'],
-                ['key' => 'pt', 'val' => 'PT'],
-                ['key' => 'pt', 'val' => 'PT'],
             ],
         ],
         'card'    => [
@@ -29,7 +27,7 @@ return [
                 ['key' => 'lg', 'val' => '幸运棋牌'],
             ],
         ],
-        'fish'    => [
+        'fishing'    => [
             'cateName'  => '捕鱼',
             'plats'     => [
                 ['key' => 'bbin', 'val' => '波音'],

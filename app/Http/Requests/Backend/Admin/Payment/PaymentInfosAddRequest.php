@@ -28,9 +28,9 @@ class PaymentInfosAddRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'config_id' => 'required|numeric|unique:payment_infos,config_id',//表backend_payment_configs中的id
-            'front_name' => 'required|string',//前台名称
-            'front_remark' => 'required|string',//前台备注
+            'config_id' => 'required|numeric|exists:backend_payment_configs,id',//表backend_payment_configs中的id
+            'front_name' => 'required|string|unique:payment_infos,front_name',//前台名称
+            'front_remark' => 'required|string|unique:payment_infos,front_remark',//前台备注
             'back_name' => 'required|string',//后台名称
             'back_remark' => 'required|string',//后台备注
             'status' => 'required|in:0,1',//状态 1 启用 0 停用

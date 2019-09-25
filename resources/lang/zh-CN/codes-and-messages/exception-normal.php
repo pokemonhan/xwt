@@ -108,4 +108,10 @@ return [
     //DomainController
     '102500' => '该域名已经存在',
     '102501' => '需要携带要修改的参数',
+    //PaymentTypesController
+    '102600'=>'对不起，您还没有上传图标',
+    //PaymentTypesController
+    '102700' => '对不起，该信息已存在，请重新编辑',
+    //PaymentVendorsController
+    '102800' => '对不起，该信息已存在，请重新编辑',
 ];

@@ -51,7 +51,7 @@ class PaymentTypesAddAction
                 }
                 $inputDatas['payment_ico'] = '/' . $previewIco['path'];
             } else {
-                $inputDatas['payment_ico'] = '';
+                return $contll->msgOut(false, [], '102600');
             }
             //执行添加
             $pastDataEloq = new $this->model();

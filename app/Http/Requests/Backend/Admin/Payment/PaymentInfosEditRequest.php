@@ -29,7 +29,7 @@ class PaymentInfosEditRequest extends BaseFormRequest
     {
         return [
             'id' => 'required|numeric|exists:payment_infos,id',//表backend_payment_configs中的id
-            'config_id' => 'required|numeric',//表backend_payment_configs中的id
+            'config_id' => 'required|numeric|exists:backend_payment_configs,id',//表backend_payment_configs中的id
             'front_name' => 'required|string',//前台名称
             'front_remark' => 'required|string',//前台备注
             'back_name' => 'required|string',//后台名称

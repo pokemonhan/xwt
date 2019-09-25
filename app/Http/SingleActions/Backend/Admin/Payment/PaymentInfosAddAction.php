@@ -39,10 +39,6 @@ class PaymentInfosAddAction
     {
         //获取支付方式配置信息
         $payment_config = BackendPaymentConfig::where('id', $inputDatas['config_id'])->first();
-        //判断是否存在获取支付方式配置信息
-        if (!$payment_config) {
-            return $contll->msgOut(false, [], '102601');
-        }
         $inputDatas['direction'] = $payment_config->direction;//金流的方向 1 入款 0 出款
         $inputDatas['payment_name'] = $payment_config->payment_name;//支付方式名称
         $inputDatas['payment_sign'] = $payment_config->payment_sign;//支付方式标记

@@ -55,7 +55,15 @@ class PaymentTypesEditAction
                 }
                 $inputDatas['payment_ico'] = '/' . $previewIco['path'];
             } else {
-                $inputDatas['payment_ico'] = '';
+                //获取原来数据库图标信息
+                $inputDatas['payment_ico'] = BackendPaymentType::select('payment_ico')->find($inputDatas['id']);
+            }
+            //判断插入数据库是否有重复
+            if (!empty($inputDatas['payment_type_name']) && !empty($inputDatas['payment_type_sign']) && isset($inputDatas['payment_type_name'], $inputDatas['payment_type_sign'])) {
+                $pastDataEloq = BackendPaymentType::where([['payment_type_name','=',$inputDatas['payment_type_name']],['payment_type_sign','=',$inputDatas['payment_type_sign']]])->first();
+                if ($pastDataEloq) {
+                    return $contll->msgOut(false, [], '102700');
+                }
             }
             //执行修改
             $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
@@ -68,16 +76,7 @@ class PaymentTypesEditAction
             }
             $this->deletePicNoFinsh($imageObj, $inputDatas['payment_ico']);
             //更新支付配置表信息
-            $editDatas = [];
-            $editDatas['banks_code'] = [
-                'name' => $pastDataEloq->payment_type_name,
-                'ico' => $pastDataEloq->payment_ico,
-                'code' => $pastDataEloq->is_bank,
-            ];
-            $editDatas['banks_code'] = json_encode($editDatas['banks_code']);
-            $editDatas['payment_type_name'] = $pastDataEloq->payment_type_name;
-            $editDatas['payment_type_sign'] = $pastDataEloq->payment_type_sign;
-            BackendPaymentConfig::where('payment_type_id', $inputDatas['id'])->update($editDatas);
+            $this->updateConfig($inputDatas, $pastDataEloq);
             DB::commit();
             return $contll->msgOut(true);
         } catch (Exception $e) {
@@ -126,5 +125,25 @@ class PaymentTypesEditAction
         if (isset($previewIco) && !empty($previewIco)) {
             $imageObj->deletePic(substr($previewIco, 1));
         }
+    }
+
+    /**
+     * 更新支付配置表信息
+     * @param mixed $inputDatas   InputDatas.
+     * @param mixed $pastDataEloq PastDataEloq.
+     * @return void
+     */
+    private function updateConfig($inputDatas, $pastDataEloq)
+    {
+        $editDatas = [];
+        $editDatas['banks_code'] = [
+            'name' => $pastDataEloq->payment_type_name,
+            'ico' => $pastDataEloq->payment_ico,
+            'code' => $pastDataEloq->is_bank,
+        ];
+        $editDatas['banks_code'] = json_encode($editDatas['banks_code']);
+        $editDatas['payment_type_name'] = $pastDataEloq->payment_type_name;
+        $editDatas['payment_type_sign'] = $pastDataEloq->payment_type_sign;
+        BackendPaymentConfig::where('payment_type_id', $inputDatas['id'])->update($editDatas);
     }
 }

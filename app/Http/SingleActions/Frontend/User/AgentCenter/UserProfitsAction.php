@@ -9,9 +9,19 @@ use App\Models\User\UserProfits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * 团队盈亏
+ */
 class UserProfitsAction
 {
+    /**
+     * @var UserProfits
+     */
     protected $model;
+
+    /**
+     * @var array
+     */
     private $selectSum = [
         'sum(team_deposit) as team_deposit',
         'sum(team_withdrawal) as team_withdrawal',
@@ -21,12 +31,18 @@ class UserProfitsAction
         'sum(team_commission) as team_commission',
         'sum(team_dividend) as team_dividend',
         'sum(team_daily_salary) as team_daily_salary',
+        'sum(net_profit_total) as net_profit_total',
+        'sum(team_net_profit_total + net_profit_total) as team_net_profit_total',
     ];
+
+    /**
+     * @var array
+     */
     private $agentType;
 
     /**
      * UserAgentCenterAction constructor.
-     * @param UserProfits $UserProfits
+     * @param UserProfits $UserProfits UserProfits.
      */
     public function __construct(UserProfits $UserProfits)
     {
@@ -39,8 +55,8 @@ class UserProfitsAction
 
     /**
      * 团队盈亏api
-     * @param  FrontendApiMainController $contll
-     * @param  UserProfitsRequest $request
+     * @param FrontendApiMainController $contll  Controller.
+     * @param UserProfitsRequest        $request UserProfitsRequest.
      * @return JsonResponse
      */
     public function execute(FrontendApiMainController $contll, UserProfitsRequest $request): JsonResponse
@@ -62,7 +78,7 @@ class UserProfitsAction
         }
 
         //区间合计 自己+下属的
-        $this->getDataSum($summation, $userInfo, $username, $dateFrom, $dateTo, $where, $data);
+        $data['sum'] = $this->getDataSum($summation, $userInfo, $username, $dateFrom, $dateTo, $where);
 
         //自己
         $selectRaw = array_merge(['user_id', 'username'], $this->selectSum);
@@ -87,9 +103,9 @@ class UserProfitsAction
 
     /**
      * 获取下级注册人数
-     * @param int $userId
-     * @param array $date
-     * @return int
+     * @param integer $userId 用户id.
+     * @param array   $date   时间搜索.
+     * @return integer
      */
     private function getChildNum(int $userId, array $date = []): int
     {
@@ -108,9 +124,9 @@ class UserProfitsAction
 
     /**
      * 获得时间区间内的投注人数
-     * @param int $userId
-     * @param array $date
-     * @return int
+     * @param integer $userId 用户id.
+     * @param array   $date   时间搜索.
+     * @return integer
      */
     private function getBetNum(int $userId, array $date = []): int
     {
@@ -123,9 +139,24 @@ class UserProfitsAction
             ->count();
     }
 
-    //区间合计 自己+下属的
-    private function getDataSum($summation, $userInfo, $username, $dateFrom, $dateTo, $where, &$data)
-    {
+    /**
+     * 区间合计 自己+下属的
+     * @param  object       $summation 合计数据.
+     * @param  FrontendUser $userInfo  FrontendUser.
+     * @param  string       $username  用户名.
+     * @param  string       $dateFrom  开始时间.
+     * @param  string       $dateTo    结束时间.
+     * @param  array        $where     搜索条件.
+     * @return object
+     */
+    private function getDataSum(
+        object $summation,
+        FrontendUser $userInfo,
+        string $username,
+        string $dateFrom,
+        string $dateTo,
+        array$where
+    ) {
         if (empty($username)) {
             if (in_array($userInfo->type, $this->agentType)) {
                 $sumTeam = $this->model->where($where)->select(DB::raw(implode(',', $this->selectSum)))->first();
@@ -143,6 +174,7 @@ class UserProfitsAction
                 $summation->team_commission = $sumTeam->team_commission + $sumSelf->team_commission;
                 $summation->team_dividend = $sumTeam->team_dividend + $sumSelf->team_dividend;
                 $summation->team_daily_salary = $sumTeam->team_daily_salary + $sumSelf->team_daily_salary;
+                $summation->team_net_profit_total = $sumTeam->team_net_profit_total + $sumSelf->team_net_profit_total;
                 //新注册人数(时间区间内注册的人数)、总下级人数
                 //$sum->child_num = $this->getChildNum($userInfo->id);
                 //$sum->new_child_num =  $this->getChildNum($userInfo->id, [$dateFrom, $dateTo]);
@@ -156,12 +188,13 @@ class UserProfitsAction
                 ])->select(DB::raw(implode(',', $this->selectSum)))
                     ->first();
             }
-            $data['sum'] = $summation;
+            $data = $summation;
         } else {
-            $data['sum'] = $this->model->where(
-                array_merge([['username', $username]], $where)
-            )->select(DB::raw(implode(',', $this->selectSum)))
+            $data = $this->model->where(array_merge([['username', $username]], $where))
+                ->select(DB::raw(implode(',', $this->selectSum)))
                 ->first();
         }
+
+        return $data;
     }
 }

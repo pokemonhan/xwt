@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\DB;
 class PaymentConfigsDeleteAction
 {
     /**
-     * @var BackendPaymentConfig $model BackendPaymentConfig.
+     * @var BackendPaymentConfig $model 支付配置信息模型.
      */
     protected $model;
 
     /**
      * PaymentConfigsDeleteAction constructor.
-     * @param BackendPaymentConfig $backendPaymentConfig BackendPaymentConfig.
+     * @param BackendPaymentConfig $backendPaymentConfig 支付配置信息模型.
      */
     public function __construct(BackendPaymentConfig $backendPaymentConfig)
     {
@@ -29,8 +29,9 @@ class PaymentConfigsDeleteAction
     }
 
     /**
-     * @param PaymentConfigsController $contll     配置.
-     * @param array                    $inputDatas 配置.
+     * 删除支付配置信息
+     * @param PaymentConfigsController $contll     主控制器.
+     * @param array                    $inputDatas 前端获取删除参数.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -38,8 +39,7 @@ class PaymentConfigsDeleteAction
     {
         DB::beginTransaction();
         try {
-            $pastDataEloq = $this->model::find($inputDatas['id']);
-            $pastDataEloq->delete();
+            $this->model::destroy($inputDatas['id']);
             DB::commit();
             return $contll->msgOut(true);
         } catch (Exception $e) {

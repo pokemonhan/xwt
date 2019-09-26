@@ -13,6 +13,7 @@ use App\Http\SingleActions\Backend\Admin\Payment\PaymentVendorsEditAction;
 use Illuminate\Http\JsonResponse;
 
 /**
+ * 第三方厂商信息
  * Class PaymentVendorsController
  * @package App\Http\Controllers\BackendApi\Admin\Payment
  */
@@ -20,8 +21,8 @@ class PaymentVendorsController extends BackEndApiMainController
 {
 
     /**
-     * 第三方厂商信息
-     * @param PaymentVendorsDetailAction $action PaymentVendorsDetailAction.
+     * 获取第三方厂商信息列表
+     * @param PaymentVendorsDetailAction $action 逻辑处理.
      * @return JsonResponse
      */
     public function detail(PaymentVendorsDetailAction $action): JsonResponse
@@ -31,8 +32,8 @@ class PaymentVendorsController extends BackEndApiMainController
 
     /**
      * 删除第三方厂商信息
-     * @param PaymentVendorsDeleteRequest $request PaymentVendorsDeleteRequest.
-     * @param PaymentVendorsDeleteAction  $action  PaymentVendorsDeleteAction.
+     * @param PaymentVendorsDeleteRequest $request 验证器.
+     * @param PaymentVendorsDeleteAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -44,8 +45,8 @@ class PaymentVendorsController extends BackEndApiMainController
 
     /**
      * 添加第三方厂商信息
-     * @param PaymentVendorsAddRequest $request PaymentVendorsAddRequest.
-     * @param PaymentVendorsAddAction  $action  PaymentVendorsAddAction.
+     * @param PaymentVendorsAddRequest $request 验证器.
+     * @param PaymentVendorsAddAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function doadd(PaymentVendorsAddRequest $request, PaymentVendorsAddAction $action): JsonResponse
@@ -56,8 +57,8 @@ class PaymentVendorsController extends BackEndApiMainController
 
     /**
      * 编辑第三方厂商信息
-     * @param PaymentVendorsEditRequest $request PaymentVendorsEditRequest.
-     * @param PaymentVendorsEditAction  $action  PaymentVendorsEditAction.
+     * @param PaymentVendorsEditRequest $request 验证器.
+     * @param PaymentVendorsEditAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

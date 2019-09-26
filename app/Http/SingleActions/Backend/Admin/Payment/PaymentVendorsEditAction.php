@@ -35,7 +35,7 @@ class PaymentVendorsEditAction
     /**
      * 编辑第三方厂商表
      * @param PaymentVendorsController $contll     第三方厂商表控制器.
-     * @param array                    $inputDatas 前台获取的参数.
+     * @param array                    $inputDatas 前台获取的编辑参数.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

@@ -33,7 +33,7 @@ class PaymentVendorsAddAction
     /**
      * 执行添加第三方厂商表操作
      * @param PaymentVendorsController $contll     第三方厂商表控制器.
-     * @param array                    $inputDatas 前台获取的参数.
+     * @param array                    $inputDatas 前台获取的添加参数.
      * @return JsonResponse
      */
     public function execute(PaymentVendorsController $contll, array $inputDatas): JsonResponse

@@ -17,13 +17,13 @@ class PaymentInfosEditAction
     use BaseCache;
 
     /**
-     * @var PaymentInfo $model PaymentInfo.
+     * @var PaymentInfo $model 支付方式详情表模型.
      */
     protected $model;
 
     /**
      * PaymentInfosEditAction constructor.
-     * @param PaymentInfo $paymentInfo PaymentInfo.
+     * @param PaymentInfo $paymentInfo 支付方式详情表模型.
      */
     public function __construct(PaymentInfo $paymentInfo)
     {
@@ -32,8 +32,8 @@ class PaymentInfosEditAction
 
     /**
      * 编辑支付方式详情表
-     * @param PaymentInfosController $contll     编辑支付方式详情表.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentInfosController $contll     主控制器.
+     * @param array                  $inputDatas 前端获取编辑信息.
      * @return JsonResponse
      */
     public function execute(PaymentInfosController $contll, array $inputDatas): JsonResponse

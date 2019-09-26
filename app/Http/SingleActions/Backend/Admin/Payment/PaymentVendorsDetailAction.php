@@ -27,7 +27,7 @@ class PaymentVendorsDetailAction
 
     /**
      * 获取第三方厂商表
-     * @param PaymentVendorsController $contll 主控制器.
+     * @param PaymentVendorsController $contll 第三方厂商表控制器.
      * @return JsonResponse
      */
     public function execute(PaymentVendorsController $contll): JsonResponse

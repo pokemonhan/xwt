@@ -13,12 +13,12 @@ use Illuminate\Http\JsonResponse;
 class PaymentTypesDetailAction
 {
     /**
-     * @var BackendPaymentType $model BackendPaymentType.
+     * @var BackendPaymentType $model 支付方式类型模型.
      */
     protected $model;
 
     /**
-     * @param BackendPaymentType $BackendPaymentType BackendPaymentType.
+     * @param BackendPaymentType $BackendPaymentType 支付方式类型模型.
      */
     public function __construct(BackendPaymentType $BackendPaymentType)
     {
@@ -27,7 +27,7 @@ class PaymentTypesDetailAction
 
     /**
      * 支付方式类型表表
-     * @param PaymentTypesController $contll PaymentTypesController.
+     * @param PaymentTypesController $contll 主控制器.
      * @return JsonResponse
      */
     public function execute(PaymentTypesController $contll): JsonResponse

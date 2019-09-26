@@ -48,16 +48,15 @@ class PaymentTypesEditAction
         $imageObj = new ImageArrange();
         try {
             $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
-            //上传图标
-            if (isset($inputDatas['payment_ico']) && !empty($inputDatas['payment_ico'])) {
+            //判断图片地址是否变化
+            if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
                 $previewIco = $this->savePic($imageObj, 'payment_ico', $contll, $inputDatas['payment_ico']);
                 if ($previewIco['success'] === false) {
                     return $contll->msgOut(false, [], '400', $previewIco['msg']);
                 }
                 $inputDatas['payment_ico'] = '/' . $previewIco['path'];
-            } else {
-                $inputDatas['payment_ico'] = '';
             }
+
             //判断插入数据库是否有重复
             $isExistType = $this->isExistType($inputDatas, $pastDataEloq);
             if (!empty($isExistType) && isset($isExistType)) {
@@ -67,13 +66,6 @@ class PaymentTypesEditAction
             //执行修改
             $pastDataEloq->fill($inputDatas);
             $pastDataEloq->save();
-
-            //执行修改错误操作
-            if ($pastDataEloq->errors()->messages()) {
-                $this->deletePic($imageObj, $inputDatas['payment_ico']);
-                return $contll->msgOut(false, [], '400', $pastDataEloq->errors()->messages());
-            }
-            $this->deletePicNoFinsh($imageObj, $inputDatas['payment_ico']);
 
             //更新支付配置表信息
             $this->updateConfig($inputDatas, $pastDataEloq);
@@ -129,8 +121,8 @@ class PaymentTypesEditAction
 
     /**
      * 更新支付配置表信息
-     * @param mixed $inputDatas   InputDatas.
-     * @param mixed $pastDataEloq PastDataEloq.
+     * @param mixed $inputDatas   前端输入的参数.
+     * @param mixed $pastDataEloq 根据前端获取的ID查询出支付方式类型表数据.
      * @return void
      */
     private function updateConfig($inputDatas, $pastDataEloq)

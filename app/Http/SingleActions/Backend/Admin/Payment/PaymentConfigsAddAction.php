@@ -18,13 +18,13 @@ class PaymentConfigsAddAction
     use BaseCache;
 
     /**
-     * @var BackendPaymentConfig $model BackendPaymentConfig.
+     * @var BackendPaymentConfig $model 支付配置信息模型.
      */
     protected $model;
 
     /**
      * PaymentConfigsAddAction constructor.
-     * @param BackendPaymentConfig $backendPaymentConfig BackendPaymentConfig.
+     * @param BackendPaymentConfig $backendPaymentConfig 支付配置信息模型.
      */
     public function __construct(BackendPaymentConfig $backendPaymentConfig)
     {
@@ -33,8 +33,8 @@ class PaymentConfigsAddAction
 
     /**
      * 执行添加操作
-     * @param PaymentConfigsController $contll     配置.
-     * @param array                    $inputDatas 配置.
+     * @param PaymentConfigsController $contll     主控制器.
+     * @param array                    $inputDatas 前端获取添加参数.
      * @return JsonResponse
      */
     public function execute(PaymentConfigsController $contll, array $inputDatas): JsonResponse

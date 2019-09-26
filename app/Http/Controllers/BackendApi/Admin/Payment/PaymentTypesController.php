@@ -13,6 +13,7 @@ use App\Http\SingleActions\Backend\Admin\Payment\PaymentTypesEditAction;
 use Illuminate\Http\JsonResponse;
 
 /**
+ * 支付方式类型
  * Class PaymentTypesController
  * @package App\Http\Controllers\BackendApi\Admin\Payment
  */
@@ -20,8 +21,8 @@ class PaymentTypesController extends BackEndApiMainController
 {
 
     /**
-     * 支付方式类型信息
-     * @param PaymentTypesDetailAction $action PaymentTypesDetailAction.
+     * 获取支付方式类型信息列表
+     * @param PaymentTypesDetailAction $action 逻辑处理.
      * @return JsonResponse
      */
     public function detail(PaymentTypesDetailAction $action): JsonResponse
@@ -31,8 +32,8 @@ class PaymentTypesController extends BackEndApiMainController
 
     /**
      * 删除支付方式类型信息
-     * @param PaymentTypesDeleteRequest $request PaymentTypesDeleteRequest.
-     * @param PaymentTypesDeleteAction  $action  PaymentTypesDeleteAction.
+     * @param PaymentTypesDeleteRequest $request 验证器.
+     * @param PaymentTypesDeleteAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -44,8 +45,8 @@ class PaymentTypesController extends BackEndApiMainController
 
     /**
      * 添加支付方式类型信息
-     * @param PaymentTypesAddRequest $request PaymentTypesAddRequest.
-     * @param PaymentTypesAddAction  $action  PaymentTypesAddAction.
+     * @param PaymentTypesAddRequest $request 验证器.
+     * @param PaymentTypesAddAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function doadd(PaymentTypesAddRequest $request, PaymentTypesAddAction $action): JsonResponse
@@ -56,8 +57,8 @@ class PaymentTypesController extends BackEndApiMainController
 
     /**
      * 编辑支付方式类型信息
-     * @param PaymentTypesEditRequest $request PaymentTypesEditRequest.
-     * @param PaymentTypesEditAction  $action  PaymentTypesEditAction.
+     * @param PaymentTypesEditRequest $request 验证器.
+     * @param PaymentTypesEditAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

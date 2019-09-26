@@ -16,6 +16,7 @@ use App\Http\SingleActions\Backend\Admin\Payment\PaymentInfosSortAction;
 use Illuminate\Http\JsonResponse;
 
 /**
+ * 支付方式详情表
  * Class PaymentInfosController
  * @package App\Http\Controllers\BackendApi\Admin\Payment
  */
@@ -23,9 +24,9 @@ class PaymentInfosController extends BackEndApiMainController
 {
 
     /**
-     * 支付方式详情表
-     * @param PaymentInfosDetailRequest $request PaymentInfosDetailRequest.
-     * @param PaymentInfosDetailAction  $action  PaymentInfosDetailAction.
+     * 获取支付方式详情表列表
+     * @param PaymentInfosDetailRequest $request 验证器.
+     * @param PaymentInfosDetailAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function detail(PaymentInfosDetailRequest $request, PaymentInfosDetailAction $action): JsonResponse
@@ -36,8 +37,8 @@ class PaymentInfosController extends BackEndApiMainController
 
     /**
      * 删除支付方式信息
-     * @param PaymentInfosDeleteRequest $request PaymentInfosDeleteRequest.
-     * @param PaymentInfosDeleteAction  $action  PaymentInfosDeleteAction.
+     * @param PaymentInfosDeleteRequest $request 验证器.
+     * @param PaymentInfosDeleteAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -49,8 +50,8 @@ class PaymentInfosController extends BackEndApiMainController
 
     /**
      * 添加支付方式详情表
-     * @param PaymentInfosAddRequest $request PaymentInfosAddRequest.
-     * @param PaymentInfosAddAction  $action  PaymentInfosAddAction.
+     * @param PaymentInfosAddRequest $request 验证器.
+     * @param PaymentInfosAddAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function doadd(PaymentInfosAddRequest $request, PaymentInfosAddAction $action): JsonResponse
@@ -61,8 +62,8 @@ class PaymentInfosController extends BackEndApiMainController
 
     /**
      * 编辑支付方式详情表
-     * @param PaymentInfosEditRequest $request PaymentInfosEditRequest.
-     * @param PaymentInfosEditAction  $action  PaymentInfosEditAction.
+     * @param PaymentInfosEditRequest $request 验证器.
+     * @param PaymentInfosEditAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function edit(PaymentInfosEditRequest $request, PaymentInfosEditAction $action): JsonResponse
@@ -73,8 +74,8 @@ class PaymentInfosController extends BackEndApiMainController
 
     /**
      * 支付方式详情表排序
-     * @param PaymentInfosSortRequest $request PaymentInfosSortRequest.
-     * @param PaymentInfosSortAction  $action  PaymentInfosSortAction.
+     * @param PaymentInfosSortRequest $request 验证器.
+     * @param PaymentInfosSortAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

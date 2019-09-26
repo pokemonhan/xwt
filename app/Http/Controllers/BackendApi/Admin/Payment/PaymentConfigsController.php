@@ -13,14 +13,15 @@ use App\Http\SingleActions\Backend\Admin\Payment\PaymentConfigsEditAction;
 use Illuminate\Http\JsonResponse;
 
 /**
+ * 支付配置
  * Class PaymentConfigsController
  * @package App\Http\Controllers\BackendApi\Admin\Payment
  */
 class PaymentConfigsController extends BackEndApiMainController
 {
     /**
-     * 支付配置信息
-     * @param PaymentConfigsDetailAction $action PaymentConfigsDetailAction.
+     * 获取支付配置信息列表
+     * @param PaymentConfigsDetailAction $action 逻辑处理.
      * @return JsonResponse
      */
     public function detail(PaymentConfigsDetailAction $action): JsonResponse
@@ -30,8 +31,8 @@ class PaymentConfigsController extends BackEndApiMainController
 
     /**
      * 删除支付配置信息
-     * @param PaymentConfigsDeleteRequest $request PaymentConfigsDeleteRequest.
-     * @param PaymentConfigsDeleteAction  $action  PaymentConfigsDeleteAction.
+     * @param PaymentConfigsDeleteRequest $request 验证器.
+     * @param PaymentConfigsDeleteAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -43,8 +44,8 @@ class PaymentConfigsController extends BackEndApiMainController
 
     /**
      * 添加支付配置信息
-     * @param PaymentConfigsAddRequest $request PaymentConfigsAddRequest.
-     * @param PaymentConfigsAddAction  $action  PaymentConfigsAddAction.
+     * @param PaymentConfigsAddRequest $request 验证器.
+     * @param PaymentConfigsAddAction  $action  逻辑处理.
      * @return JsonResponse
      */
     public function doadd(PaymentConfigsAddRequest $request, PaymentConfigsAddAction $action): JsonResponse
@@ -55,8 +56,8 @@ class PaymentConfigsController extends BackEndApiMainController
 
     /**
      * 编辑支付配置信息
-     * @param PaymentConfigsEditRequest $request PaymentConfigsEditRequest.
-     * @param PaymentConfigsEditAction  $action  PaymentConfigsEditAction.
+     * @param PaymentConfigsEditRequest $request 验证器.
+     * @param PaymentConfigsEditAction  $action  逻辑处理.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

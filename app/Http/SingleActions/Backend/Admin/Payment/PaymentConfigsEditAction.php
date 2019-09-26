@@ -21,13 +21,13 @@ class PaymentConfigsEditAction
     use BaseCache;
 
     /**
-     * @var BackendPaymentConfig $model BackendPaymentConfig.
+     * @var BackendPaymentConfig $model 支付配置信息模型.
      */
     protected $model;
 
     /**
      * PaymentConfigsEditAction constructor.
-     * @param BackendPaymentConfig $backendPaymentConfig BackendPaymentConfig.
+     * @param BackendPaymentConfig $backendPaymentConfig 支付配置信息模型.
      */
     public function __construct(BackendPaymentConfig $backendPaymentConfig)
     {
@@ -36,8 +36,8 @@ class PaymentConfigsEditAction
 
     /**
      * 编辑支付方式详情表
-     * @param PaymentConfigsController $contll     PaymentConfigsController.
-     * @param array                    $inputDatas InputDatas.
+     * @param PaymentConfigsController $contll     主控制器.
+     * @param array                    $inputDatas 前端获取编辑信息.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

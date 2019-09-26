@@ -15,13 +15,13 @@ use Exception;
 class PaymentInfosSortAction
 {
     /**
-     * @var PaymentInfo $model PaymentInfo.
+     * @var PaymentInfo $model 支付方式详情表模型.
      */
     protected $model;
 
     /**
      * PaymentInfosSortAction constructor.
-     * @param PaymentInfo $paymentInfo PaymentInfo.
+     * @param PaymentInfo $paymentInfo 支付方式详情表模型.
      */
     public function __construct(PaymentInfo $paymentInfo)
     {
@@ -30,8 +30,8 @@ class PaymentInfosSortAction
 
     /**
      * 支付方式详情表排序
-     * @param PaymentInfosController $contll     PaymentInfosController.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentInfosController $contll     主控制器.
+     * @param array                  $inputDatas 前端获取排序信息.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

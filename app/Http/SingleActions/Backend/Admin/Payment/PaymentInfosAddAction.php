@@ -17,12 +17,12 @@ class PaymentInfosAddAction
     use BaseCache;
 
     /**
-     * @var PaymentInfo $model PaymentInfo.
+     * @var PaymentInfo $model 支付方式详情表模型.
      */
     protected $model;
 
     /**
-     * @param PaymentInfo $paymentInfo PaymentInfo.
+     * @param PaymentInfo $paymentInfo 支付方式详情表模型.
      */
     public function __construct(PaymentInfo $paymentInfo)
     {
@@ -31,8 +31,8 @@ class PaymentInfosAddAction
 
     /**
      * 执行添加操作
-     * @param PaymentInfosController $contll     执行添加操作.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentInfosController $contll     主控制器.
+     * @param array                  $inputDatas 前端获取添加信息.
      * @return JsonResponse
      */
     public function execute(PaymentInfosController $contll, array $inputDatas): JsonResponse

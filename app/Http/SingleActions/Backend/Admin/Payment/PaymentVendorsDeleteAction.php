@@ -30,7 +30,7 @@ class PaymentVendorsDeleteAction
     /**
      * 删除第三方厂商表信息
      * @param PaymentVendorsController $contll     自己的控制器.
-     * @param array                    $inputDatas 前端输入的变量.
+     * @param array                    $inputDatas 前端输入的删除信息.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

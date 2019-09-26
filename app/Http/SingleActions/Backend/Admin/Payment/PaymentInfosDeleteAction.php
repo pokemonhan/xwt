@@ -15,13 +15,13 @@ use Exception;
 class PaymentInfosDeleteAction
 {
     /**
-     * @var PaymentInfo $model PaymentInfo.
+     * @var PaymentInfo $model 支付方式详情表模型.
      */
     protected $model;
 
     /**
      * PaymentInfosDeleteAction constructor.
-     * @param PaymentInfo $paymentInfo PaymentInfo.
+     * @param PaymentInfo $paymentInfo 支付方式详情表模型.
      */
     public function __construct(PaymentInfo $paymentInfo)
     {
@@ -30,8 +30,8 @@ class PaymentInfosDeleteAction
 
     /**
      * 删除支付方式信息
-     * @param PaymentInfosController $contll     删除支付方式信息.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentInfosController $contll     主控制器.
+     * @param array                  $inputDatas 前端获取删除信息.
      * @return JsonResponse
      * @throws \Exception 异常.
      */

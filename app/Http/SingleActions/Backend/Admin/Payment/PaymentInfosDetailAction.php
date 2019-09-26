@@ -13,13 +13,13 @@ use Illuminate\Http\JsonResponse;
 class PaymentInfosDetailAction
 {
     /**
-     * @var PaymentInfo $model PaymentInfo.
+     * @var PaymentInfo $model 支付方式详情表模型.
      */
     protected $model;
 
     /**
      * PaymentInfosDetailAction constructor.
-     * @param PaymentInfo $paymentInfo PaymentInfo.
+     * @param PaymentInfo $paymentInfo 支付方式详情表模型.
      */
     public function __construct(PaymentInfo $paymentInfo)
     {
@@ -28,7 +28,7 @@ class PaymentInfosDetailAction
 
     /**
      * 支付方式详情表
-     * @param PaymentInfosController $contll 支付方式详情表.
+     * @param PaymentInfosController $contll 主控制器.
      * @return JsonResponse
      */
     public function execute(PaymentInfosController $contll): JsonResponse

@@ -21,6 +21,8 @@ abstract class BasePay
         'public_key' => null, //第三方公钥
         'private_key' => null, //第三方私钥
         'bank_code' => null, //网银支付时所选的银行code
+        'card_number' => null, //卡号
+        'card_username' => null, //持卡人
         'money' => null, //付款金额
         'order_no' => null, //商户订单号
         'callback_url' => null, //回调地址
@@ -64,7 +66,9 @@ abstract class BasePay
         $this->payInfo['merchant_secret'] = $payment->merchant_secret;
         $this->payInfo['public_key'] = $payment->public_key;
         $this->payInfo['private_key'] = $payment->private_key;
-        $this->payInfo['bank_code'] = $params['bank_code'];
+        $this->payInfo['bank_code'] = $params['bank_code']??'';
+        $this->payInfo['card_number'] = $params['card_number']??'';
+        $this->payInfo['card_username'] = $params['card_username']??'';
         $this->payInfo['money'] = $params['money']??'';
         $this->payInfo['order_no'] = $params['order_no']??'';
         $this->payInfo['callback_url'] = $payment->back_url;

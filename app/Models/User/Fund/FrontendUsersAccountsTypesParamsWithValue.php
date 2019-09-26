@@ -7,6 +7,6 @@ use App\Models\BaseModel;
  * Class FrontendUsersAccount
  * @package App\Models\User\Fund
  */
-class FrontendUsersAccount extends BaseModel
+class FrontendUsersAccountsTypesParamsWithValue extends BaseModel
 {
 }

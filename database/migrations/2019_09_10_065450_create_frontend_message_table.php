@@ -49,6 +49,7 @@ class CreateFrontendMessageTable extends Migration
             $table->integer('sort')->nullable();
             $table->string('describe',30)->comment('公告简介');
             $table->unsignedTinyInteger('status')->comment('1显示 0关闭');
+            $table->unsignedTinyInteger('top')->default(0)->comment('1置顶，0取消置顶');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
@@ -77,6 +78,9 @@ class CreateFrontendMessageTable extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('frontend_info_categories');
+        Schema::dropIfExists('frontend_message_notices');
+        Schema::dropIfExists('frontend_message_notices_contents');
+        Schema::dropIfExists('frontend_users_help_centers');
     }
 }

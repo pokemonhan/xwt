@@ -103,6 +103,12 @@ class CreateCommonGame extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('frontend_lottery_fnf_betable_lists');
+        Schema::dropIfExists('frontend_lottery_fnf_betable_methods');
+        Schema::dropIfExists('frontend_lottery_notice_lists');
+        Schema::dropIfExists('frontend_lottery_redirect_bet_lists');
+        Schema::dropIfExists('frontend_popular_chess_cards_lists');
+        Schema::dropIfExists('frontend_popular_e_game_lists');
 
     }
 }

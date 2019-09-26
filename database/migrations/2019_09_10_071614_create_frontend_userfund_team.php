@@ -57,6 +57,6 @@ class CreateFrontendUserfundTeam extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('user_profits');
     }
 }

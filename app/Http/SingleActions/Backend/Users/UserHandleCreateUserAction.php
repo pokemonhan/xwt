@@ -43,14 +43,21 @@ class UserHandleCreateUserAction
         $inputDatas['platform_id'] = $contll->currentPlatformEloq->platform_id;
         $inputDatas['sign'] = $contll->currentPlatformEloq->platform_sign;
         $inputDatas['vip_level'] = 0;
-        $inputDatas['parent_id'] = 0;
         $inputDatas['register_ip'] = request()->ip();
         $inputDatas['pic_path'] = UserPublicAvatar::getRandomAvatar();
+        $inputDatas['parent_id'] = $inputDatas['parent_id'] ?? 0;
+        $parentId = $inputDatas['parent_id'];
         DB::beginTransaction();
         try {
             $user = $this->model::create($inputDatas);
             $userId = $user->id;
-            $user->rid = $userId;
+            if ($parentId !== 0) {
+                $parentRid = $this->model::getRid($parentId);
+                $userRid = $parentRid->rid;
+                $userRid .= '|';
+                $userRid .= $userId;
+            }
+            $user->rid = $userRid ?? $userId;
             $userAccountEloq = new FrontendUsersAccount();
             $userAccountData = [
                 'user_id' => $userId,

@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\Users;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class UserHandleCreateUserRequest
+ * @package App\Http\Requests\Backend\Users
+ */
 class UserHandleCreateUserRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -32,9 +36,13 @@ class UserHandleCreateUserRequest extends BaseFormRequest
             'is_tester' => 'required|numeric',
             'prize_group' => 'required|numeric|between:' . $minBetPrize . ',' . $maxBetPrize,
             'type' => 'required|numeric',
+            'parent_id' => 'numeric|exists:frontend_users,id',
         ];
     }
 
+    /**
+     * @return array
+     */
     public function messages()
     {
         return [

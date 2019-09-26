@@ -106,6 +106,9 @@ class CreateCommonActivity extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('activity_bet_logs');
+        Schema::dropIfExists('frontend_activity_contents');
+        Schema::dropIfExists('backend_dyn_activity_lists');
+        Schema::dropIfExists('backend_dyn_activity_prizes');
     }
 }

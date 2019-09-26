@@ -84,6 +84,9 @@ class CreateCommonGameCasino extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('casino_game_api_logs');
+        Schema::dropIfExists('casino_game_categories');
+        Schema::dropIfExists('casino_game_platforms');
+        Schema::dropIfExists('casino_game_lists');
     }
 }

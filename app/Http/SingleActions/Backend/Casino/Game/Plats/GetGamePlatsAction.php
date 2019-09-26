@@ -36,11 +36,11 @@ class GetGamePlatsAction
         $returnVal['params'] = json_encode($paramArr);       // 日志
 
         $paramStr           = http_build_query($paramArr);
-        $paramEncode        = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
+        $paramEncode        = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
         $apiUrl = $contll->apiUrl . '/getGamePlat?' . $paramStr . '&param=' . urlencode($paramEncode);
 
-        $data   = $contll->request('GET', $apiUrl, [], '', 0, 0, 0);
+        $data   = casino_request('GET', $apiUrl, [], '', 0, 0, 0);
         $data1  = json_decode($data, 1);
         if (empty($data1)) {
             return $contll->msgOut(true, $data);

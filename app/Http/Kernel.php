@@ -46,24 +46,24 @@ class Kernel extends HttpKernel
             'cors',
         ],
         'frontend-api' => [
-            'throttle:300,1',
+//            'throttle:300,1',
             'bindings',
             'cors',
             'crypt',
         ],
         'mobile-api' => [
-            'throttle:300,1',
+//            'throttle:300,1',
             'bindings',
             'cors',
             'crypt',
         ],
         'api' => [
-            'throttle:300,1',
+//            'throttle:300,1',
             'bindings',
             'cors',
         ],
         'casino-api' => [
-            'throttle:300,1',
+//            'throttle:300,1',
             'bindings',
             'cors',
             'crypt',

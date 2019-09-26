@@ -9,17 +9,19 @@ use App\Models\Pay\PaymentInfo;
 trait PaymentInfoTraits
 {
     /**
+     * @param integer $direction 金流方向.
      * @return mixed
      */
-    public static function getPaymentInfoLists()
+    public static function getPaymentInfoLists(int $direction)
     {
         $paymentInfos = PaymentInfo::join('backend_payment_configs', 'backend_payment_configs.id', '=', 'payment_infos.config_id')
             ->join('backend_payment_types', 'backend_payment_types.payment_type_sign', '=', 'payment_infos.payment_type_sign')
             ->where('backend_payment_configs.status', BackendPaymentConfig::STATUS_ENABLE)
             ->where('payment_infos.status', PaymentInfo::STATUS_ENABLE)
-            ->where('backend_payment_configs.direction', BackendPaymentConfig::DIRECTION_IN)
-            ->where('payment_infos.direction', PaymentInfo::DIRECTION_IN)
+            ->where('backend_payment_configs.direction', $direction)
+            ->where('payment_infos.direction', $direction)
             ->select(
+                'payment_infos.id', //id
                 'backend_payment_configs.payment_type_sign', //支付种类的标记
                 'backend_payment_configs.payment_type_name', //支付种类的名称
                 'backend_payment_types.payment_ico', //支付种类的图标

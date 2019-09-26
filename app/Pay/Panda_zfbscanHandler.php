@@ -66,7 +66,7 @@ class Panda_zfbscanHandler extends BasePay
         $originSign = $data['sign'];
         unset($data['sign']);
         $nowSign = $this->getSign($data);
-        if ($originSign === $nowSign && $data['status'] === 1) {
+        if ($originSign === $nowSign && (int) $data['status'] === 1) {
             $this->verifyRes['flag'] = true;
         }
         $this->verifyRes['back_param'] = 'success';

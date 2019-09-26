@@ -27,8 +27,8 @@ class CasinoSearchRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'categorie' => 'required|string|min:4|max:10|exists:casino_game_categories,code', //lottery_lists
-            'platCode' => 'required|string|min:2|max:10|exists:casino_game_platforms,main_game_plat_code', //lottery_lists
+            'categorie' => 'required|string|min:4|max:10', //lottery_lists
+            'platCode' => 'required|string|min:2|max:10', //lottery_lists
             'gameCode'  => 'required|string|min:2',
         ];
     }

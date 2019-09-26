@@ -4,15 +4,20 @@ namespace App\Http\SingleActions\Backend\Users\Fund;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Models\User\Fund\FrontendUsersAccountsType;
-use Exception;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * 添加帐变类型
+ */
 class AccountChangeTypeAddAction
 {
+    /**
+     * @var FrontendUsersAccountsType
+     */
     protected $model;
 
     /**
-     * @param  FrontendUsersAccountsType  $frontendUsersAccountsType
+     * @param FrontendUsersAccountsType $frontendUsersAccountsType 帐变类型model.
      */
     public function __construct(FrontendUsersAccountsType $frontendUsersAccountsType)
     {
@@ -21,16 +26,20 @@ class AccountChangeTypeAddAction
 
     /**
      * 添加帐变类型
-     * @param  BackEndApiMainController  $contll
-     * @param  array $inputDatas
+     * @param BackEndApiMainController $contll     Controller.
+     * @param array                    $inputDatas 传递的参数.
      * @return JsonResponse
      */
     public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
     {
-        $param = implode(',', $inputDatas['param']);
         $addData = $inputDatas;
-        $addData['param'] = $param;
-        $accountsTypeEloq = new $this->model;
+        $param = implode(',', $inputDatas['param']);
+        if (!empty($param)) {
+            $addData['param'] = $param;
+        } else {
+            unset($addData['param']);
+        }
+        $accountsTypeEloq = $this->model;
         $accountsTypeEloq->fill($addData); //$inputDatas
         $accountsTypeEloq->save();
         if ($accountsTypeEloq->errors()->messages()) {

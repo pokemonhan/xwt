@@ -2,9 +2,13 @@
 
 namespace App\Http\SingleActions\Backend\Admin\Payment;
 
+use App\Http\Controllers\BackendApi\Admin\Withdraw\WithdrawController;
+use App\Http\SingleActions\Backend\Admin\Withdraw\WithdrawStatusAction;
 use App\Models\Pay\PaymentInfo;
 use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\UsersRechargeHistorie;
+use App\Models\User\UsersWithdrawHistorie;
+use App\Models\User\UsersWithdrawHistoryOpt;
 use App\Pay\Core\PayHandlerFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -92,7 +96,13 @@ class CallbackAction
      */
     private function processingPayment(array $verifyRes) :void
     {
-        //TODO
-        Log::channel('callback-log')->info(json_encode($verifyRes));
+        $userWithdrawHistoryModel = UsersWithdrawHistorie::where('order_id', '=', $verifyRes['merchant_order_no']);
+        $userWithdrawHistory = $userWithdrawHistoryModel->first();
+        if ($verifyRes['flag']) {
+            (new WithdrawStatusAction(new UsersWithdrawHistorie(), new UsersWithdrawHistoryOpt()))->execute((new WithdrawController()), ['id'=>$userWithdrawHistory->id,'status'=>UsersWithdrawHistorie::STATUS_SUCCESS]);
+            Log::channel('callback-log')->info('订单号：'.$verifyRes['merchant_order_no'].'验证签名成功.');
+        } else {
+            Log::channel('callback-log')->info('订单号：'.$verifyRes['merchant_order_no'].'验证签名失败.');
+        }
     }
 }

@@ -66,7 +66,7 @@ class PayRechargeAction
      */
     public function getRechargeChannelNew(FrontendApiMainController $contll) :JsonResponse
     {
-        $output = PaymentInfo::getPaymentInfoLists();
+        $output = PaymentInfo::getPaymentInfoLists(PaymentInfo::DIRECTION_IN);
         return $contll->msgOut(true, $output);
     }
 

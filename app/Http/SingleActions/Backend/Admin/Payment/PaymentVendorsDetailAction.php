@@ -13,12 +13,12 @@ use Illuminate\Http\JsonResponse;
 class PaymentVendorsDetailAction
 {
     /**
-     * @var BackendPaymentVendor $model BackendPaymentVendor.
+     * @var BackendPaymentVendor $model 第三方厂商表模型.
      */
     protected $model;
 
     /**
-     * @param BackendPaymentVendor $BackendPaymentVendor BackendPaymentVendor.
+     * @param BackendPaymentVendor $BackendPaymentVendor 第三方厂商表模型.
      */
     public function __construct(BackendPaymentVendor $BackendPaymentVendor)
     {
@@ -27,7 +27,7 @@ class PaymentVendorsDetailAction
 
     /**
      * 获取第三方厂商表
-     * @param PaymentVendorsController $contll PaymentVendorsController.
+     * @param PaymentVendorsController $contll 主控制器.
      * @return JsonResponse
      */
     public function execute(PaymentVendorsController $contll): JsonResponse

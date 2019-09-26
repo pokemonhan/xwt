@@ -29,9 +29,9 @@ class PaymentVendorsEditRequest extends BaseFormRequest
     {
         return [
             'id' => 'required|numeric|exists:backend_payment_vendors,id',//ID
-            'payment_vendor_name' => 'required|string',//支付方式厂商名称
-            'payment_vendor_sign' => 'required|string',//支付方式厂商标记
-            'whitelist_ips' => 'required|string',//ip白名单
+            'payment_vendor_name' => 'string',//支付方式厂商名称
+            'payment_vendor_sign' => 'string',//支付方式厂商标记
+            'whitelist_ips' => 'string',//ip白名单
         ];
     }
 }

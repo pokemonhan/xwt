@@ -21,13 +21,13 @@ class PaymentTypesEditAction
     use BaseCache;
 
     /**
-     * @var BackendPaymentType $model BackendPaymentType.
+     * @var BackendPaymentType $model 支付方式类型表模型.
      */
     protected $model;
 
     /**
      * PaymentTypesEditAction constructor.
-     * @param BackendPaymentType $backendPaymentType BackendPaymentType.
+     * @param BackendPaymentType $backendPaymentType 支付方式类型表模型.
      */
     public function __construct(BackendPaymentType $backendPaymentType)
     {
@@ -36,8 +36,8 @@ class PaymentTypesEditAction
 
     /**
      * 编辑支付方式类型表
-     * @param PaymentTypesController $contll     PaymentTypesController.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentTypesController $contll     支付方式类型表控制器.
+     * @param array                  $inputDatas 前端获取参数.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -47,34 +47,34 @@ class PaymentTypesEditAction
         $previewIco = []; //保存图片的变量
         $imageObj = new ImageArrange();
         try {
+            $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
             //上传图标
-            if (isset($inputDatas['payment_ico'])) {
+            if (isset($inputDatas['payment_ico']) && !empty($inputDatas['payment_ico'])) {
                 $previewIco = $this->savePic($imageObj, 'payment_ico', $contll, $inputDatas['payment_ico']);
                 if ($previewIco['success'] === false) {
                     return $contll->msgOut(false, [], '400', $previewIco['msg']);
                 }
                 $inputDatas['payment_ico'] = '/' . $previewIco['path'];
             } else {
-                //获取原来数据库图标信息
-                $inputDatas['payment_ico'] = BackendPaymentType::select('payment_ico')->find($inputDatas['id']);
+                $inputDatas['payment_ico'] = '';
             }
             //判断插入数据库是否有重复
-            if (!empty($inputDatas['payment_type_name']) && !empty($inputDatas['payment_type_sign']) && isset($inputDatas['payment_type_name'], $inputDatas['payment_type_sign'])) {
-                $pastDataEloq = BackendPaymentType::where([['payment_type_name','=',$inputDatas['payment_type_name']],['payment_type_sign','=',$inputDatas['payment_type_sign']]])->first();
-                if ($pastDataEloq) {
-                    return $contll->msgOut(false, [], '102700');
-                }
+            $isExistType = $this->isExistType($inputDatas, $pastDataEloq);
+            if (!empty($isExistType) && isset($isExistType)) {
+                return $contll->msgOut(false, [], '102700');
             }
+
             //执行修改
-            $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
             $pastDataEloq->fill($inputDatas);
             $pastDataEloq->save();
+
             //执行修改错误操作
             if ($pastDataEloq->errors()->messages()) {
                 $this->deletePic($imageObj, $inputDatas['payment_ico']);
                 return $contll->msgOut(false, [], '400', $pastDataEloq->errors()->messages());
             }
             $this->deletePicNoFinsh($imageObj, $inputDatas['payment_ico']);
+
             //更新支付配置表信息
             $this->updateConfig($inputDatas, $pastDataEloq);
             DB::commit();
@@ -144,6 +144,39 @@ class PaymentTypesEditAction
         $editDatas['banks_code'] = json_encode($editDatas['banks_code']);
         $editDatas['payment_type_name'] = $pastDataEloq->payment_type_name;
         $editDatas['payment_type_sign'] = $pastDataEloq->payment_type_sign;
+        //更新支付配置表信息
         BackendPaymentConfig::where('payment_type_id', $inputDatas['id'])->update($editDatas);
+    }
+
+    /**
+     * 判断支付方式类型表数据是否存在
+     * @param mixed $inputDatas   前台获取的参数.
+     * @param mixed $pastDataEloq 支付方式类型表数据.
+     * @return mixed
+     */
+    private function isExistType($inputDatas, $pastDataEloq)
+    {
+        //判断修改第三方厂商表的数据是否存在
+        if (!empty($inputDatas['payment_type_sign']) && isset($inputDatas['payment_type_sign'])) {
+            $array = [
+                ['payment_type_name', '=', $pastDataEloq['payment_type_name']],
+                ['payment_type_sign', '=', $inputDatas['payment_type_sign']],
+            ];
+        } elseif (!empty($inputDatas['payment_type_name']) && isset($inputDatas['payment_type_name'])) {
+            $array = [
+                ['payment_type_name', '=', $inputDatas['payment_type_name']],
+                ['payment_type_sign', '=', $pastDataEloq['payment_type_sign']],
+            ];
+        } elseif (empty($inputDatas['payment_type_name']) && empty($inputDatas['payment_type_sign']) && !isset($inputDatas['payment_type_name']) && !isset($inputDatas['payment_type_sign'])) {
+            $array = [];
+        } else {
+            $array = [
+                ['payment_type_name', '=', $inputDatas['payment_type_name']],
+                ['payment_type_sign', '=', $inputDatas['payment_type_sign']],
+            ];
+        }
+        if (!empty($array)) {
+            return BackendPaymentType::where($array)->first();
+        }
     }
 }

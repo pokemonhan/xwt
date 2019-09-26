@@ -30,7 +30,7 @@ class PaymentVendorsAddRequest extends BaseFormRequest
         return [
             'payment_vendor_name' => 'required|string|unique:backend_payment_vendors,payment_vendor_name',//支付方式厂商名称
             'payment_vendor_sign' => 'required|string|unique:backend_payment_vendors,payment_vendor_sign',//支付方式厂商标记
-            'whitelist_ips' => 'required|string',//ip白名单
+            'whitelist_ips' => 'required|string',//IP白名单
         ];
     }
 }

@@ -15,12 +15,12 @@ use Exception;
 class PaymentVendorsDeleteAction
 {
     /**
-     * @var BackendPaymentVendor $model BackendPaymentVendor.
+     * @var BackendPaymentVendor $model 第三方厂商表模型.
      */
     protected $model;
 
     /**
-     * @param  BackendPaymentVendor $backendPaymentVendor BackendPaymentVendor.
+     * @param  BackendPaymentVendor $backendPaymentVendor 第三方厂商表模型.
      */
     public function __construct(BackendPaymentVendor $backendPaymentVendor)
     {
@@ -29,8 +29,8 @@ class PaymentVendorsDeleteAction
 
     /**
      * 删除第三方厂商表信息
-     * @param PaymentVendorsController $contll     PaymentVendorsController.
-     * @param array                    $inputDatas InputDatas.
+     * @param PaymentVendorsController $contll     自己的控制器.
+     * @param array                    $inputDatas 前端输入的变量.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -38,8 +38,12 @@ class PaymentVendorsDeleteAction
     {
         DB::beginTransaction();
         try {
-            $pastDataEloq = $this->model::find($inputDatas['id']);
-            $pastDataEloq->delete();
+            //判断ID是否存在
+            if (!empty($inputDatas['id']) && isset($inputDatas['id'])) {
+                return $contll->msgOut(false, [], '请输入ID');
+            }
+            //执行删除功能
+            $this->model::destroy($inputDatas['id']);
             DB::commit();
             return $contll->msgOut(true);
         } catch (Exception $e) {

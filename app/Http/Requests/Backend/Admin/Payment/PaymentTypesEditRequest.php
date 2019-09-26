@@ -29,8 +29,8 @@ class PaymentTypesEditRequest extends BaseFormRequest
     {
         return [
             'id' => 'required|numeric|exists:backend_payment_types,id',//ID
-            'payment_type_name' => 'required|string',//支付方式种类名称
-            'payment_type_sign' => 'required|string',//支付方式种类标记
+            'payment_type_name' => 'string',//支付方式种类名称
+            'payment_type_sign' => 'string',//支付方式种类标记
             'is_bank' => 'required|in:0,1',//是否是银行 0 不是 1 是
             'payment_ico' => 'image|mimes:jpeg,png,jpg,ico',//支付方式图标
         ];

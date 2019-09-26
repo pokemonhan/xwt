@@ -19,13 +19,13 @@ class PaymentTypesAddAction
     use BaseCache;
 
     /**
-     * @var BackendPaymentType $model BackendPaymentType.
+     * @var BackendPaymentType $model 支付方式类型表模型.
      */
     protected $model;
 
     /**
      * PaymentTypesAddAction constructor
-     * @param BackendPaymentType $backendPaymentType BackendPaymentType.
+     * @param BackendPaymentType $backendPaymentType 支付方式类型表模型.
      */
     public function __construct(BackendPaymentType $backendPaymentType)
     {
@@ -34,8 +34,8 @@ class PaymentTypesAddAction
 
     /**
      * 执行添加支付方式类型表操作
-     * @param PaymentTypesController $contll     PaymentTypesController.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentTypesController $contll     支付方式类型表模型控制器.
+     * @param array                  $inputDatas 前端获取参数.
      * @return JsonResponse
      */
     public function execute(PaymentTypesController $contll, array $inputDatas): JsonResponse
@@ -57,7 +57,7 @@ class PaymentTypesAddAction
             $pastDataEloq = new $this->model();
             $pastDataEloq->fill($inputDatas);
             $pastDataEloq->save();
-            //执行添加错误操作
+            //执行错误添加后的操作
             if ($pastDataEloq->errors()->messages()) {
                 $this->deletePic($imageObj, $inputDatas['payment_ico']);
                 return $contll->msgOut(false, [], '400', $pastDataEloq->errors()->messages());

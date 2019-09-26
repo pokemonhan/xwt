@@ -15,12 +15,12 @@ use Exception;
 class PaymentTypesDeleteAction
 {
     /**
-     * @var BackendPaymentType $model BackendPaymentType.
+     * @var BackendPaymentType $model 支付方式类型表模型.
      */
     protected $model;
 
     /**
-     * @param BackendPaymentType $backendPaymentType BackendPaymentType.
+     * @param BackendPaymentType $backendPaymentType 支付方式类型表模型.
      */
     public function __construct(BackendPaymentType $backendPaymentType)
     {
@@ -29,8 +29,8 @@ class PaymentTypesDeleteAction
 
     /**
      * 删除支付方式类型表信息
-     * @param PaymentTypesController $contll     PaymentTypesController.
-     * @param array                  $inputDatas InputDatas.
+     * @param PaymentTypesController $contll     支付方式类型表主控制器.
+     * @param array                  $inputDatas 前端获取参数.
      * @return JsonResponse
      * @throws \Exception 异常.
      */
@@ -38,8 +38,8 @@ class PaymentTypesDeleteAction
     {
         DB::beginTransaction();
         try {
-            $pastDataEloq = $this->model::find($inputDatas['id']);
-            $pastDataEloq->delete();
+            //执行删除
+            $this->model::destroy($inputDatas['id']);
             DB::commit();
             return $contll->msgOut(true);
         } catch (Exception $e) {

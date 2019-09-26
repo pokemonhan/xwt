@@ -28,7 +28,7 @@ class PaymentVendorsDeleteRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|exists:backend_payment_vendors,id',
+            'id' => 'required|numeric|exists:backend_payment_vendors,id',//第三方厂商表ID
         ];
     }
 }

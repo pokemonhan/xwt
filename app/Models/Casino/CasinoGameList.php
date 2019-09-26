@@ -16,6 +16,8 @@ class CasinoGameList extends BaseCasinoModel
      */
     public function saveItemAll(array $data)
     {
+        self::truncate();
+
         DB::beginTransaction();
         foreach ($data as $dataItem) {
             if (!self::find($dataItem['id'])) {
@@ -54,16 +56,16 @@ class CasinoGameList extends BaseCasinoModel
         $categoryName   = [];
         $categories     = CasinoCategories::where('home', 1)->get();
 
-        foreach ($categories as $v) {
-            $categoryArr[]          = $v->code;
-            $categoryName[$v->code] = $v->name;
+        foreach ($categories as $category) {
+            $categoryArr[]          = $category->code;
+            $categoryName[$category->code] = $category->name;
         }
 
-        $listModel = self::where('status', 1)->where('able_recommend', 0)->whereIN('category', $categoryArr)->skip(0)->take(100)->get();
+        $listModels = self::where('status', 1)->where('able_recommend', 0)->whereIN('category', $categoryArr)->skip(0)->take(100)->get();
         $data = [];
 
-        foreach ($listModel as $v) {
-            $data[$categoryName[$v->category]][] = $v->toArray();
+        foreach ($listModels as $listModel) {
+            $data[$categoryName[$listModel->category]][] = $listModel->toArray();
         }
         return $data;
     }
@@ -97,7 +99,7 @@ class CasinoGameList extends BaseCasinoModel
         $datas = [];
         $maxCache = 6;
         $cacheNum = [];
-        foreach ($dataEloq as $key => $dataIthem) {
+        foreach ($dataEloq as $platKey => $dataIthem) {
             foreach ($cateGorieHome as $itemCode) {
                 $cateCode = $itemCode->code;
                 if ($dataIthem->category === $cateCode) {
@@ -105,11 +107,11 @@ class CasinoGameList extends BaseCasinoModel
                         continue;
                     }
                     $datas[$cateCode]['cateGorie']      = $itemCode->name;
-                    $datas[$cateCode][$key]['cn_name']  = $dataIthem->cn_name ?? null;
-                    $datas[$cateCode][$key]['en_name']  = $dataIthem->en_name ?? null;
-                    $datas[$cateCode][$key]['icon_path'] = config('casino.game_img_url') . $dataIthem->img ?? null;
-                    $datas[$cateCode][$key]['game_code'] = $dataIthem->pc_game_code ?? $dataIthem->mobile_game_code;
-                    $datas[$cateCode][$key]['main_game_plat_code'] = $dataIthem->main_game_plat_code ?? null;
+                    $datas[$cateCode][$platKey]['cn_name']  = $dataIthem->cn_name ?? null;
+                    $datas[$cateCode][$platKey]['en_name']  = $dataIthem->en_name ?? null;
+                    $datas[$cateCode][$platKey]['icon_path'] = config('casino.game_img_url') . $dataIthem->img ?? null;
+                    $datas[$cateCode][$platKey]['game_code'] = $dataIthem->pc_game_code ?? $dataIthem->mobile_game_code;
+                    $datas[$cateCode][$platKey]['main_game_plat_code'] = $dataIthem->main_game_plat_code ?? null;
 
                     if (!empty($cacheNum[$cateCode])) {
                         $cacheNum[$cateCode] = $cacheNum[$cateCode] + 1;

@@ -27,9 +27,10 @@ class CasinoApiMainController extends FrontendApiMainController
      */
     public function __construct()
     {
-        $this->secretkey = config('casino.game_img_url');
-        $this->secretkey = config('casino.secret_key');
-        $this->secretkey = config('casino.username');
+
+        $this->secretkey = configure('secretkey');
+        $this->apiUrl    = configure('apiUrl');
+        $this->username  = configure('username');
 
         parent::__construct();
     }

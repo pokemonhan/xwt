@@ -49,7 +49,7 @@ class KickAction
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
-            $apiUrl = $contll->apiUrl . '/kick?' . $paramStr . '&param=' . $paramEncode;
+            $apiUrl = $contll->apiUrl . '/kick?' . $paramStr . '&param=' . urlencode($paramEncode);
 
             $returnVal['call_url'] = $apiUrl;                   // 日志
 

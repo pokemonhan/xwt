@@ -95,6 +95,8 @@ class CreateFrontendUserfundSalary extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('user_daysalaries');
+        Schema::dropIfExists('users_salary_configs');
+        Schema::dropIfExists('users_salary_reports');
     }
 }

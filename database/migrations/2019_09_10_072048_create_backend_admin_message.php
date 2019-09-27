@@ -64,6 +64,8 @@ class CreateBackendAdminMessage extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('backend_admin_message');
+        Schema::dropIfExists('backend_admin_message_articles');
+        Schema::dropIfExists('backend_system_internal_messages');
+        Schema::dropIfExists('backend_system_notice_lists');
     }
 }

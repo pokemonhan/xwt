@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\Admin\Notice;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class NoticeEditRequest
+ * @package App\Http\Requests\Backend\Admin\Notice
+ */
 class NoticeEditRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -33,6 +37,7 @@ class NoticeEditRequest extends BaseFormRequest
             'start_time' => 'date_format:Y-m-d H:i:s',
             'end_time' => 'date_format:Y-m-d H:i:s',
             'status' => 'required|string', //1显示 0隐藏
+            'top' => 'numeric', //1 置顶  0取消置顶
         ];
     }
 

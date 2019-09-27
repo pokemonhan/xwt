@@ -67,6 +67,8 @@ class CreateCommonRoutes extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('backend_admin_routes');
+        Schema::dropIfExists('frontend_app_routes');
+        Schema::dropIfExists('frontend_web_routes');
     }
 }

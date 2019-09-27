@@ -38,6 +38,6 @@ class CreateFrontendModule extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('frontend_allocated_models');
     }
 }

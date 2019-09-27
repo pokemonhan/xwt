@@ -117,6 +117,7 @@ class CreateFrontendUserfundStat extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('frontend_userfund_stat');
+        Schema::dropIfExists('users_stat_days');
+        Schema::dropIfExists('users_stats');
     }
 }

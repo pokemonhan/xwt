@@ -32,7 +32,7 @@ class PaymentVendorsDetailAction
      */
     public function execute(PaymentVendorsController $contll): JsonResponse
     {
-        $searchAbleFields = [];
+        $searchAbleFields = ['id'];//按照ID搜索
         $orderFields = 'id';
         $orderFlow = 'asc';
         //处理执行第三方厂商表异常

@@ -151,38 +151,38 @@ class PayWithdrawAction
         $user = $contll->currentAuth->user();
         $bank = $user->banks()->where('id', $inputDatas['card_id'])->first();
         if (is_null($bank)) {
-            return $contll->msgOut(false, [], '400', '对不起, 提现失败,用户与卡不匹配!');
+            return $contll->msgOut(false, [], '102900');
         }
         $withdrawMaintain = configure('finance_withdraw_maintain', '0');
         if ((int) $withdrawMaintain === 1) {// 提现维护
-            return $contll->msgOut(false, [], '400', '对不起, 提现维护中!');
+            return $contll->msgOut(false, [], '102901');
         }
         if (!$this->isDrawTime()) { // 检查是否提现时间
-            return $contll->msgOut(false, [], '400', '对不起, 当前时间不在提现开放时间内!');
+            return $contll->msgOut(false, [], '102902');
         }
         if ($user->is_tester) {// 测试账户不能提现
-            return $contll->msgOut(false, [], '400', '对不起, 测试用户不能提现!');
+            return $contll->msgOut(false, [], '102903');
         }
         if ($user->frozen_type === FrontendUser::FROZEN_TYPE_NO_WITHDRAWAL) { //  检查资金是否锁定 账户是否是冻结
-            return $contll->msgOut(false, [], '400', '对不起, 冻结用户不能提现!');
+            return $contll->msgOut(false, [], '102904');
         }
         if ((new Carbon())->diffInHours(Carbon::parse($bank->created_at), true) < 2) {//新绑卡没有超过俩个小时不能提现
-            return $contll->msgOut(false, [], '400', '对不起, 新绑定的银行卡未超过两个小时不能提现!');
+            return $contll->msgOut(false, [], '102905');
         }
         $notFinishedOrder = UsersWithdrawHistorie::where('user_id', $user->id)
             ->whereIn('status', [UsersWithdrawHistorie::STATUS_AUDIT_WAIT,
                 UsersWithdrawHistorie::STATUS_CLAIMED,UsersWithdrawHistorie::STATUS_AUDIT_SUCCESS])
             ->count();
         if ($notFinishedOrder > 0) {// 检查提现未完成的单子
-            return $contll->msgOut(false, [], '400', '对不起, 您用未完成的提现订单, 请联系客服处理!!');
+            return $contll->msgOut(false, [], '102906');
         }
         if (!$inputDatas['fund_password'] || !Hash::check($inputDatas['fund_password'], $user->fund_password)) {//资金密码是否正确
-            return $contll->msgOut(false, [], '403', '对不起, 无效的资金密码!');
+            return $contll->msgOut(false, [], '102907');
         }
         //账户资金是否充足
         $userBalance = $user->account->balance??0;
         if ($userBalance < $inputDatas['amount']) {
-            return $contll->msgOut(false, [], '400', '对不起, 用户资金不足!!');
+            return $contll->msgOut(false, [], '102908');
         }
         $data['amount']         = $inputDatas['amount'];
         $data['bank_sign']      = $bank->bank_sign??'';

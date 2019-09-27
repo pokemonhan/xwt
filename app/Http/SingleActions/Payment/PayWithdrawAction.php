@@ -7,6 +7,7 @@ use App\Models\Finance\Withdraw;
 use App\Models\User\FrontendUser;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 //use App\Models\User\Fund\FrontendUsersBankCard;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use App\Models\User\UsersWithdrawHistorie;
 use Illuminate\Support\Arr;
@@ -149,30 +150,33 @@ class PayWithdrawAction
     {
         $user = $contll->currentAuth->user();
         $bank = $user->banks()->where('id', $inputDatas['card_id'])->first();
-        // 提现维护
+        if (is_null($bank)) {
+            return $contll->msgOut(false, [], '400', '对不起, 提现失败,用户与卡不匹配!');
+        }
         $withdrawMaintain = configure('finance_withdraw_maintain', '0');
-        if ((int) $withdrawMaintain === 1) {
+        if ((int) $withdrawMaintain === 1) {// 提现维护
             return $contll->msgOut(false, [], '400', '对不起, 提现维护中!');
         }
-        // 检查是否提现时间
-        if (!$this->isDrawTime()) {
+        if (!$this->isDrawTime()) { // 检查是否提现时间
             return $contll->msgOut(false, [], '400', '对不起, 当前时间不在提现开放时间内!');
         }
-        // 测试账户不能提现
-        if ($user->is_tester) {
+        if ($user->is_tester) {// 测试账户不能提现
             return $contll->msgOut(false, [], '400', '对不起, 测试用户不能提现!');
         }
-        //  检查资金是否锁定 账户是否是冻结
-        if ($user->frozen_type === FrontendUser::FROZEN_TYPE_NO_WITHDRAWAL) {
+        if ($user->frozen_type === FrontendUser::FROZEN_TYPE_NO_WITHDRAWAL) { //  检查资金是否锁定 账户是否是冻结
             return $contll->msgOut(false, [], '400', '对不起, 冻结用户不能提现!');
         }
-        // 检查提现未完成的单子
-        $notFinishedOrder = UsersWithdrawHistorie::where('user_id', $user->id)->whereIn('status', [UsersWithdrawHistorie::STATUS_AUDIT_WAIT, UsersWithdrawHistorie::STATUS_CLAIMED,UsersWithdrawHistorie::STATUS_AUDIT_SUCCESS])->count();
-        if ($notFinishedOrder > 0) {
+        if ((new Carbon())->diffInHours(Carbon::parse($bank->created_at), true) < 2) {//新绑卡没有超过俩个小时不能提现
+            return $contll->msgOut(false, [], '400', '对不起, 新绑定的银行卡未超过两个小时不能提现!');
+        }
+        $notFinishedOrder = UsersWithdrawHistorie::where('user_id', $user->id)
+            ->whereIn('status', [UsersWithdrawHistorie::STATUS_AUDIT_WAIT,
+                UsersWithdrawHistorie::STATUS_CLAIMED,UsersWithdrawHistorie::STATUS_AUDIT_SUCCESS])
+            ->count();
+        if ($notFinishedOrder > 0) {// 检查提现未完成的单子
             return $contll->msgOut(false, [], '400', '对不起, 您用未完成的提现订单, 请联系客服处理!!');
         }
-        //资金密码是否正确
-        if (!$inputDatas['fund_password'] || !Hash::check($inputDatas['fund_password'], $user->fund_password)) {
+        if (!$inputDatas['fund_password'] || !Hash::check($inputDatas['fund_password'], $user->fund_password)) {//资金密码是否正确
             return $contll->msgOut(false, [], '403', '对不起, 无效的资金密码!');
         }
         //账户资金是否充足

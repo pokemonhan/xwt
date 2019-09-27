@@ -44,7 +44,6 @@ class UserHandleDeactivateAction
         if ((int) $isFronzenChild === 1) {
             if ($userEloq->type === 2 || $userEloq->type === 1) {
                 $allSon = $userEloq->children;
-                dd($allSon);
                 $this->getAllChildren($allId, $allSon);
             }
         }

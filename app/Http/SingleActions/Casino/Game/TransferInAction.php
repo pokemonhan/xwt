@@ -49,8 +49,9 @@ class TransferInAction
                 return $contll->msgOut(false, [], '100313');
             }
             $params = [
-                'user_id' => $user->id,
-                'amount' => $inputDatas['price'],
+                'user_id'           => $user->id,
+                'amount'            => $inputDatas['price'],
+                'casino_game_plat'  => $inputDatas['mainGamePlat'],
             ];
 
             $resStatus = $account->operateAccount($params, 'casino_in');

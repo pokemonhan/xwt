@@ -4,12 +4,15 @@ namespace App\Http\Requests\Frontend\Homepage;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * 公告&站内信
+ */
 class HomePageNoticeRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -24,7 +27,7 @@ class HomePageNoticeRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|integer|exists:frontend_message_notices_contents',
+            'type' => 'required|integer',
         ];
     }
 }

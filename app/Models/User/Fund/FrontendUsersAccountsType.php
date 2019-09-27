@@ -5,17 +5,26 @@ namespace App\Models\User\Fund;
 use App\Models\BaseModel;
 use App\Models\User\Fund\Logics\FrontendUsersAccountsTypeLogics;
 
+/**
+ * 帐变类型model
+ */
 class FrontendUsersAccountsType extends BaseModel
 {
     use FrontendUsersAccountsTypeLogics;
 
+    /**
+     * @var array
+     */
     protected $guarded = ['id'];
 
+    /**
+     * @var array
+     */
     public static $rules = [
         'name' => 'required|min:2|max:32',
         'sign' => 'required|min:2|max:32',
         'in_out' => 'required|in:1,2',
-        'param' => 'required|string',
+        'param' => 'string',
         'amount' => 'in:0,1',
         'user_id' => 'in:0,1',
         'project_id' => 'in:0,1',

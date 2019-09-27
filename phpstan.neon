@@ -16,4 +16,4 @@ parameters:
         - '#Access to an undefined property object::\$uri\.#'
     excludes_analyse:
         - */Models/Game/Lottery/LotteryIssue.php
-        #- /*/*/FileToBeExcluded.php
+        - */database/migrations/*

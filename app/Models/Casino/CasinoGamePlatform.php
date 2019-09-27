@@ -17,35 +17,17 @@ class CasinoGamePlatform extends BaseCasinoModel
     ];
 
     /**
-     * @param array   $c        DATA.
-     * @param integer $pageSize PageSize.
-     * @return array
-     */
-    public function getList1(array $c, int $pageSize)
-    {
-        $query = self::orderBy('id', 'desc');
-
-        $currentPage    = isset($c['page_index']) ? intval($c['page_index']) : 1;
-        $pageSize       = isset($c['page_size']) ? intval($c['page_size']) : $pageSize;
-
-        $offset         = ($currentPage - 1) * $pageSize;
-
-        $total  = $query->count();
-        $data   = $query->skip($offset)->take($pageSize)->get();
-
-        return ['data' => $data, 'total' => $total, 'currentPage' => $currentPage, 'totalPage' => intval(ceil($total / $pageSize))];
-    }
-
-    /**
      * @param array $data Data.
      * @return string
      */
     public function saveItemAll(array $data)
     {
+        self::truncate();
+
         DB::beginTransaction();
-        foreach ($data as $v) {
-            if (!self::find($v['id'])) {
-                if (!self::insert($v)) {
+        foreach ($data as $item) {
+            if (!self::find($item['id'])) {
+                if (!self::insert($item)) {
                     DB::rollBack();
                     return 0;
                 }

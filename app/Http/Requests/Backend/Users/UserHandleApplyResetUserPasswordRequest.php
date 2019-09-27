@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\Users;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class UserHandleApplyResetUserPasswordRequest
+ * @package App\Http\Requests\Backend\Users
+ */
 class UserHandleApplyResetUserPasswordRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -25,17 +29,19 @@ class UserHandleApplyResetUserPasswordRequest extends BaseFormRequest
     {
         return [
             'id' => 'required|numeric',
-            'password' => 'required',
+            'password' => ['required', 'string', 'between:6,16', 'regex:/^(?=.*[a-zA-Z]+)(?=.*[0-9]+)[a-zA-Z0-9]+$/'],
             'apply_note' => 'required',
         ];
     }
 
-    /*public function messages()
-{
-return [
-'lottery_sign.required' => 'lottery_sign is required!',
-'trace_issues.required' => 'trace_issues is required!',
-'balls.required' => 'balls is required!'
-];
-}*/
+    /**
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'password.between' => '密码必须是6---16位之间',
+            'password.regex' => '密码必须是字母+数字组合，不能有特殊字符',
+        ];
+    }
 }

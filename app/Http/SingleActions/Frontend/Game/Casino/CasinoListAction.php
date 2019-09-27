@@ -28,7 +28,17 @@ class CasinoListAction
         $platCode = $inputDatas['platCode'] ?? 'pt';
         $categorie = $inputDatas['categorie'] ?? 'e-game';
 
-        $data = CasinoGameList::where('category', $categorie)->where('main_game_plat_code', $platCode)->skip($offset)->take($pageSize)->get();
+
+        $data = CasinoGameList::where('main_game_plat_code', $platCode);
+
+        if ($categorie === 'fishing') {
+            $data = $data->where('type', $categorie);
+        } else {
+            $data = $data->where('category', $categorie);
+        }
+
+        $data = $data->skip($offset)->take($pageSize)->get();
+
         return $contll->msgOut(true, $data);
     }
 }

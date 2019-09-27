@@ -28,27 +28,42 @@ class GetGameListsAction
      */
     public function execute(CasinoApiMainController $contll)
     {
+        $plats      = CasinoGamePlatform::get();
+        foreach ($plats as $plat) {
+            $data       = $this->callCasinoList($contll, $plat->main_game_plat_code);
+            $casinoList = json_decode($data, 1);
+            if (empty($casinoList)) {
+                return $contll->msgOut(true, $data);
+            }
+
+            unset($casinoList['data1']);
+            if (!$this->model->saveItemAll($casinoList)) {
+                return $contll->msgOut(false, []);
+            }
+        }
+
+        return $contll->msgOut(true, []);
+    }
+
+    /**
+     * @param CasinoApiMainController $contll 娱乐城基类.
+     * @param string                  $plat   平台.
+     * @return string
+     */
+    public function callCasinoList(CasinoApiMainController $contll, string $plat)
+    {
         $paramArr = [
             'username'          => $contll->username,
-            'mainGamePlat'      => 'pt',
+            'mainGamePlat'      => $plat,
         ];
 
         $returnVal['params'] = json_encode($paramArr);       // 日志
-
-        $paramStr           = http_build_query($paramArr);
-        $paramEncode        = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey);
+        $paramStr            = http_build_query($paramArr);
+        $paramEncode         = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
         $apiUrl = $contll->apiUrl . '/getGameList?' . $paramStr . '&param=' . urlencode($paramEncode);
+        $data   = casino_request('GET', $apiUrl, [], '', 0, 0, 0);
 
-        $data   = $contll->request('GET', $apiUrl, [], '', 0, 0, 0);
-        $data1  = json_decode($data, 1);
-        if (empty($data1)) {
-            return $contll->msgOut(true, $data);
-        }
-        unset($data1['data1']);
-        if ($this->model->saveItemAll($data1)) {
-            return $contll->msgOut(true, []);
-        }
-        return $contll->msgOut(false, []);
+        return $data;
     }
 }

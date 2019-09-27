@@ -47,13 +47,13 @@ class KickAction
             $returnVal['param'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
-            $paramEncode    = $contll->authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
+            $paramEncode    = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
-            $apiUrl = $contll->apiUrl . '/kick?' . $paramStr . '&param=' . $paramEncode;
+            $apiUrl = $contll->apiUrl . '/kick?' . $paramStr . '&param=' . urlencode($paramEncode);
 
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
-            $data   = $contll->request('GET', $apiUrl, [], '', 0, 0, 0);
+            $data   = casino_request('GET', $apiUrl, [], '', 0, 0, 0);
 
             $returnVal['return_content'] = json_encode($data);  // 日志
             $this->model->saveItem($returnVal);

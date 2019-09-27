@@ -297,7 +297,7 @@ trait UserAccountLogics
 //            $accountChange->triggerSave();
             $accountLocker->release();
             //推入消息队列处理更新用户盈亏
-            dispatch(new UpdateUserProfits($this->user->id));
+            dispatch(new UpdateUserProfits($this->user->id))->onQueue('default');
 
             return true;
         } catch (Exception $e) {

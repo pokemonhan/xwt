@@ -25,7 +25,7 @@ class CasinoGameSearchAction
         $categorie  = $inputDatas['categorie'] ?? 'e-game';
         $gameCode   = $inputDatas['gameCode'] ?? '';
 
-        $data = CasinoGameList::where('main_game_plat_code', $platCode)->where('category', $categorie)->where('cn_name', $gameCode)->get();
+        $data = CasinoGameList::where('main_game_plat_code', $platCode)->where('category', $categorie)->where('cn_name', 'like', $gameCode . '%')->get();
 
         return $contll->msgOut(true, $data);
     }

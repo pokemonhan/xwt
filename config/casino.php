@@ -1,9 +1,5 @@
 <?php
 return [
-    'game_img_url'  => 'http://52.69.242.200:8086/',
-    'secret_key'    => 'c518ae8a59bdb2fa89a943c7ab920669',
-    'username'      => 'xuanwu',
-
     'categories'    => [
         'live'     => [
             'cateName'  => '真人视讯',
@@ -18,8 +14,6 @@ return [
                 ['key' => 'bg', 'val' => 'BG'],
                 ['key' => 'bbin', 'val' => '波音'],
                 ['key' => 'pt', 'val' => 'PT'],
-                ['key' => 'pt', 'val' => 'PT'],
-                ['key' => 'pt', 'val' => 'PT'],
             ],
         ],
         'card'    => [
@@ -29,7 +23,7 @@ return [
                 ['key' => 'lg', 'val' => '幸运棋牌'],
             ],
         ],
-        'fish'    => [
+        'fishing'    => [
             'cateName'  => '捕鱼',
             'plats'     => [
                 ['key' => 'bbin', 'val' => '波音'],

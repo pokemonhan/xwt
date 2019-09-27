@@ -51,6 +51,12 @@ class PaymentConfigsEditAction
             if (!empty($inputDatas['id']) && isset($inputDatas['id'])) {
                 $payment_config = BackendPaymentConfig::find($inputDatas['id']);
 
+                //判断支付方式配置表是否重复编辑信息
+                $isExistPaymentConfig = $this->isExistPaymentConfig($inputDatas, $payment_config);
+                if (!empty($isExistPaymentConfig) && isset($isExistPaymentConfig)) {
+                    return $contll->msgOut(false, [], '102700');
+                }
+
                 //执行添加操作
                 $payment_config->fill($inputDatas);
                 $payment_config->save();
@@ -93,7 +99,7 @@ class PaymentConfigsEditAction
     /**
      * 更新支付方式详情表信息
      * @param mixed $payment_config 获取支付方式详情表参数.
-     * @param mixed $inputDatas     前台获取参数.
+     * @param mixed $inputDatas     前端获取参数.
      * @return void.
      */
     private function updatePaymentInfo($payment_config, $inputDatas)
@@ -109,5 +115,37 @@ class PaymentConfigsEditAction
         $updateDatas['back_url'] = rtrim(configure('back_url'), '/') . '/' . $updateDatas['direction'] . '/' . ltrim($updateDatas['payment_sign'], '/');//支付方式的返回地址
         //执行更新支付方式详情表信息
         PaymentInfo::where('config_id', $inputDatas['id'])->update($updateDatas);
+    }
+
+    /**
+     * 判断支付方式配置表是否重复编辑信息
+     * @param mixed $inputDatas     前端获取的参数.
+     * @param mixed $payment_config 支付方式列表配置表信息.
+     * @return mixed
+     */
+    private function isExistPaymentConfig($inputDatas, $payment_config)
+    {
+        //判断支付方式详情表是否重复编辑信息
+        if (!empty($inputDatas['payment_sign']) && isset($inputDatas['payment_sign'])) {
+            $array = [
+                ['payment_name', '=', $payment_config->payment_name],
+                ['payment_sign', '=', $inputDatas['payment_sign']],
+            ];
+        } elseif (!empty($inputDatas['payment_name']) && isset($inputDatas['payment_name'])) {
+            $array = [
+                ['payment_name', '=', $inputDatas['payment_name']],
+                ['payment_sign', '=', $payment_config->payment_sign],
+            ];
+        } elseif (empty($inputDatas['payment_name']) && empty($inputDatas['payment_sign']) && !isset($inputDatas['payment_name']) && !isset($inputDatas['payment_sign'])) {
+            $array = [];
+        } else {
+            $array = [
+                ['payment_name', '=', $inputDatas['payment_name']],
+                ['payment_sign', '=', $inputDatas['payment_sign']],
+            ];
+        }
+        if (!empty($array)) {
+            return BackendPaymentConfig::where($array)->first();
+        }
     }
 }

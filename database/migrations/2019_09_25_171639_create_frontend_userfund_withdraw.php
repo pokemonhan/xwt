@@ -120,6 +120,9 @@ class CreateFrontendUserfundWithdraw extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('users_withdraw_audit_lists');
+        Schema::dropIfExists('users_withdraw_histories');
+        Schema::dropIfExists('users_withdraw_history_opts');
+        Schema::dropIfExists('users_withdraw_logs');
     }
 }

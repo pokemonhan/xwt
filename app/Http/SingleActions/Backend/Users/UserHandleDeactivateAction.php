@@ -9,12 +9,19 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class UserHandleDeactivateAction
+ * @package App\Http\SingleActions\Backend\Users
+ */
 class UserHandleDeactivateAction
 {
+    /**
+     * @var FrontendUser
+     */
     protected $model;
 
     /**
-     * @param  FrontendUser  $frontendUser
+     * @param FrontendUser $frontendUser FrontendUser.
      */
     public function __construct(FrontendUser $frontendUser)
     {
@@ -23,8 +30,8 @@ class UserHandleDeactivateAction
 
     /**
      * 用户冻结账号功能
-     * @param  BackEndApiMainController  $contll
-     * @param  array $inputDatas
+     * @param  BackEndApiMainController $contll     BackEndApiMainController.
+     * @param  array                    $inputDatas 请求数据.
      * @return JsonResponse
      */
     public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
@@ -32,9 +39,13 @@ class UserHandleDeactivateAction
         $userEloq = $this->model::find($inputDatas['user_id']);
         //用户类型你:1 直属  2 代理 3 会员
         $allId[] = $inputDatas['user_id'];
-        if ($userEloq->type === 2 || $userEloq->type === 1) {
-            $allSon = $userEloq->children;
-            $this->getAllChildren($allId, $allSon);
+        $isFronzenChild = $inputDatas['is_frozen_child'] ?? 0;
+        //是否冻结下级
+        if ((int) $isFronzenChild === 1) {
+            if ($userEloq->type === 2 || $userEloq->type === 1) {
+                $allSon = $userEloq->children;
+                $this->getAllChildren($allId, $allSon);
+            }
         }
         if ($userEloq !== null) {
             DB::beginTransaction();
@@ -60,10 +71,12 @@ class UserHandleDeactivateAction
     }
 
     /**
-     * @param array $allId
-     * @param object $allSon
+     * 获取所有下级
+     * @param array  $allId  所有下级id.
+     * @param object $allSon 所有一级.
+     * @return void
      */
-    public function getAllChildren(&$allId, $allSon)
+    public function getAllChildren(array &$allId, object $allSon)
     {
         foreach ($allSon as $sonItem) {
             $allId[] = $sonItem->id;

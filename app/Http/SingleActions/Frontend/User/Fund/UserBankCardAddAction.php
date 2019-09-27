@@ -10,13 +10,23 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class UserBankCardAddAction
+ * @package App\Http\SingleActions\Frontend\User\Fund
+ */
 class UserBankCardAddAction
 {
+    /**
+     * @var FrontendUsersBankCard
+     */
     protected $model;
+    /**
+     * @var string $numberSign
+     */
     protected $numberSign = 'binding_bankcard_number';
 
     /**
-     * @param  FrontendUsersBankCard $frontendUsersBankCard
+     * @param  FrontendUsersBankCard $frontendUsersBankCard FrontendUsersBankCard.
      */
     public function __construct(FrontendUsersBankCard $frontendUsersBankCard)
     {
@@ -25,8 +35,8 @@ class UserBankCardAddAction
 
     /**
      * 用户添加绑定银行卡
-     * @param  FrontendApiMainController $contll
-     * @param  array $inputDatas
+     * @param  FrontendApiMainController $contll     FrontendApiMainController.
+     * @param  array                     $inputDatas 请求数据.
      * @return JsonResponse
      */
     public function execute(FrontendApiMainController $contll, array $inputDatas): JsonResponse
@@ -38,7 +48,7 @@ class UserBankCardAddAction
         $maxNumber = $configEloq->value;
         $nowNumber = $this->model::where([
             ['user_id', $contll->partnerUser->id],
-            ['status', $this->model::INITIALIZATION_STATUS] //查询状态为可用银行卡数量
+            ['status', $this->model::INITIALIZATION_STATUS], //查询状态为可用银行卡数量
         ])->count();
         if ($nowNumber >= $maxNumber) {
             return $contll->msgOut(false, [], '100202');
@@ -96,14 +106,25 @@ class UserBankCardAddAction
     }
 
     /**
-     * @param FrontendApiMainController $contll
-     * @param array $inputDatas
+     * @param FrontendApiMainController $contll     FrontendApiMainController.
+     * @param array                     $inputDatas 请求数据.
      * @return JsonResponse
      */
     public function addBankVerifiy(FrontendApiMainController $contll, array $inputDatas)
     {
-        $userIdNum = $this->model::where([['user_id', $contll->partnerUser->id],['status', $this->model::INITIALIZATION_STATUS]])->count();
-        $ownerNameNum = $this->model::where([['owner_name', $inputDatas['owner_name']], ['user_id', $contll->partnerUser->id],['status', $this->model::INITIALIZATION_STATUS]])->count();
+        $userIdNum = $this->model->where([['user_id', $contll->partnerUser->id],['status', $this->model::INITIALIZATION_STATUS]])->count();
+        $ownerNameNum = $this->model->where([
+            ['owner_name', $inputDatas['owner_name']],
+            ['user_id', $contll->partnerUser->id],
+            ['status', $this->model::INITIALIZATION_STATUS],
+        ])->count();
+        //判断该该银行卡是否被其他用户绑定
+        $card = $this->model->where('card_number', $inputDatas['card_number'])->first();
+        if ($card !== null) {
+            if ($card->user_id !== $contll->partnerUser->id) {
+                return $contll->msgOut(false, [], '100212');
+            }
+        }
         //检验当前用户资金密码是否设置
         $funPassword = $contll->partnerUser->fund_password;
         if (!isset($funPassword)) {
@@ -131,8 +152,9 @@ class UserBankCardAddAction
                 return $contll->msgOut(false, [], '100204');
             }
         }
+
         //检验当前用户添加的银行卡号是否存在
-        $cardNumber = $this->model::where([['card_number', $inputDatas['card_number']], ['user_id', $contll->partnerUser->id]])->count();
+        $cardNumber = $this->model->where([['card_number', $inputDatas['card_number']], ['user_id', $contll->partnerUser->id]])->count();
         if (!empty($cardNumber)) {
             return $contll->msgOut(false, [], '100203');
         }

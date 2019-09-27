@@ -29,10 +29,18 @@ use App\Http\SingleActions\Backend\Users\UserHandleUserAccountChangeAction;
 use App\Http\SingleActions\Backend\Users\UserHandleUserRechargeHistoryAction;
 use App\Http\SingleActions\Backend\Users\UserHandleUsersInfoAction;
 use App\Http\SingleActions\Backend\Users\UserHandleDeleteBankCardAction;
+use App\Http\SingleActions\Backend\Users\UserHandleTotalProxyListAction;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class UserHandleController
+ * @package App\Http\Controllers\BackendApi\Users
+ */
 class UserHandleController extends BackEndApiMainController
 {
+    /**
+     * @var string $withNameSpace
+     */
     public $withNameSpace = 'Admin\BackendAdminAuditPasswordsList';
 
     /**
@@ -48,8 +56,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 创建总代与用户后台管理员操作创建
-     * @param  UserHandleCreateUserRequest $request
-     * @param  UserHandleCreateUserAction  $action
+     * @param UserHandleCreateUserRequest $request 请求.
+     * @param UserHandleCreateUserAction  $action  操作.
      * @return JsonResponse
      */
     public function createUser(UserHandleCreateUserRequest $request, UserHandleCreateUserAction $action): JsonResponse
@@ -60,7 +68,7 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户管理的所有用户信息表
-     * @param  UserHandleUsersInfoAction  $action
+     * @param UserHandleUsersInfoAction $action 操作.
      * @return JsonResponse
      */
     public function usersInfo(UserHandleUsersInfoAction $action): JsonResponse
@@ -70,7 +78,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 申请用户密码功能
-     * @param  UserHandleApplyResetUserPasswordRequest $request
+     * @param UserHandleApplyResetUserPasswordRequest  $request 请求.
+     * @param UserHandleCommonHandleUserPasswordAction $action  操作.
      * @return JsonResponse
      */
     public function applyResetUserPassword(
@@ -82,8 +91,8 @@ class UserHandleController extends BackEndApiMainController
     }
 
     /**
-     * 申请资金密码
-     * @param  UserHandleApplyResetUserFundPasswordRequest $request
+     * @param UserHandleApplyResetUserFundPasswordRequest $request 请求.
+     * @param UserHandleCommonHandleUserPasswordAction    $action  操作.
      * @return JsonResponse
      */
     public function applyResetUserFundPassword(
@@ -96,18 +105,18 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 申请资金密码跟密码共用功能
-     * @param  array  $inputDatas
-     * @param  object $action
-     * @param  int    $type todo if type new added then should notice on error message
+     * @param array                                    $inputDatas 请求数据.
+     * @param UserHandleCommonHandleUserPasswordAction $action     操作.
+     * @param integer                                  $type       Todo if type new added then should notice on error message.
      * @return JsonResponse
      */
-    public function commonHandleUserPassword($inputDatas, $action, $type): JsonResponse
+    public function commonHandleUserPassword(array $inputDatas, UserHandleCommonHandleUserPasswordAction $action, int $type): JsonResponse
     {
         return $action->execute($this, $inputDatas, $type);
     }
 
     /**
-     * 用户已申请的密码列表
+     * @param UserHandleCommonAppliedPasswordHandleAction $action 操作.
      * @return JsonResponse
      */
     public function appliedResetUserPasswordLists(UserHandleCommonAppliedPasswordHandleAction $action): JsonResponse
@@ -117,6 +126,7 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户资金密码已申请列表
+     * @param UserHandleCommonAppliedPasswordHandleAction $action 操作.
      * @return JsonResponse
      */
     public function appliedResetUserFundPasswordLists(UserHandleCommonAppliedPasswordHandleAction $action): JsonResponse
@@ -126,17 +136,17 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户登录密码和资金密码公用列表
-     * @param  UserHandleCommonAppliedPasswordHandleAction $action
+     * @param UserHandleCommonAppliedPasswordHandleAction $action 操作.
      * @return JsonResponse
      */
-    private function commonAppliedPasswordHandle($action): JsonResponse
+    private function commonAppliedPasswordHandle(UserHandleCommonAppliedPasswordHandleAction $action): JsonResponse
     {
         return $action->execute($this);
     }
 
     /**
-     * @param  UserHandleCommonAuditPasswordRequest $request
-     * @param  UserHandleCommonAuditPasswordAction  $action
+     * @param  UserHandleCommonAuditPasswordRequest $request 请求.
+     * @param  UserHandleCommonAuditPasswordAction  $action  操作.
      * @return JsonResponse
      */
     public function auditApplyUserPassword(
@@ -147,8 +157,8 @@ class UserHandleController extends BackEndApiMainController
     }
 
     /**
-     * @param  UserHandleCommonAuditPasswordRequest $request
-     * @param  UserHandleCommonAuditPasswordAction  $action
+     * @param  UserHandleCommonAuditPasswordRequest $request 请求.
+     * @param  UserHandleCommonAuditPasswordAction  $action  操作.
      * @return JsonResponse
      */
     public function auditApplyUserFundPassword(
@@ -159,11 +169,11 @@ class UserHandleController extends BackEndApiMainController
     }
 
     /**
-     * @param  object $request
-     * @param  object $action
+     * @param  UserHandleCommonAuditPasswordRequest $request 请求.
+     * @param  UserHandleCommonAuditPasswordAction  $action  操作.
      * @return JsonResponse
      */
-    public function commonAuditPassword($request, $action): JsonResponse
+    public function commonAuditPassword(UserHandleCommonAuditPasswordRequest $request, UserHandleCommonAuditPasswordAction $action): JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
@@ -171,8 +181,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户冻结账号功能
-     * @param  UserHandleDeactivateRequest $request
-     * @param  UserHandleDeactivateAction  $action
+     * @param  UserHandleDeactivateRequest $request 请求.
+     * @param  UserHandleDeactivateAction  $action  操作.
      * @return JsonResponse
      */
     public function deactivate(UserHandleDeactivateRequest $request, UserHandleDeactivateAction $action): JsonResponse
@@ -183,8 +193,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户冻结记录
-     * @param  UserHandleDeactivateDetailRequest $request
-     * @param  UserHandleDeactivateDetailAction  $action
+     * @param  UserHandleDeactivateDetailRequest $request 请求.
+     * @param  UserHandleDeactivateDetailAction  $action  操作.
      * @return JsonResponse
      */
     public function deactivateDetail(
@@ -197,8 +207,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户帐变记录
-     * @param  UserHandleUserAccountChangeRequest $request
-     * @param  UserHandleUserAccountChangeAction  $action
+     * @param  UserHandleUserAccountChangeRequest $request 请求.
+     * @param  UserHandleUserAccountChangeAction  $action  操作.
      * @return JsonResponse
      */
     public function userAccountChange(
@@ -211,8 +221,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户充值记录
-     * @param  UserHandleUserRechargeHistoryRequest $request
-     * @param  UserHandleUserRechargeHistoryAction  $action
+     * @param  UserHandleUserRechargeHistoryRequest $request 请求.
+     * @param  UserHandleUserRechargeHistoryAction  $action  操作.
      * @return JsonResponse
      */
     public function userRechargeHistory(
@@ -225,8 +235,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 人工扣除用户资金
-     * @param  UserHandleDeductionBalanceRequest $request
-     * @param  UserHandleDeductionBalanceAction  $action
+     * @param  UserHandleDeductionBalanceRequest $request 请求.
+     * @param  UserHandleDeductionBalanceAction  $action  操作.
      * @return JsonResponse
      */
     public function deductionBalance(
@@ -239,8 +249,8 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 用户银行卡列表
-     * @param  UserHandleBankCardListRequest $request
-     * @param  UserHandleBankCardListAction  $action
+     * @param  UserHandleBankCardListRequest $request 请求.
+     * @param  UserHandleBankCardListAction  $action  操作.
      * @return JsonResponse
      */
     public function bankCardList(
@@ -252,8 +262,8 @@ class UserHandleController extends BackEndApiMainController
     }
 
     /**
-     * @param UserHandleDeleteBankCardRequest $request
-     * @param UserHandleDeleteBankCardAction $action
+     * @param UserHandleDeleteBankCardRequest $request 请求.
+     * @param UserHandleDeleteBankCardAction  $action  操作.
      * @return JsonResponse
      */
     public function deleteBankCard(
@@ -266,7 +276,7 @@ class UserHandleController extends BackEndApiMainController
 
     /**
      * 获取系统公共头像列表
-     * @param  UserHandlePublicAvatarAction $action
+     * @param  UserHandlePublicAvatarAction $action 操作.
      * @return JsonResponse
      */
     public function publicAvatar(UserHandlePublicAvatarAction $action): JsonResponse
@@ -275,8 +285,8 @@ class UserHandleController extends BackEndApiMainController
     }
     /**
      * 设定用户头像
-     * @param  UserHandleSetUserAvatarRequest $request
-     * @param  UserHandleSetUserAvatarAction $action
+     * @param  UserHandleSetUserAvatarRequest $request 请求.
+     * @param  UserHandleSetUserAvatarAction  $action  操作.
      * @return JsonResponse
      */
     public function setUserAvatar(
@@ -285,5 +295,15 @@ class UserHandleController extends BackEndApiMainController
     ): JsonResponse {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
+    }
+
+    /**
+     * 总代、代理列表
+     * @param UserHandleTotalProxyListAction $action 操作.
+     * @return JsonResponse
+     */
+    public function TotalProxyList(UserHandleTotalProxyListAction $action): JsonResponse
+    {
+        return $action->execute($this);
     }
 }

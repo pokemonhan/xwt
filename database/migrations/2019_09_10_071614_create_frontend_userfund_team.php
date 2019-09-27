@@ -38,6 +38,8 @@ class CreateFrontendUserfundTeam extends Migration
             $table->decimal('bet_commission',16,4)->nullable()->default(0.0000);
             $table->decimal('dividend',16,4)->nullable()->default(0.0000);
             $table->decimal('daily_salary',16,4)->nullable()->default(0.0000);
+            $table->decimal('team_net_profit_total',16,4)->nullable()->default(0.0000)->comment('团队净盈亏（不包括自己的）');
+            $table->decimal('net_profit_total',16,4)->nullable()->default(0.0000)->comment('净盈亏');
             $table->unique(['user_id', 'date'],'userid_date');
             $table->unique(['username', 'date'],'username_date');
             $table->index('date','date');
@@ -55,6 +57,6 @@ class CreateFrontendUserfundTeam extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('user_profits');
     }
 }

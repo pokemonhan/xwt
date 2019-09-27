@@ -184,6 +184,12 @@ class CreateFrontendUserfund extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('frontend_user_dividend_configs');
+        Schema::dropIfExists('frontend_user_dividend_reports');
+        Schema::dropIfExists('frontend_users_accounts');
+        Schema::dropIfExists('frontend_users_accounts_reports');
+        Schema::dropIfExists('frontend_users_accounts_types');
+        Schema::dropIfExists('frontend_users_accounts_types_params');
+        Schema::dropIfExists('frontend_users_bank_cards');
     }
 }

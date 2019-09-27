@@ -111,6 +111,10 @@ class CreateFrontendUser extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('user_public_avatars');
+        Schema::dropIfExists('frontend_users');
+        Schema::dropIfExists('frontend_links_registered_users');
+        Schema::dropIfExists('frontend_users_privacy_flows');
+        Schema::dropIfExists('frontend_users_specific_infos');
     }
 }

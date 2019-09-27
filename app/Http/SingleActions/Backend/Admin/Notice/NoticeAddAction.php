@@ -10,14 +10,21 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Lib\BaseCache;
 
+/**
+ * Class NoticeAddAction
+ * @package App\Http\SingleActions\Backend\Admin\Notice
+ */
 class NoticeAddAction
 {
     use BaseCache;
 
+    /**
+     * @var FrontendMessageNoticesContent $model
+     */
     protected $model;
 
     /**
-     * @param  FrontendMessageNoticesContent  $frontendMessageNoticesContent
+     * @param FrontendMessageNoticesContent $frontendMessageNoticesContent FrontendMessageNoticesContent.
      */
     public function __construct(FrontendMessageNoticesContent $frontendMessageNoticesContent)
     {
@@ -26,8 +33,8 @@ class NoticeAddAction
 
     /**
      * 添加 公告|站内信
-     * @param  BackEndApiMainController  $contll
-     * @param  array                     $inputDatas
+     * @param BackEndApiMainController $contll     BackEndApiMainController.
+     * @param array                    $inputDatas 请求.
      * @return JsonResponse
      */
     public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
@@ -43,6 +50,7 @@ class NoticeAddAction
             //新添加的公告默认靠最前   sort=1 之前的公告sort自增1
             $this->model::where('sort', '>=', 1)->increment('sort');
             $noticesContentData['sort'] = 1;
+            $noticesContentData['top'] = $this->model::TOP_CLOSE;
             $noticesContentELoq->fill($noticesContentData);
             $noticesContentELoq->save();
             if ($noticesContentELoq->errors()->messages()) {
@@ -74,14 +82,15 @@ class NoticeAddAction
 
     /**
      * 给用户发送站内信
-     * @param  int $noticesContentId
+     * @param integer $noticesContentId 站内信Id.
+     * @return mixed
      */
-    public function insertUserNotice($noticesContentId)
+    public function insertUserNotice(int $noticesContentId)
     {
-        $userIds = FrontendUser::getAllUserIds(); //所有用户id Eloq
-        foreach ($userIds as $user) {
+        $arrUserIds = FrontendUser::pluck('id'); //所有用户id Eloq
+        foreach ($arrUserIds as $userId) {
             $messageNoticeData = [
-                'receive_user_id' => $user->id,
+                'receive_user_id' => $userId,
                 'notices_content_id' => $noticesContentId,
                 'status' => FrontendMessageNotice::STATUS_UNREAD,
             ];

@@ -7,15 +7,6 @@ use App\Models\Admin\Notice\FrontendMessageNotice;
 trait FrontendUserTraits
 {
     /**
-     * 获取所有用户id
-     * @return Collection|static[]
-     */
-    public static function getAllUserIds()
-    {
-        return self::select('id')->get();
-    }
-
-    /**
      * 用户未读站内信数量
      * @return integer
      */
@@ -60,5 +51,15 @@ trait FrontendUserTraits
         $childrenBalance = $this->with('children.account:balance')->get()->sum('balance');
         $teamBalance = (float) ($selfBalance + $childrenBalance);
         return $teamBalance;
+    }
+
+    /**
+     * @param integer $parentId 父id.
+     * @return mixed
+     */
+    public static function getRid(int $parentId)
+    {
+        $userRid = self::select('rid')->where('id', $parentId)->first();
+        return $userRid;
     }
 }

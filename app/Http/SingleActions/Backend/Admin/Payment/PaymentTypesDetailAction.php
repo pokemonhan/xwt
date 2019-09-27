@@ -32,7 +32,7 @@ class PaymentTypesDetailAction
      */
     public function execute(PaymentTypesController $contll): JsonResponse
     {
-        $searchAbleFields = ['is_bank'];
+        $searchAbleFields = ['is_bank'];//搜索条件：是否是银行 0 不是 1 是
         $orderFields = 'id';
         $orderFlow = 'asc';
         //处理执行支付方式配置表异常

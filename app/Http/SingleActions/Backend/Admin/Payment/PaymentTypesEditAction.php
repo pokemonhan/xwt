@@ -9,7 +9,6 @@ use App\Models\Admin\Payment\BackendPaymentType;
 use Illuminate\Http\JsonResponse;
 use App\Lib\BaseCache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
 /**
@@ -44,19 +43,16 @@ class PaymentTypesEditAction
     public function execute(PaymentTypesController $contll, array $inputDatas): JsonResponse
     {
         DB::beginTransaction();
-        $previewIco = []; //保存图片的变量
+        $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
         $imageObj = new ImageArrange();
+        //判断图片地址是否变化
+        if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
+            $folderName = 'payment_type';
+            $depositPath = $imageObj->depositPath($folderName, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name) . '/ico';
+            $icoArr = $imageObj->uploadImg($inputDatas['payment_ico'], $depositPath);
+            $inputDatas['payment_ico'] = '/' . $icoArr['path'];
+        }
         try {
-            $pastDataEloq = BackendPaymentType::find($inputDatas['id']);
-            //判断图片地址是否变化
-            if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
-                $previewIco = $this->savePic($imageObj, 'payment_ico', $contll, $inputDatas['payment_ico']);
-                if ($previewIco['success'] === false) {
-                    return $contll->msgOut(false, [], '400', $previewIco['msg']);
-                }
-                $inputDatas['payment_ico'] = '/' . $previewIco['path'];
-            }
-
             //判断插入数据库是否有重复
             $isExistType = $this->isExistType($inputDatas, $pastDataEloq);
             if (!empty($isExistType) && isset($isExistType)) {
@@ -65,6 +61,10 @@ class PaymentTypesEditAction
 
             //执行修改
             $pastDataEloq->fill($inputDatas);
+            //删除原图
+            if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
+                $imageObj->deletePic(substr($inputDatas['payment_ico'], 1));
+            }
             $pastDataEloq->save();
 
             //更新支付配置表信息
@@ -72,50 +72,12 @@ class PaymentTypesEditAction
             DB::commit();
             return $contll->msgOut(true);
         } catch (Exception $e) {
-            $this->deletePic($imageObj, $inputDatas['payment_ico']);
-            Log::channel('dy-activity')->info($e->getMessage());
+            //删除原图
+            if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
+                $imageObj->deletePic(substr($inputDatas['payment_ico'], 1));
+            }
             DB::rollBack();
-            return $contll->msgOut(false, [], '400', '系统异常');
-        }
-    }
-
-    /**
-     * 保存图片
-     * @param mixed $imageObj  ImageObj.
-     * @param mixed $path      Path.
-     * @param mixed $contll    Contll.
-     * @param mixed $picSource PicSource.
-     * @return mixed
-     */
-    private function savePic($imageObj, $path, $contll, $picSource)
-    {
-        $picSavePath = $imageObj->depositPath($contll->currentPlatformEloq->platform_name . '/' . $path, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name);
-        $previewPic = $imageObj->uploadImg($picSource, $picSavePath);
-        return $previewPic;
-    }
-
-    /**
-     * 如果上传失败删除图片
-     * @param mixed $imageObj   ImageObj.
-     * @param mixed $previewIco PreviewIco.
-     * @return void
-     */
-    private function deletePic($imageObj, $previewIco)
-    {
-        if (isset($previewIco['payment_ico'])) {//上传失败   删除前面上传的图片
-            $imageObj->deletePic($previewIco['payment_ico']);
-        }
-    }
-
-    /**
-     * @param mixed $imageObj   ImageObj.
-     * @param mixed $previewIco PreviewIco.
-     * @return void
-     */
-    private function deletePicNoFinsh($imageObj, $previewIco)
-    {
-        if (isset($previewIco) && !empty($previewIco)) {
-            $imageObj->deletePic(substr($previewIco, 1));
+            return $contll->msgOut(false, [], '102602');
         }
     }
 

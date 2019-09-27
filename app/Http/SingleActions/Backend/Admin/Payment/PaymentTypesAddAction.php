@@ -7,7 +7,6 @@ use App\Lib\Common\ImageArrange;
 use App\Models\Admin\Payment\BackendPaymentType;
 use Illuminate\Http\JsonResponse;
 use App\Lib\BaseCache;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
 /**
@@ -40,74 +39,24 @@ class PaymentTypesAddAction
      */
     public function execute(PaymentTypesController $contll, array $inputDatas): JsonResponse
     {
-        $previewIco = []; //保存图片的变量
         $imageObj = new ImageArrange();
+        $folderName = 'payment_type';
+        $depositPath = $imageObj->depositPath($folderName, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name) . '/ico';
+        $icoArr = $imageObj->uploadImg($inputDatas['payment_ico'], $depositPath);
         try {
-            //上传图标
-            if (isset($inputDatas['payment_ico'])) {
-                $previewIco = $this->savePic($imageObj, 'payment_ico', $contll, $inputDatas['payment_ico']);
-                if ($previewIco['success'] === false) {
-                    return $contll->msgOut(false, [], '400', $previewIco['msg']);
-                }
-                $inputDatas['payment_ico'] = '/' . $previewIco['path'];
-            } else {
-                return $contll->msgOut(false, [], '102600');
-            }
+            $inputDatas['payment_ico'] = '/' . $icoArr['path'];
             //执行添加
             $pastDataEloq = new $this->model();
             $pastDataEloq->fill($inputDatas);
+            //删除原图
+            $imageObj->deletePic(substr($pastDataEloq['payment_ico'], 1));
+            //执行添加操作
             $pastDataEloq->save();
-            //执行错误添加后的操作
-            if ($pastDataEloq->errors()->messages()) {
-                $this->deletePic($imageObj, $inputDatas['payment_ico']);
-                return $contll->msgOut(false, [], '400', $pastDataEloq->errors()->messages());
-            }
-            $this->deletePicNoFinsh($imageObj, $inputDatas['payment_ico']);
             return $contll->msgOut(true);
         } catch (Exception $e) {
-            $this->deletePic($imageObj, $inputDatas['payment_ico']);
-            Log::channel('dy-activity')->info($e->getMessage());
-            return $contll->msgOut(false, [], '400', '系统异常');
-        }
-    }
-
-    /**
-     * 保存图片
-     * @param mixed $imageObj  ImageObj.
-     * @param mixed $path      Path.
-     * @param mixed $contll    Contll.
-     * @param mixed $picSource PicSource.
-     * @return mixed
-     */
-    private function savePic($imageObj, $path, $contll, $picSource)
-    {
-        $picSavePath = $imageObj->depositPath($contll->currentPlatformEloq->platform_name . '/' . $path, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name);
-        $previewPic = $imageObj->uploadImg($picSource, $picSavePath);
-        return $previewPic;
-    }
-
-    /**
-     * 如果上传失败删除图片
-     * @param mixed $imageObj   ImageObj.
-     * @param mixed $previewIco PreviewIco.
-     * @return void
-     */
-    private function deletePic($imageObj, $previewIco)
-    {
-        if (isset($previewIco['payment_ico'])) {//上传失败   删除前面上传的图片
-            $imageObj->deletePic($previewIco['payment_ico']);
-        }
-    }
-
-    /**
-     * @param mixed $imageObj   ImageObj.
-     * @param mixed $previewIco PreviewIco.
-     * @return void
-     */
-    private function deletePicNoFinsh($imageObj, $previewIco)
-    {
-        if (isset($previewIco) && !empty($previewIco)) {
-            $imageObj->deletePic(substr($previewIco, 1));
+            //删除上传成功的图片
+            $imageObj->deletePic($icoArr['path']);
+            return $contll->msgOut(false, [], $e->getCode(), $e->getMessage());
         }
     }
 }

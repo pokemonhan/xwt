@@ -28,9 +28,9 @@ class PaymentConfigsEditRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|exists:backend_payment_configs,id',//ID
-            'payment_vendor_id' => 'required|numeric|exists:backend_payment_vendors,id',//支付厂商的id
-            'payment_type_id' => 'required|numeric|exists:backend_payment_types,id',//支付类型的id
+            'id' => 'required|numeric|exists:backend_payment_configs,id',//支付配置表ID
+            'payment_vendor_id' => 'required|numeric|exists:backend_payment_vendors,id',//支付厂商表ID
+            'payment_type_id' => 'required|numeric|exists:backend_payment_types,id',//支付类型表ID
             'payment_name' => 'required|string',//支付方式名称
             'payment_sign' => 'required|string',//支付方式标记
             'request_url' => 'required|string',//支付方式请求地址

@@ -10,12 +10,19 @@ use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * Class BackendAuthDeletePartnerAdminAction
+ * @package App\Http\SingleActions\Backend
+ */
 class BackendAuthDeletePartnerAdminAction
 {
+    /**
+     * @var BackendAdminUser
+     */
     protected $model;
 
     /**
-     * @param  BackendAdminUser  $backendAdminUser
+     * @param BackendAdminUser $backendAdminUser BackendAdminUser.
      */
     public function __construct(BackendAdminUser $backendAdminUser)
     {
@@ -24,8 +31,8 @@ class BackendAuthDeletePartnerAdminAction
 
     /**
      * 删除管理员
-     * @param  BackEndApiMainController  $contll
-     * @param  array $inputDatas
+     * @param BackEndApiMainController $contll     BackEndApiMainController.
+     * @param array                    $inputDatas 请求数据.
      * @return JsonResponse
      */
     public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
@@ -35,6 +42,10 @@ class BackendAuthDeletePartnerAdminAction
             ['name', '=', $inputDatas['name']],
         ])->first();
         if ($targetUserEloq !== null) {
+            //判断当前用户是否已登录
+            if ($contll->partnerAdmin->id === $targetUserEloq->id && $contll->partnerAdmin->name === $targetUserEloq->name) {
+                return $contll->msgOut(false, [], '100006');
+            }
             if ($targetUserEloq->remember_token !== null) {
                 try {
                     JWTAuth::setToken($targetUserEloq->remember_token);

@@ -4,36 +4,69 @@
 namespace App\Http\SingleActions\Backend\Admin\Withdraw;
 
 use App\Http\Controllers\BackendApi\Admin\Withdraw\WithdrawController;
+use App\Models\Pay\PaymentInfo;
+use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\UsersWithdrawHistorie;
 use App\Models\User\UsersWithdrawHistoryOpt;
+use App\Pay\Core\PayHandlerFactory;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class WithdrawStatusAction
+ * @package App\Http\SingleActions\Backend\Admin\Withdraw
+ */
 class WithdrawStatusAction
 {
+    /**
+     * @var UsersWithdrawHistorie $model 模型.
+     */
     protected $model;
+    /**
+     * @var UsersWithdrawHistoryOpt $userWithdrawHistoryOptModel 提现记录操作的模型.
+     */
     protected $userWithdrawHistoryOptModel;
-    protected $userWithdrawHistory; //用户提现记录
-    protected $userWithdrawHistoryOpt; //用户提现记录对应的操作
+    /**
+     * @var object $userWithdrawHistory 用户提现记录.
+     */
+    protected $userWithdrawHistory;
+    /**
+     * @var object $userWithdrawHistoryOpt 用户提现记录对应的操作.
+     */
+    protected $userWithdrawHistoryOpt;
+    /**
+     * @var object $contll 控制器.
+     */
     protected $contll;
 
     /**
      * WithdrawStatusAction constructor.
-     * @param UsersWithdrawHistorie $usersWithdrawHistorie
-     * @param UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt
+     * @param UsersWithdrawHistorie   $usersWithdrawHistorie   用户提现记录.
+     * @param UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt 用户提现记录对应的操作.
      */
     public function __construct(UsersWithdrawHistorie $usersWithdrawHistorie, UsersWithdrawHistoryOpt $usersWithdrawHistoryOpt)
     {
         $this->model = $usersWithdrawHistorie;
         $this->userWithdrawHistoryOptModel = $usersWithdrawHistoryOpt;
     }
-    //初始化
-    public function initVarEnv($inputDatas)
+
+    /**
+     * 初始化
+     * @param array $inputDatas 参数.
+     * @return void
+     */
+    public function initVarEnv(array $inputDatas)
     {
         $this->userWithdrawHistory = $this->model::where('id', $inputDatas['id'])->first(); //提现记录
         $this->userWithdrawHistoryOpt = $this->userWithdrawHistory->withdrawHistoryOpt;
     }
+
+    /**
+     * @param WithdrawController $contll     控制器.
+     * @param array              $inputDatas 参数.
+     * @return JsonResponse
+     */
     public function execute(WithdrawController $contll, array $inputDatas) :JsonResponse
     {
         $flag = false;
@@ -72,11 +105,11 @@ class WithdrawStatusAction
 
     /**
      * 接手处理
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function takeOver($inputDatas) :bool
+    private function takeOver(array $inputDatas) :bool
     {
         if (!isset($this->userWithdrawHistoryOpt) && (int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_WAIT) {
             DB::beginTransaction();
@@ -103,11 +136,11 @@ class WithdrawStatusAction
 
     /**
      * 驳回
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function turnDown($inputDatas) :bool
+    private function turnDown(array $inputDatas) :bool
     {
         $this->takeOver($inputDatas);  //先认领
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_CLAIMED) {
@@ -120,7 +153,16 @@ class WithdrawStatusAction
             $this->userWithdrawHistoryOpt->check_remark = $inputDatas['remark'];
             if ($this->userWithdrawHistory->save() && $this->userWithdrawHistoryOpt->save()) {
                 DB::commit();
-                // todo 用户提现的钱加回去,同时写入对应的账变记录
+                $params = [
+                    'user_id' => $this->userWithdrawHistory->user_id,
+                    'amount' => $this->userWithdrawHistory->amount,
+                ];
+                $account = FrontendUsersAccount::where('user_id', $this->userWithdrawHistory->user_id)->first();
+                $resouce = $account->operateAccount($params, 'withdraw_un_frozen');
+                if ($resouce !== true) {
+                    DB::rollBack();
+                    return false;
+                }
                 return true;
             } else {
                 DB::rollBack();
@@ -134,26 +176,33 @@ class WithdrawStatusAction
 
     /**
      * 审核通过
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function passed($inputDatas) :bool
+    private function passed(array $inputDatas) :bool
     {
         $this->takeOver($inputDatas); //先认领
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_CLAIMED) {
             DB::beginTransaction();
+            $paymentInfo = PaymentInfo::where('payment_sign', $inputDatas['channel'])->first();
             $this->userWithdrawHistory->status = $inputDatas['status'];
             $this->userWithdrawHistoryOpt->status = $inputDatas['status'];
             $this->userWithdrawHistoryOpt->audit_manager_id = $this->contll->partnerAdmin->id;
             $this->userWithdrawHistoryOpt->audit_manager = $this->contll->partnerAdmin->name;
             $this->userWithdrawHistoryOpt->audit_time = Carbon::now();
-            //$this->userWithdrawHistoryOpt->remittance_amount = '提现金额 - 手续费'; //待开发 统一出款API开发完在完善
-            $this->userWithdrawHistoryOpt->channel_id = $inputDatas['channel_id'];
-            // $this->userWithdrawHistoryOpt->channel_sign = $inputDatas['channel_id']; //待开发
+            if (!empty($paymentInfo->rebate_handFee)) {
+                $this->userWithdrawHistoryOpt->remittance_amount = $this->userWithdrawHistory->amount - $paymentInfo->rebate_handFee;
+                $this->userWithdrawHistory->real_amount = $this->userWithdrawHistory->amount - $paymentInfo->rebate_handFee;
+            } else {
+                $this->userWithdrawHistoryOpt->remittance_amount = $this->userWithdrawHistory->amount;
+                $this->userWithdrawHistory->real_amount = $this->userWithdrawHistory->amount;
+            }
+            $this->userWithdrawHistoryOpt->channel_id = $paymentInfo->id;
+            $this->userWithdrawHistoryOpt->channel_sign = $inputDatas['channel'];
             if ($this->userWithdrawHistory->save() && $this->userWithdrawHistoryOpt->save()) {
                 DB::commit();
-                // todo 调用统一出款API 出款成功则将订单状态变为成功 否则变为失败 如果是人工出款则特殊处理
+                $this->withdraw($paymentInfo, $inputDatas); //去提现
                 return true;
             } else {
                 DB::rollBack();
@@ -165,12 +214,38 @@ class WithdrawStatusAction
     }
 
     /**
-     * 手动成功
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param PaymentInfo $paymentInfo 支付渠道.
+     * @param array       $inputDatas  数据.
+     * @return void
      */
-    private function toSuccess($inputDatas) :bool
+    public function withdraw(PaymentInfo $paymentInfo, array $inputDatas) :void
+    {
+        if (!empty($banks_code = $paymentInfo->paymentConfig->banks_code)) { //获得支付厂商的bank_code
+            $banks_code = explode('|', $banks_code);
+            foreach ($banks_code as $item) {
+                [$bank_code1,$bank_code2] = explode('=', $item);
+                if (strtolower($bank_code1) === strtolower($this->userWithdrawHistory->bank_sign)) {
+                    $payment_bank_code = $bank_code2;
+                }
+            }
+        }
+        $payParams = [
+            'payment_sign' => $inputDatas['channel'],
+            'order_no' => $this->userWithdrawHistory->company_order_num,
+            'money' => $this->userWithdrawHistory->real_amount,
+            'bank_code' => $payment_bank_code??'',
+            'card_number' => $this->userWithdrawHistory->card_number??'',
+            'card_username' => $this->userWithdrawHistory->card_username??'',
+        ];
+        (new PayHandlerFactory())->generatePayHandle($inputDatas['channel'], $payParams)->handle();
+    }
+    /**
+     * 手动成功
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
+     */
+    private function toSuccess(array $inputDatas) :bool
     {
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_SUCCESS) {
             DB::beginTransaction();
@@ -178,6 +253,16 @@ class WithdrawStatusAction
             $this->userWithdrawHistoryOpt->status = $inputDatas['status'];
             if ($this->userWithdrawHistory->save() && $this->userWithdrawHistoryOpt->save()) {
                 DB::commit();
+                $params = [
+                    'user_id' => $this->userWithdrawHistory->user_id,
+                    'amount' => $this->userWithdrawHistory->amount,
+                ];
+                $account = FrontendUsersAccount::where('user_id', $this->userWithdrawHistory->user_id)->first();
+                $resouce = $account->operateAccount($params, 'withdraw_finish');
+                if ($resouce !== true) {
+                    DB::rollBack();
+                    return false;
+                }
                 return true;
             } else {
                 DB::rollBack();
@@ -189,11 +274,11 @@ class WithdrawStatusAction
 
     /**
      * 手动失败
-     * @param array $inputDatas
-     * @return bool
-     * @throws \Exception
+     * @param array $inputDatas 参数.
+     * @return boolean
+     * @throws \Exception 异常.
      */
-    private function toFail($inputDatas) :bool
+    private function toFail(array $inputDatas) :bool
     {
         if ((int) $this->userWithdrawHistory->status === $this->model::STATUS_AUDIT_SUCCESS) {
             DB::beginTransaction();
@@ -201,7 +286,16 @@ class WithdrawStatusAction
             $this->userWithdrawHistoryOpt->status = $inputDatas['status'];
             if ($this->userWithdrawHistory->save() && $this->userWithdrawHistoryOpt->save()) {
                 DB::commit();
-                // todo 用户提现的钱加回去,同时写入对应的账变记录
+                $params = [
+                    'user_id' => $this->userWithdrawHistory->user_id,
+                    'amount' => $this->userWithdrawHistory->amount,
+                ];
+                $account = FrontendUsersAccount::where('user_id', $this->userWithdrawHistory->user_id)->first();
+                $resouce = $account->operateAccount($params, 'withdraw_un_frozen');
+                if ($resouce !== true) {
+                    DB::rollBack();
+                    return false;
+                }
                 return true;
             } else {
                 DB::rollBack();

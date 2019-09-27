@@ -54,3 +54,16 @@ Route::group([
     }
     unset($aRouteFiles);
 });
+
+Route::group([
+    'middleware' => ['casino-api'],
+    'namespace' => 'CasinoApi',
+    'prefix' => 'casino-api',
+], static function () {
+    $sRouteDir = base_path().'/routes/casino/';
+    $aRouteFiles = glob($sRouteDir.'*.php');
+    foreach ($aRouteFiles as $sRouteFile) {
+        include $sRouteFile;
+    }
+    unset($aRouteFiles);
+});

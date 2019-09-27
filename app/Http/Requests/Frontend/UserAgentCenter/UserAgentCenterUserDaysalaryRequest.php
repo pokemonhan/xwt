@@ -4,7 +4,7 @@ namespace App\Http\Requests\Frontend\UserAgentCenter;
 
 use App\Http\Requests\BaseFormRequest;
 
-class UserDaysalaryRequest extends BaseFormRequest
+class UserAgentCenterUserDaysalaryRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

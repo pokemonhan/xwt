@@ -6,7 +6,7 @@
  */
 
 //首页
-Route::group(['prefix' => 'homepage', 'namespace' => 'Homepage'], function () {
+Route::group(['prefix' => 'homepage', 'namespace' => 'Homepage'], static function () {
     $namePrefix = 'mobile-api.HomepageController.';
     $controller = 'HomepageController@';
 
@@ -24,6 +24,11 @@ Route::group(['prefix' => 'homepage', 'namespace' => 'Homepage'], function () {
     Route::match(['get', 'options'], 'popular-lotteries', [
         'as' => $namePrefix . 'popular-lotteries',
         'uses' => $controller . 'popularLotteries',
+    ]);
+    //热门-娱乐城游戏
+    Route::match(['get', 'options'], 'casino-game', [
+        'as' => $namePrefix . 'casino-game',
+        'uses' => $controller . 'casinoGame',
     ]);
     //热门玩法
     Route::match(['get', 'options'], 'popular-methods', [

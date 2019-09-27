@@ -3,25 +3,36 @@
 namespace App\Rules\Frontend\Lottery\Bet;
 
 use App\Models\Game\Lottery\LotteryList;
-use Exception;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * BallsCodeRule
+ */
 class BallsCodeRule implements Rule
 {
+    /**
+     * @var string
+     */
     protected $message = '注单号不符合';
+
+    /**
+     * @var LotteryList
+     */
     protected $lottery;
+
+    /**
+     * @var array
+     */
     protected $balls;
 
     /**
      * BallsCodeRule constructor.
-     * @param  string  $lotterySign
-     * @param  array  $balls
-     * @throws Exception
+     * @param string $lotterySign 彩种.
+     * @param array  $balls       下注参数.
      */
-    public function __construct($lotterySign, array $balls)
+    public function __construct(string $lotterySign, array $balls)
     {
         $this->lottery = LotteryList::getLottery($lotterySign);
         $this->balls = $balls;
@@ -30,9 +41,9 @@ class BallsCodeRule implements Rule
 
     /**
      * Determine if the validation rule passes.
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @param mixed $attribute 属性.
+     * @param mixed $value     下注号码string.
+     * @return boolean
      */
     public function passes($attribute, $value)
     {
@@ -45,11 +56,11 @@ class BallsCodeRule implements Rule
     }
 
     /**
-     * @param  string  $methodId
-     * @param  string  $value
-     * @return bool
+     * @param string $methodId 玩法.
+     * @param string $value    值.
+     * @return boolean
      */
-    private function pregMethodCode($methodId, $value): bool
+    private function pregMethodCode(string $methodId, string $value): bool
     {
         $pattern = Config::get('game.method_regex.'.$this->lottery->series_id.'.'.$methodId);
         if (empty($pattern)) {
@@ -63,11 +74,11 @@ class BallsCodeRule implements Rule
     }
 
     /**
-     * @param  string  $methodId
-     * @param  string  $code
-     * @return bool
+     * @param string $methodId 玩法.
+     * @param string $code     号码.
+     * @return boolean
      */
-    private function checkValidByLib($methodId, $code): bool
+    private function checkValidByLib(string $methodId, string $code): bool
     {
         $result = true;
         $method = $this->lottery->getMethod($methodId);
@@ -92,11 +103,11 @@ class BallsCodeRule implements Rule
     }
 
     /**
-     * @param  string  $pattern
-     * @param  string  $value
-     * @return bool
+     * @param string $pattern 玩法.
+     * @param string $value   号码.
+     * @return boolean
      */
-    private function checkValid($pattern, $value): ?bool
+    private function checkValid(string $pattern, string $value): ?bool
     {
         if (!preg_match($pattern, $value)) {
             $this->message = $this->lottery->series_id.'注单号不符合';
@@ -107,23 +118,13 @@ class BallsCodeRule implements Rule
     }
 
     /**
-     * @param  string  $attribute
+     * @param string $attribute 属性.
      * @return string
      */
-    private function checkMethodId($attribute): string
+    private function checkMethodId(string $attribute): string
     {
-        $methodId = '';
         preg_match('/\d+/', $attribute, $matches);
-        try {
-            $methodId = $this->balls[$matches[0]]['method_id'];
-        } catch (Exception $e) {
-            if (!empty($this->balls)) {
-                $arrMethod = json_decode($this->balls, true);
-                $methodId = $arrMethod[$matches[0]]['method_id'];
-            } else {
-                Log::error($e->getMessage().$e->getTraceAsString().$attribute);
-            }
-        }
+        $methodId = $this->balls[$matches[0]]['method_id'];
         return $methodId;
     }
 

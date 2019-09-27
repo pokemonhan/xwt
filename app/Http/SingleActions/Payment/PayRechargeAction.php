@@ -3,24 +3,23 @@ namespace App\Http\SingleActions\Payment;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
-use App\Http\Controllers\FrontendApi\Pay\PayController;
+use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
+use App\Http\Requests\Frontend\Pay\RechargeCallbackRequest;
+use App\Http\Requests\Frontend\Pay\RechargeList;
+use App\Http\Requests\Frontend\Pay\RechargeRequest;
 use App\Lib\Pay\Panda;
 use App\Models\Pay\BackendPaymentConfig;
 use App\Models\Pay\PaymentInfo;
 use App\Models\User\Fund\FrontendUsersAccount;
 use App\Models\User\Fund\FrontendUsersAccountsReport;
 use App\Models\User\UserProfits;
-use App\Pay\Core\PayHandlerFactory;
-use Illuminate\Http\JsonResponse;
 use App\Models\User\UsersRechargeHistorie;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Frontend\Pay\RechargeRequest;
-use App\Http\Requests\Frontend\Pay\RechargeCallbackRequest;
+use App\Pay\Core\PayHandlerFactory;
 use Exception;
-use App\Http\Requests\Frontend\Pay\RechargeList;
-use App\Http\Requests\Backend\Users\Fund\RechargeListRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class PayRechargeAction
@@ -62,26 +61,22 @@ class PayRechargeAction
 
     /**
      * 获取支付渠道 v2.0
-     * @param PayController $contll 自己的控制器.
+     * @param FrontendApiMainController $contll 自己的控制器.
      * @return JsonResponse
      */
-    public function getRechargeChannelNew(PayController $contll) :JsonResponse
+    public function getRechargeChannelNew(FrontendApiMainController $contll) :JsonResponse
     {
-//        try {
-            $output = PaymentInfo::getPaymentInfoLists();
-            return $contll->msgOut(true, $output);
-//        } catch (Exception $e) {
-//            return $contll->msgOut(false, [], '400', '系统错误');
-//        }
+        $output = PaymentInfo::getPaymentInfoLists(PaymentInfo::DIRECTION_IN);
+        return $contll->msgOut(true, $output);
     }
 
     /**
      * 发起充值 v2.0
-     * @param PayController $contll     自己的控制器.
-     * @param array         $inputDatas 前端输入的变量.
+     * @param FrontendApiMainController $contll     自己的控制器.
+     * @param array                     $inputDatas 前端输入的变量.
      * @return mixed
      */
-    public function recharge(PayController $contll, array $inputDatas)
+    public function recharge(FrontendApiMainController $contll, array $inputDatas)
     {
         //第一步验证金额是否符合通道所规定的最大最小值
         $payment = $this->paymentInfo::where('payment_sign', $inputDatas['channel'])->first();
@@ -96,10 +91,21 @@ class PayRechargeAction
         $payment_id = $payment->id;
         $order = UsersRechargeHistorie::createRechargeOrder($contll->currentAuth->user(), $amount, $channel, $from, $payment_type_sign, $payment_id);
         //第三步组装支付所用的数据 抛给生成的handle去处理
+        if (!empty($inputDatas['bank_code']) && !empty($banks_code = $payment->paymentConfig->banks_code)) { //获得支付厂商的bank_code
+            $banks_code = explode('|', $banks_code);
+            foreach ($banks_code as $item) {
+                [$bank_code1,$bank_code2] = explode('=', $item);
+                if ($bank_code1 === $inputDatas['bank_code']) {
+                    $inputDatas['bank_code'] = $bank_code2;
+                }
+            }
+        }
         $payParams = [
             'payment_sign' => $inputDatas['channel'],
             'order_no' => $order->company_order_num,
             'money' => $order->amount,
+            'source' => $from,
+            'bank_code' => $inputDatas['bank_code']??'',
         ];
         return (new PayHandlerFactory())->generatePayHandle($inputDatas['channel'], $payParams)->handle();
     }

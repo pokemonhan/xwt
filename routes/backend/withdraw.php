@@ -18,5 +18,6 @@ Route::group(['prefix'=>'withdraw', 'namespace'=>'Admin\Withdraw'], static funct
     $namePrefix = 'backend-api.withdraw.';
     $controller = 'WithdrawController@';
     Route::match(['get', 'options'], 'show', ['as' => $namePrefix . 'show', 'uses' => $controller . 'show']);
+    Route::match(['get', 'options'], 'get-withdraw-channel', ['as' => $namePrefix . 'get-withdraw-channel', 'uses' => $controller . 'getWithdrawChannel']);
     Route::match(['post', 'options'], 'status', ['as' => $namePrefix . 'status', 'uses' => $controller . 'status']);
 });

@@ -51,7 +51,19 @@ class UserAgentCenterTeamReportAction
     public function execute(FrontendApiMainController $contll, $inputDatas): JsonResponse
     {
         $pageSize = $inputDatas['page_size'] ?? 15;
-        $user = $contll->partnerUser;
+
+        if (isset($inputDatas['parent_id'])) {
+            $user = FrontendUser::find($inputDatas['parent_id']);
+            if ($user === null) {
+                return $contll->msgOut(false, [], '100604');
+            }
+            $userRidArr = explode('|', $user->rid);
+            if (!in_array($contll->partnerUser->id, $userRidArr)) {
+                return $contll->msgOut(false, [], '100605');
+            }
+        } else {
+            $user = $contll->partnerUser;
+        }
 
         $where = [];
         $data = [];

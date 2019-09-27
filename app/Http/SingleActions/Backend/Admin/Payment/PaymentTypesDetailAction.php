@@ -26,13 +26,13 @@ class PaymentTypesDetailAction
     }
 
     /**
-     * 支付方式类型表表
-     * @param PaymentTypesController $contll 主控制器.
+     * 支付方式类型列表
+     * @param PaymentTypesController $contll 控制器.
      * @return JsonResponse
      */
     public function execute(PaymentTypesController $contll): JsonResponse
     {
-        $searchAbleFields = [];
+        $searchAbleFields = ['is_bank'];
         $orderFields = 'id';
         $orderFlow = 'asc';
         //处理执行支付方式配置表异常

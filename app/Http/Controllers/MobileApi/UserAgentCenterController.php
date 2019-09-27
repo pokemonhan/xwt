@@ -5,51 +5,60 @@ namespace App\Http\Controllers\MobileApi;
 use App\Http\Controllers\FrontendApi\FrontendApiMainController;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterLinkDelRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserBonusRequest;
-use App\Http\Requests\Frontend\UserAgentCenter\UserDaysalaryRequest;
+use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterUserDaysalaryRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserProfitsRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamManagementRequest;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTeamReportRequest;
+use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterTransferToChildRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterLinkDelAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterPrizeGroupAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserProfitsAction;
-use App\Http\SingleActions\Frontend\User\AgentCenter\UserDaysalaryAction;
+use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterUserDaysalaryAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserBonusAction;
 use App\Http\Requests\Frontend\UserAgentCenter\UserAgentCenterRegisterLinkRequest;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterableLinkAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterRegisterLinkAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamManagementAction;
 use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTeamReportAction;
+use App\Http\SingleActions\Frontend\User\AgentCenter\UserAgentCenterTransferToChildAction;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * 代理中心
+ */
 class UserAgentCenterController extends FrontendApiMainController
 {
 
     /**
      * 用户团队盈亏
-     * @param UserProfitsAction $action
-     * @param UserProfitsRequest $request
+     * @param UserProfitsRequest $request Request.
+     * @param UserProfitsAction  $action  Action.
      * @return JsonResponse
      */
-    public function userProfits(UserProfitsAction $action, UserProfitsRequest $request): JsonResponse
-    {
+    public function userProfits(
+        UserProfitsRequest $request,
+        UserProfitsAction $action
+    ): JsonResponse {
         return $action->execute($this, $request);
     }
 
     /**
      * 用户日工资
-     * @param UserDaysalaryAction $action
-     * @param UserDaysalaryRequest $request
+     * @param UserAgentCenterUserDaysalaryRequest $request Request.
+     * @param UserAgentCenterUserDaysalaryAction  $action  Action.
      * @return JsonResponse
      */
-
-    public function userDaysalary(UserDaysalaryAction $action, UserDaysalaryRequest $request): JsonResponse
-    {
-        return $action->execute($this, $request);
+    public function userDaysalary(
+        UserAgentCenterUserDaysalaryRequest $request,
+        UserAgentCenterUserDaysalaryAction $action
+    ): JsonResponse {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
     }
 
     /**
      * 链接开户信息
-     * @param UserAgentCenterRegisterableLinkAction $action
+     * @param UserAgentCenterRegisterableLinkAction $action Action.
      * @return JsonResponse
      */
     public function registerableLink(UserAgentCenterRegisterableLinkAction $action):JsonResponse
@@ -57,35 +66,37 @@ class UserAgentCenterController extends FrontendApiMainController
         return $action->execute($this);
     }
 
-
     /**
      * 生成开户链接
-     * @param UserAgentCenterRegisterLinkRequest $request
-     * @param UserAgentCenterRegisterLinkAction $action
+     * @param UserAgentCenterRegisterLinkRequest $request Request.
+     * @param UserAgentCenterRegisterLinkAction  $action  Action.
      * @return JsonResponse
      */
-    public function registerLink(UserAgentCenterRegisterLinkRequest $request, UserAgentCenterRegisterLinkAction $action) :JsonResponse
-    {
+    public function registerLink(
+        UserAgentCenterRegisterLinkRequest $request,
+        UserAgentCenterRegisterLinkAction $action
+    ) :JsonResponse {
         return $action->execute($this, $request->validated());
     }
 
     /**
      * 用户分红
-     * @param UserBonusAction $action
-     * @param UserBonusRequest $request
+     * @param UserBonusAction  $action  Action.
+     * @param UserBonusRequest $request Request.
      * @return JsonResponse
      */
-    public function userBonus(UserBonusAction $action, UserBonusRequest $request) : JsonResponse
-    {
+    public function userBonus(
+        UserBonusAction $action,
+        UserBonusRequest $request
+    ) : JsonResponse {
         return $action->execute($this, $request);
     }
 
     /**
      * 代理开户-奖金组最大最小值
-     * @param UserAgentCenterPrizeGroupAction $action
+     * @param UserAgentCenterPrizeGroupAction $action Action.
      * @return JsonResponse
      */
-
     public function prizeGroup(UserAgentCenterPrizeGroupAction $action) : JsonResponse
     {
         return $action->execute($this);
@@ -93,35 +104,55 @@ class UserAgentCenterController extends FrontendApiMainController
 
     /**
      * 开户链接删除
-     * @param UserAgentCenterLinkDelRequest $request
-     * @param UserAgentCenterLinkDelAction $action
+     * @param UserAgentCenterLinkDelRequest $request Request.
+     * @param UserAgentCenterLinkDelAction  $action  Action.
      * @return JsonResponse
      */
-    public function linkDel(UserAgentCenterLinkDelRequest $request, UserAgentCenterLinkDelAction $action) :JsonResponse
-    {
+    public function linkDel(
+        UserAgentCenterLinkDelRequest $request,
+        UserAgentCenterLinkDelAction $action
+    ) :JsonResponse {
         return $action->execute($this, $request->validated());
     }
 
     /**
      * 团队管理
-     * @param  UserAgentCenterTeamManagementRequest $request
-     * @param  UserAgentCenterTeamManagementAction  $action
+     * @param UserAgentCenterTeamManagementRequest $request Request.
+     * @param UserAgentCenterTeamManagementAction  $action  Action.
      * @return JsonResponse
      */
-    public function teamManagement(UserAgentCenterTeamManagementRequest $request, UserAgentCenterTeamManagementAction $action) :JsonResponse
-    {
+    public function teamManagement(
+        UserAgentCenterTeamManagementRequest $request,
+        UserAgentCenterTeamManagementAction $action
+    ) :JsonResponse {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
     }
 
     /**
      * 团队报表
-     * @param  UserAgentCenterTeamReportRequest $request
-     * @param  UserAgentCenterTeamReportAction  $action
+     * @param UserAgentCenterTeamReportRequest $request Request.
+     * @param UserAgentCenterTeamReportAction  $action  Action.
      * @return JsonResponse
      */
-    public function teamReport(UserAgentCenterTeamReportRequest $request, UserAgentCenterTeamReportAction $action) :JsonResponse
-    {
+    public function teamReport(
+        UserAgentCenterTeamReportRequest $request,
+        UserAgentCenterTeamReportAction $action
+    ) :JsonResponse {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
+    }
+
+    /**
+     * 转账给下级
+     * @param  UserAgentCenterTransferToChildRequest $request Request.
+     * @param  UserAgentCenterTransferToChildAction  $action  Action.
+     * @return JsonResponse
+     */
+    public function transferToChild(
+        UserAgentCenterTransferToChildRequest $request,
+        UserAgentCenterTransferToChildAction $action
+    ) :JsonResponse {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
     }

@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 use App\Jobs\SendDaysalary;
 use App\Models\User\UserDaysalary;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
+/**
+ * 发放日工资脚本
+ */
 class SendDaysalaryControl extends Command
 {
 
@@ -28,17 +30,13 @@ class SendDaysalaryControl extends Command
      *
      * @return mixed
      */
-
     public function handle()
     {
-
-
-        $iYesterDay = Carbon::yesterday()->toDateString();
-        $aDatas = UserDaysalary::where("date", $iYesterDay)->where('status', 0)->get(['id']);
+        $aDatas = UserDaysalary::where('status', UserDaysalary::STATUS_NO)->get(['id']);
 
         foreach ($aDatas as $oUserDaysalary) {
             $data['salary_id'] = $oUserDaysalary->id;
-            dispatch(new SendDaysalary($data));
+            dispatch(new SendDaysalary($data))->onQueue('default');
         }
     }
 }

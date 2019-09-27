@@ -6,6 +6,7 @@ use App\Http\Controllers\FrontendApi\FrontendApiMainController;
 use App\Models\User\UserDaysalary;
 use Illuminate\Http\JsonResponse;
 use App\Models\User\FrontendUser;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * 日工资报表
@@ -35,63 +36,54 @@ class UserAgentCenterUserDaysalaryAction
      */
     public function execute(FrontendApiMainController $contll, array $inputDatas): JsonResponse
     {
-        $username = $inputDatas['username'] ?? '';
-        $dateTo = $inputDatas['date_to'] ?? date('Y-m-d');
-        $count = $inputDatas['count'] ?? 15;
+        $date = $inputDatas['date'] ?? date('Y-m-d');
 
         $userInfo = $contll->currentAuth->user();
-        $selfDaysalary = $this->model->where([['user_id', $userInfo->id],['date', '=', $dateTo]])->first();
-        $where = [['parent_id', $userInfo->id], ['date', '=', $dateTo]];
+        $selfDaysalary = $this->model->where([['user_id', $userInfo->id],['date', '=', $date]])->first();
 
         $data = [];
-        $data['sum'] = $this->getDataSum($selfDaysalary, $username, $where);
-        $data['self'] = $this->getDataSelf($userInfo, $selfDaysalary);
-        $data['child'] = $this->getDataChild($where, $count);
 
-        return $contll->msgOut(true, $data);
-    }
-
-    /**
-     * 区间合计
-     * @param mixed  $selfDaysalary 用户的日工资Eloq.
-     * @param string $username      搜索的用户名.
-     * @param array  $where         搜索条件.
-     * @return object
-     */
-    private function getDataSum($selfDaysalary, string $username, array $where)
-    {
-        $dataSum = (object) [];
-
-        if (empty($username)) {
-            $teamUsers = $this->model->where($where)->get();
-            $dataSum->team_turnover = $teamUsers->sum('team_turnover') + ($selfDaysalary->team_turnover ?? 0);
-            $dataSum->turnover = $teamUsers->sum('turnover') + ($selfDaysalary->turnover ?? 0);
-            $dataSum->daysalary = $teamUsers->sum('daysalary') + ($selfDaysalary->daysalary ?? 0);
-        } else {
-            $dataSum->team_turnover = $selfDaysalary->team_turnover ?? 0;
-            $dataSum->turnover = $selfDaysalary->turnover ?? 0;
-            $dataSum->daysalary = $selfDaysalary->daysalary ?? 0;
+        //获取自己的日分红信息
+        if ((int) $inputDatas['user_type'] === 0 || (int) $inputDatas['user_type'] === 1) {
+            $data['self'] = $this->getDataSelf($userInfo, $selfDaysalary);
         }
-        return $dataSum;
+
+        //获取下级的日分红信息
+        if ((int) $inputDatas['user_type'] === 0 || (int) $inputDatas['user_type'] === 2) {
+            $where = [['parent_id', $userInfo->id], ['date', '=', $date]];
+            if (isset($inputDatas['username'])) {
+                $where[] = ['username', $inputDatas['username']];
+            }
+            $count = $inputDatas['count'] ?? 15;
+            $data['child'] = $this->getDataChild($where, $count);
+        }
+        return $contll->msgOut(true, $data);
     }
 
     /**
      * 用户自己的日工资
      * @param FrontendUser $userInfo      当前用户Eloq.
      * @param mixed        $selfDaysalary 用户日工资Eloq.
-     * @return object
+     * @return array
      */
     private function getDataSelf(FrontendUser $userInfo, $selfDaysalary)
     {
-        $self = (object) [];
+        $self = [];
 
-        $self->user_id = $userInfo->id;
-        $self->username = $userInfo->username;
-        $self->daysalary_percentage = $selfDaysalary->daysalary_percentage ?? $userInfo->daysalary_percentage;
-        $self->team_turnover = $selfDaysalary->team_turnover ?? 0;
-        $self->turnover = $selfDaysalary->turnover ?? 0;
-        $self->daysalary = $selfDaysalary->daysalary ?? 0;
-        $self->remark = round($self->turnover, 2) . '*' . $self->daysalary_percentage . '%=' . round($self->turnover * $self->daysalary_percentage / 100, 2);
+        $self['user_id'] = $userInfo->id;
+        $self['username'] = $userInfo->username;
+
+        $self['daysalary_percentage'] = $selfDaysalary->daysalary_percentage ?? $userInfo->daysalary_percentage; //日工资比例
+
+        $self['team_turnover'] = $selfDaysalary->team_turnover ?? 0; //团队流水
+
+        $self['turnover'] = $selfDaysalary->turnover ?? 0; //用户个人流水
+
+        $self['team_bet_commission'] = $selfDaysalary->team_bet_commission ?? 0; //团队投注返点
+
+        $self['team_daysalary'] = $selfDaysalary->team_daysalary ?? 0; //团队日工资
+
+        $self['daysalary'] = $selfDaysalary->daysalary ?? 0; //用户日工资
 
         return $self;
     }
@@ -100,20 +92,15 @@ class UserAgentCenterUserDaysalaryAction
      * 用户下级的日工资
      * @param array   $where 搜索条件.
      * @param integer $count 查询条数.
-     * @return array
+     * @return  LengthAwarePaginator
      */
-    private function getDataChild(array $where, int $count)
+    private function getDataChild(array $where, int $count) :LengthAwarePaginator
     {
         $child = $this->model
-        ->select('user_id', 'username', 'daysalary_percentage', 'team_turnover', 'turnover', 'daysalary')
+        ->select('user_id', 'username', 'daysalary_percentage', 'team_turnover', 'team_bet_commission', 'turnover', 'daysalary')
         ->where($where)
         ->groupBy('user_id')
-        ->paginate($count)
-        ->toArray();
-
-        foreach ($child['data'] as $childKey => $userDaysalary) {
-            $child['data'][$childKey]['remark'] = round($userDaysalary['turnover'], 2) . '*' . $userDaysalary['daysalary_percentage'] . '%=' . round($userDaysalary['turnover'] * $userDaysalary['daysalary_percentage'] / 100, 2);
-        }
+        ->paginate($count);
 
         return $child;
     }

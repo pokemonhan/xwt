@@ -2,12 +2,15 @@
 namespace App\Models\User;
 
 use App\Models\BaseModel;
+use App\Models\User\Logics\UserProfitsTraits;
 
 /**
  * 用户团队盈亏 model
  */
 class UserProfits extends BaseModel
 {
+    use UserProfitsTraits;
+
     public const TEAM_DEPOSIT_SIGN         = ['recharge','artificial_recharge']; //充值总额
     public const TEAM_WITHDRAWAL_SIGN      = ['withdraw_finis'];                 //提现总额
     public const TEAM_TURNOVER_SIGN        = ['bet_cost'];                       //投注总额

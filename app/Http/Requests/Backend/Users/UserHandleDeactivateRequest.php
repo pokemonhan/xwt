@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\Users;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class UserHandleDeactivateRequest
+ * @package App\Http\Requests\Backend\Users
+ */
 class UserHandleDeactivateRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -27,6 +31,7 @@ class UserHandleDeactivateRequest extends BaseFormRequest
             'user_id' => 'required|numeric|exists:frontend_users,id',
             'frozen_type' => 'required|numeric', //冻结类型
             'comment' => 'required', //备注
+            'is_frozen_child' => 'numeric', //1 冻结子级
         ];
     }
 

@@ -73,7 +73,7 @@ class TransferInAction
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
-            $apiUrl = $contll->apiUrl . '/transferIn?' . $paramStr . '&param=' . $paramEncode;
+            $apiUrl = $contll->apiUrl . '/transferIn?' . $paramStr . '&param=' . urlencode($paramEncode);
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
             $data   = casino_request('GET', $apiUrl, [], '', 0, 0, 0);

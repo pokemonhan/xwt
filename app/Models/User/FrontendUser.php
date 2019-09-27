@@ -208,4 +208,13 @@ class FrontendUser extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FrontendUsersBankCard::class, 'user_id', 'id');
     }
+
+    /**
+     * 用户上级
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function parent()
+    {
+        return $this->hasOne($this, 'id', 'parent_id');
+    }
 }

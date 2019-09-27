@@ -52,67 +52,49 @@ class UserDaysalaryControl extends Command
                 Log::channel('daysalary')->info('用户id：'.$usersProjectItem->user_id.'不存在,计算日工资失败');
                 continue;
             }
+
             $userProfits = UserProfits::getUserProfits($user, $date);
-
-            $data = $this->setDaysalaryData($user, $date);
-            $data['daysalary'] = $usersProjectItem->total_cost * $user->daysalary_percentage / 100 ;
-            $data['team_turnover'] = 0; //$this->get_team_turnover($child->user_id); 改为下级上供累计计算
+            $data = $this->setDaysalaryData($user, $date, $userProfits);
             $data['turnover'] = $usersProjectItem->total_cost;
-            $data['bet_commission'] = $userProfits->bet_commission ?? 0;
-            $data['commission'] = $userProfits->commission ?? 0;
-            $data['team_bet_commission'] = $userProfits->team_bet_commission ?? 0;
-            $data['team_commission'] = $userProfits->team_commission ?? 0;
-            $data['status'] = 0;
+            $data['daysalary'] = $usersProjectItem->total_cost * $user->daysalary_percentage / 100 ;
+            $data['team_turnover'] = $usersProjectItem->total_cost;
 
-            $this->updateUserDaysalary($data);
+            DB::beginTransaction();
+
+            $resource = UserDaysalary::updateUserDaysalary($data);
+            Log::channel('daysalary')->info($resource['log_info']);
+            if ($resource['success'] === false) {
+                DB::rollback();
+                continue;
+            }
 
             //上级的日工资比用户高时，需要上供给上级
-            if ($user->parent_id > 0) {
-                $parentInfo = FrontendUser::where('id', $user->parent_id)->first();
-                if ($parentInfo !== null) {
-                    $parentData = $this->setDaysalaryData($parentInfo, $date);
-                    $parentData['daysalary'] = $usersProjectItem->total_cost*($parentInfo->daysalary_percentage-$user->daysalary_percentage)/100;
-                    $parentData['team_turnover'] = $usersProjectItem->total_cost;
-                    $this->updateUserDaysalary($parentData);
+            if ($parentInfo = $user->parent) {
+                $parentData = $this->setDaysalaryData($parentInfo, $date);
+                $parentData['daysalary'] = $usersProjectItem->total_cost*($parentInfo->daysalary_percentage-$user->daysalary_percentage)/100;
+                $parentData['team_turnover'] = $usersProjectItem->total_cost;
+
+                $resource = UserDaysalary::updateUserDaysalary($parentData);
+                Log::channel('daysalary')->info($resource['log_info']);
+                if ($resource['success'] === false) {
+                    DB::rollback();
+                    continue;
                 }
             }
-        }
-    }
-
-    /**
-     * 更新UserDaysalary
-     * @param array $data UserDaysalary数据.
-     * @return void
-     */
-    public function updateUserDaysalary(array $data) :void
-    {
-        if ($data['user_id'] && $data['date']) {
-            $userDaysalary = UserDaysalary::where([
-                ['user_id', $data['user_id']],
-                ['date', $data['date']],
-            ])->first();
-
-            if ($userDaysalary === null) {
-                Log::channel('daysalary')->info('新建用户日工资'.json_encode($data));
-                UserDaysalary::create($data);
-            } else {
-                $data['daysalary'] += $userDaysalary->daysalary ;
-                $data['team_turnover'] += $userDaysalary->team_turnover;
-                Log::channel('daysalary')->info('更新用户日工资'.json_encode($data));
-                $userDaysalary->update($data);
-            }
+            DB::commit();
         }
     }
 
     /**
      * 设置日工资基本数据
-     * @param FrontendUser $user 用户.
-     * @param string       $date 日期.
+     * @param FrontendUser $user        用户.
+     * @param string       $date        日期.
+     * @param mixed        $userProfits 团队信息.
      * @return  array
      */
-    private function setDaysalaryData(FrontendUser $user, string $date)
+    private function setDaysalaryData(FrontendUser $user, string $date, $userProfits = null)
     {
-        return [
+        $data = [
             'user_id' => $user->id,
             'username' => $user->username,
             'is_tester' => $user->is_tester,
@@ -120,5 +102,14 @@ class UserDaysalaryControl extends Command
             'date' => $date,
             'daysalary_percentage' => $user->daysalary_percentage,
         ];
+
+        if ($userProfits !== null) {
+            $data['bet_commission'] = $userProfits->bet_commission ?? 0;
+            $data['commission'] = $userProfits->commission ?? 0;
+            $data['team_bet_commission'] = $userProfits->team_bet_commission ?? 0;
+            $data['team_commission'] = $userProfits->team_commission ?? 0;
+        }
+
+        return $data;
     }
 }

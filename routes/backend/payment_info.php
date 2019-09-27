@@ -8,4 +8,5 @@ Route::group(['prefix' => 'payment-info', 'namespace' => 'Admin\Payment'], stati
     Route::match(['post', 'options'], 'edit', ['as' => $namePrefix . 'edit', 'uses' => $controller . 'edit']);//编辑支付方式详情表
     Route::match(['post', 'options'], 'delete', ['as' => $namePrefix . 'delete', 'uses' => $controller . 'delete']);//删除支付方式信息
     Route::match(['post', 'options'], 'sort', ['as' => $namePrefix . 'sort', 'uses' => $controller . 'sort']);//排序支付方式信息
+    Route::match(['post', 'options'], 'updateStatus', ['as' => $namePrefix . 'updateStatus', 'uses' => $controller . 'updateStatus']);//更新支付方式状态
 });

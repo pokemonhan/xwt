@@ -60,6 +60,7 @@ class PaymentConfigsEditAction
             ];
             $addDatas['banks_code'] = json_encode($addDatas['banks_code']);
             $inputDatas = array_merge($inputDatas, $addDatas);
+
             //执行添加操作
             if (!empty($inputDatas['id']) && isset($inputDatas['id'])) {
                 $payment_config = BackendPaymentConfig::find($inputDatas['id']);
@@ -73,6 +74,7 @@ class PaymentConfigsEditAction
                 $updateDatas['payment_vendor_sign'] = $payment_config->payment_vendor_sign;
                 $updateDatas['payment_type_sign'] = $payment_config->payment_type_sign;
                 $updateDatas['request_url'] = $payment_config->request_url;
+                $updateDatas['status'] = $payment_config->status;
                 $updateDatas['back_url'] = rtrim(configure('back_url'), '/') . '/' . $updateDatas['direction'] . '/' . ltrim($updateDatas['payment_sign'], '/');//支付方式的返回地址
                 //执行更新支付方式详情表信息
                 PaymentInfo::where('config_id', $inputDatas['id'])->update($updateDatas);

@@ -41,7 +41,11 @@ class PaymentTypesAddAction
     {
         $imageObj = new ImageArrange();
         $folderName = 'payment_type';
-        $depositPath = $imageObj->depositPath($folderName, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name) . '/ico';
+        $depositPath = $imageObj->depositPath(
+            $folderName,
+            $contll->currentPlatformEloq->platform_id,
+            $contll->currentPlatformEloq->platform_name,
+        ) . '/ico';
         $icoArr = $imageObj->uploadImg($inputDatas['payment_ico'], $depositPath);
         try {
             $inputDatas['payment_ico'] = '/' . $icoArr['path'];

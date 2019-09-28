@@ -48,7 +48,11 @@ class PaymentTypesEditAction
         //判断图片地址是否变化
         if (!empty($inputDatas['payment_ico']) && isset($inputDatas['payment_ico'])) {
             $folderName = 'payment_type';
-            $depositPath = $imageObj->depositPath($folderName, $contll->currentPlatformEloq->platform_id, $contll->currentPlatformEloq->platform_name) . '/ico';
+            $depositPath = $imageObj->depositPath(
+                $folderName,
+                $contll->currentPlatformEloq->platform_id,
+                $contll->currentPlatformEloq->platform_name,
+            ) . '/ico';
             $icoArr = $imageObj->uploadImg($inputDatas['payment_ico'], $depositPath);
             $inputDatas['payment_ico'] = '/' . $icoArr['path'];
         }
@@ -121,7 +125,8 @@ class PaymentTypesEditAction
                 ['payment_type_name', '=', $inputDatas['payment_type_name']],
                 ['payment_type_sign', '=', $pastDataEloq['payment_type_sign']],
             ];
-        } elseif (empty($inputDatas['payment_type_name']) && empty($inputDatas['payment_type_sign']) && !isset($inputDatas['payment_type_name']) && !isset($inputDatas['payment_type_sign'])) {
+        } elseif (empty($inputDatas['payment_type_name']) &&
+            empty($inputDatas['payment_type_sign']) && !isset($inputDatas['payment_type_name']) && !isset($inputDatas['payment_type_sign'])) {
             $array = [];
         } else {
             $array = [

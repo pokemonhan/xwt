@@ -136,7 +136,8 @@ class PaymentConfigsEditAction
                 ['payment_name', '=', $inputDatas['payment_name']],
                 ['payment_sign', '=', $payment_config->payment_sign],
             ];
-        } elseif (empty($inputDatas['payment_name']) && empty($inputDatas['payment_sign']) && !isset($inputDatas['payment_name']) && !isset($inputDatas['payment_sign'])) {
+        } elseif (empty($inputDatas['payment_name'])
+            && empty($inputDatas['payment_sign']) && !isset($inputDatas['payment_name']) && !isset($inputDatas['payment_sign'])) {
             $array = [];
         } else {
             $array = [

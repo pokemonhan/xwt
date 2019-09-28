@@ -4,7 +4,7 @@ namespace App\Models\Admin\Domain;
 
 use App\Models\BaseModel;
 
-class BackendDomain extends BaseModel
+class Domain extends BaseModel
 {
     protected $guarded = ['id'];
 }

@@ -3,7 +3,7 @@
 namespace App\Http\SingleActions\Backend\Admin\Domain;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
-use App\Models\Admin\Domain\BackendDomain;
+use App\Models\Admin\Domain\Domain;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -12,14 +12,17 @@ use Illuminate\Http\JsonResponse;
  */
 class DomainAddDomainAction
 {
+    /**
+     * @var Domain
+     */
     protected $model;
 
     /**
-     * @param  BackendDomain $backendDomain
+     * @param  Domain $domain Domain.
      */
-    public function __construct(BackendDomain $backendDomain)
+    public function __construct(Domain $domain)
     {
-        $this->model = $backendDomain;
+        $this->model = $domain;
     }
 
     /**

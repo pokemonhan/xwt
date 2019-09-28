@@ -28,7 +28,7 @@ class PaymentInfosDeleteRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|exists:payment_infos,id',
+            'id' => 'required|numeric|exists:payment_infos,id',//支付信息表ID
         ];
     }
 }

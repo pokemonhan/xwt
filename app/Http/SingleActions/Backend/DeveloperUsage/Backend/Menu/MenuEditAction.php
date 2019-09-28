@@ -6,12 +6,19 @@ use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Models\DeveloperUsage\Menu\BackendSystemMenu;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class MenuEditAction
+ * @package App\Http\SingleActions\Backend\DeveloperUsage\Backend\Menu
+ */
 class MenuEditAction
 {
+    /**
+     * @var BackendSystemMenu 模型.
+     */
     protected $model;
 
     /**
-     * @param  BackendSystemMenu  $backendSystemMenu
+     * @param  BackendSystemMenu $backendSystemMenu 菜单.
      */
     public function __construct(BackendSystemMenu $backendSystemMenu)
     {
@@ -19,8 +26,8 @@ class MenuEditAction
     }
 
     /**
-     * @param  BackEndApiMainController  $contll
-     * @param  array $inputDatas
+     * @param  BackEndApiMainController $contll     控制器.
+     * @param  array                    $inputDatas 数据.
      * @return JsonResponse
      */
     public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
@@ -34,6 +41,7 @@ class MenuEditAction
         $menuEloq->en_name = $inputDatas['en_name'];
         $menuEloq->display = $inputDatas['display'];
         $menuEloq->icon = $inputDatas['icon'] ?? null;
+        $menuEloq->type = $inputDatas['type'];
         if ($parent === true) {
             $menuEloq->route = '#';
             $menuEloq->pid = 0;

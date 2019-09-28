@@ -269,6 +269,12 @@ return [
             'level' => 'debug',
             'days' => 14,
         ],
+        'withdrawstatus-log' => [ //改变提现订单状态日志
+            'driver' => 'daily',
+            'path' => storage_path('logs/withdrawstatus-log/withdrawstatus-log.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
     ],
 
 ];

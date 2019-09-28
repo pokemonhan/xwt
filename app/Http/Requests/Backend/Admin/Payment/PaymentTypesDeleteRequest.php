@@ -28,7 +28,7 @@ class PaymentTypesDeleteRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|exists:backend_payment_types,id',
+            'id' => 'required|numeric|exists:backend_payment_types,id',//支付方式种类表ID
         ];
     }
 }

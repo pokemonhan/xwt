@@ -50,7 +50,7 @@ class CreateBackendAdminUser extends Migration
             $table->string('password',255)->comment('密码');
             $table->text('remember_token')->nullable()->comment('token');
             $table->tinyInteger('is_test')->nullable()->default(0)->comment('是否测试号   0不是 1是');
-            $table->integer('group_id')->nullable()->unsigned()->comment('管理员组id');
+            $table->integer('group_id')->nullable()->comment('管理员组id');
             $table->unsignedInteger('status')->nullable()->default(1)->comment('状态 0关闭 1开启');
             $table->unsignedInteger('platform_id')->nullable()->comment('平台id');
             $table->unsignedInteger('super_id')->nullable();

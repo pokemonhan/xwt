@@ -47,8 +47,8 @@ class CreateFrontendMessageTable extends Migration
             $table->timestamp('end_time')->nullable()->comment('结束时间');
             $table->text('pic_path')->nullable();
             $table->integer('sort')->nullable();
-            $table->string('describe',30)->comment('公告简介');
-            $table->unsignedTinyInteger('status')->comment('1显示 0关闭');
+            $table->string('describe',30)->nullable()->comment('公告简介');
+            $table->unsignedTinyInteger('status')->nullable()->comment('1显示 0关闭');
             $table->unsignedTinyInteger('top')->default(0)->comment('1置顶，0取消置顶');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
@@ -62,8 +62,8 @@ class CreateFrontendMessageTable extends Migration
             $table->string('menu',32)->comment('标题');
             $table->text('content')->nullable()->comment('内容');
             $table->tinyInteger('status')->default(0)->comment('开启状态 0关闭 1开启');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
             $table->collation = 'utf8_general_ci';

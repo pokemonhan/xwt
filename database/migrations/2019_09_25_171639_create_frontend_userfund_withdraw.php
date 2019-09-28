@@ -18,7 +18,7 @@ class CreateFrontendUserfundWithdraw extends Migration
             $table->integer('top_id')->comment('（frontend_users表top_id）');
             $table->integer('parent_id')->comment('（frontend_users表parent_id）');
             $table->integer('user_id')->comment('用户id（frontend_users表id）');
-            $table->string('username',64)->default(1)->comment('用户名 （frontend_users表username）');
+            $table->string('username',64)->comment('用户名 （frontend_users表username）');
             $table->string('rid',255)->comment('（frontend_users表rid）');
             $table->integer('withdraw_id')->default(0);
             $table->integer('admin_id')->comment('管理员id （backend_admin_users表id）');
@@ -39,7 +39,7 @@ class CreateFrontendUserfundWithdraw extends Migration
             $table->integer('top_id')->comment('（frontend_users表top_id）');
             $table->integer('parent_id')->comment('（frontend_users表parent_id）');
             $table->integer('user_id')->comment('用户id（frontend_users表id）');
-            $table->string('username',64)->default(1)->comment('用户名 （frontend_users表username）');
+            $table->string('username',64)->comment('用户名 （frontend_users表username）');
             $table->tinyInteger('is_tester')->nullable();
             $table->string('rid',128)->comment('（frontend_users表rid）');
             $table->string('order_id',64)->default('')->comment('订单号');
@@ -54,8 +54,8 @@ class CreateFrontendUserfundWithdraw extends Migration
             $table->integer('process_time')->default(0)->comment('处理时间');
             $table->integer('process_day')->default(0)->comment('处理日期');
             $table->string('source',32)->comment('web');
-            $table->string('client_ip',32)->comment('ip');
-            $table->string('description',20)->comment('描述');
+            $table->string('client_ip',20)->comment('ip');
+            $table->string('description',255)->comment('描述');
             $table->text('desc');
             $table->tinyInteger('status')->default(0);
             $table->integer('admin_id')->default(0)->comment('管理员id （backend_admin_users表id）');

@@ -25,7 +25,7 @@ class Handler extends ExceptionHandler
         }
         //###### sending errors to tg //Harris ############
         $appEnvironment = app()->environment();
-        if ($appEnvironment == 'develop' || $appEnvironment == 'test-develop') {
+        if ($appEnvironment == 'stage-develop' || $appEnvironment == 'test-amazon') {
             $agent = new Agent();
             $os = $agent->platform();
             $osVersion = $agent->version($os);

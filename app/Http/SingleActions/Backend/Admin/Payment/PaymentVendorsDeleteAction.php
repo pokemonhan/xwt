@@ -38,10 +38,6 @@ class PaymentVendorsDeleteAction
     {
         DB::beginTransaction();
         try {
-            //判断ID是否存在
-            if (!empty($inputDatas['id']) && isset($inputDatas['id'])) {
-                return $contll->msgOut(false, [], '400', '请输入ID');
-            }
             //执行删除功能
             $this->model::destroy($inputDatas['id']);
             DB::commit();

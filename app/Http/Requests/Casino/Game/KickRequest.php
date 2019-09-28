@@ -33,7 +33,7 @@ class KickRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'mainGamePlat' => 'required|string|exists:def_main_game_plats,main_game_plat_code',
+            'mainGamePlat' => 'required|min:2|max:24|string',
             'accountUserName' => 'required|min:4|max:255|string',
         ];
     }

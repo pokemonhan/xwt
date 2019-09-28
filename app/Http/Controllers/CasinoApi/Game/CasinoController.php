@@ -54,7 +54,7 @@ class CasinoController extends CasinoApiMainController
      * @param  TransferToRequest    $request
      * @return JsonResponse
      */
-    public function transferTo(TransferToRequest $request, TransferToAction $action): JsonResponse
+    public function transferTo(TransferToRequest $request, TransferToAction $action)
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
@@ -65,7 +65,7 @@ class CasinoController extends CasinoApiMainController
      * @param  KickRequest  $request
      * @return JsonResponse
      */
-    public function kick(KickRequest $request, KickAction $action): JsonResponse
+    public function kick(KickRequest $request, KickAction $action)
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);

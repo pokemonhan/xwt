@@ -5,8 +5,8 @@ return [
 
     // Chats where the bot will send messages
     'chats' => [
-        'develop' => -324053205,
-        'test-develop' => -382469573,
+        'stage-develop' => -324053205,
+        'test-amazon' => -375541981,
         'production' => -324053205,
     ],
 ];

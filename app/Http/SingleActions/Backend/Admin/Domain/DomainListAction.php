@@ -4,15 +4,21 @@ namespace App\Http\SingleActions\Backend\Admin\Domain;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Models\Admin\Domain\BackendDomain;
-use App\Models\Admin\BackendAdminAccessGroup;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class DomainListAction
+ * @package App\Http\SingleActions\Backend\Admin\Domain
+ */
 class DomainListAction
 {
+    /**
+     * @var BackendDomain
+     */
     protected $model;
 
     /**
-     * @param  BackendDomain $backendDomain
+     * @param  BackendDomain $backendDomain BackendDomain.
      */
     public function __construct(BackendDomain $backendDomain)
     {
@@ -21,29 +27,13 @@ class DomainListAction
 
     /**
      * 域名列表
-     * @param  BackEndApiMainController $contll
-     * @param  mixed $inputDatas
+     * @param  BackEndApiMainController $contll BackEndApiMainController.
      * @return JsonResponse
      */
-    public function execute(BackEndApiMainController $contll, $inputDatas): JsonResponse
+    public function execute(BackEndApiMainController $contll): JsonResponse
     {
-        $groupId = $contll->partnerAdmin['group_id'];
-        $roleFlag = BackendAdminAccessGroup::find($groupId);
-
-        if ($roleFlag->role !== '*') {
-            $userId = $contll->partnerAdmin['id'];
-            $data = $this->model->where('user_id', $userId)->get();
-            return $contll->msgOut(true, $data);
-        }
-
-
-        $userId = isset($inputDatas['user_id']) ? $inputDatas['user_id'] : false;
-        if ($userId == false) {
-            $searchAbleFields = ['id', 'user_id', 'domain', 'config_id', 'is_use', 'created_at', 'updated_at'];
-            $data = $contll->generateSearchQuery($this->model, $searchAbleFields);
-        } else {
-            $data = $this->model->where('user_id', $userId)->get();
-        }
+        $searchAbleFields = ['id', 'user_id', 'domain', 'config_id', 'is_use', 'created_at', 'updated_at'];
+        $data = $contll->generateSearchQuery($this->model, $searchAbleFields);
         return $contll->msgOut(true, $data);
     }
 }

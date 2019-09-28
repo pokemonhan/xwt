@@ -4,7 +4,11 @@ namespace App\Http\Requests\Backend\Admin\Domain;
 
 use App\Http\Requests\BaseFormRequest;
 
-class DomainDelRequest extends BaseFormRequest
+/**
+ * Class DomainDelRequest
+ * @package App\Http\Requests\Backend\Admin\Domain
+ */
+class DomainDelDomainRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.git
@@ -24,7 +28,7 @@ class DomainDelRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|int',
+            'id' => 'required|exists:backend_domains,id',
         ];
     }
 }

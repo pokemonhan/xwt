@@ -3,39 +3,38 @@
 namespace App\Http\Controllers\BackendApi\Admin\Domain;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
-use App\Http\Requests\Backend\Admin\Domain\DomainListRequest;
-use App\Http\Requests\Backend\Admin\Domain\DomainAddRequest;
-use App\Http\Requests\Backend\Admin\Domain\DomainDelRequest;
-use App\Http\Requests\Backend\Admin\Domain\DomainModRequest;
+use App\Http\Requests\Backend\Admin\Domain\DomainAddDomainRequest;
+use App\Http\Requests\Backend\Admin\Domain\DomainDelDomainRequest;
+use App\Http\Requests\Backend\Admin\Domain\DomainModDomainRequest;
 use App\Http\SingleActions\Backend\Admin\Domain\DomainListAction;
-use App\Http\SingleActions\Backend\Admin\Domain\DomainAddAction;
-use App\Http\SingleActions\Backend\Admin\Domain\DomainDelAction;
-use App\Http\SingleActions\Backend\Admin\Domain\DomainModAction;
-
+use App\Http\SingleActions\Backend\Admin\Domain\DomainAddDomainAction;
+use App\Http\SingleActions\Backend\Admin\Domain\DomainDelDomainAction;
+use App\Http\SingleActions\Backend\Admin\Domain\DomainModDomainAction;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class DomainController
+ * @package App\Http\Controllers\BackendApi\Admin\Domain
+ */
 class DomainController extends BackEndApiMainController
 {
-
     /**
      * 域名列表
-     * @param  DomainListRequest $request
-     * @param  DomainListAction $action
+     * @param DomainListAction $action 逻辑处理.
      * @return JsonResponse
      */
-    public function list(DomainListRequest $request, DomainListAction $action): JsonResponse
+    public function list(DomainListAction $action): JsonResponse
     {
-        $inputDatas = $request->validated();
-        return  $action->execute($this,$inputDatas);
+        return  $action->execute($this);
     }
 
     /**
      * 添加域名
-     * @param  DomainAddRequest $request
-     * @param  DomainAddAction $action
+     * @param  DomainAddDomainRequest $request 请求.
+     * @param  DomainAddDomainAction  $action  逻辑处理.
      * @return JsonResponse
      */
-    public function add(DomainAddRequest $request, DomainAddAction $action): JsonResponse
+    public function addDomain(DomainAddDomainRequest $request, DomainAddDomainAction $action): JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
@@ -43,22 +42,22 @@ class DomainController extends BackEndApiMainController
 
     /**
      * 编辑域名
-     * @param  DomainModRequest $request
-     * @param  DomainModAction $action
+     * @param  DomainModDomainRequest $request 请求.
+     * @param  DomainModDomainAction  $action  逻辑处理.
      * @return JsonResponse
      */
-    public function mod(DomainModRequest $request, DomainModAction $action): JsonResponse
+    public function modDomain(DomainModDomainRequest $request, DomainModDomainAction $action): JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
     }
     /**
      * 删除域名
-     * @param  DomainDelRequest $request
-     * @param  DomainDelAction $action
+     * @param  DomainDelDomainRequest $request 请求.
+     * @param  DomainDelDomainAction  $action  逻辑处理.
      * @return JsonResponse
      */
-    public function del(DomainDelRequest $request, DomainDelAction $action): JsonResponse
+    public function delDomain(DomainDelDomainRequest $request, DomainDelDomainAction $action): JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);

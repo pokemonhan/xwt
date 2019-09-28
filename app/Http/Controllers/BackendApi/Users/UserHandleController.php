@@ -15,6 +15,8 @@ use App\Http\Requests\Backend\Users\UserHandleSetUserAvatarRequest;
 use App\Http\Requests\Backend\Users\UserHandleUserAccountChangeRequest;
 use App\Http\Requests\Backend\Users\UserHandleUserRechargeHistoryRequest;
 use App\Http\Requests\Backend\Users\UserHandleDeleteBankCardRequest;
+use App\Http\Requests\Backend\Users\UserHandleSetDaysalaryPercentageRequest;
+use App\Http\Requests\Backend\Users\UserHandleSetBonusPercentageRequest;
 use App\Http\SingleActions\Backend\Users\UserHandleBankCardListAction;
 use App\Http\SingleActions\Backend\Users\UserHandleCommonAppliedPasswordHandleAction;
 use App\Http\SingleActions\Backend\Users\UserHandleCommonAuditPasswordAction;
@@ -30,6 +32,8 @@ use App\Http\SingleActions\Backend\Users\UserHandleUserRechargeHistoryAction;
 use App\Http\SingleActions\Backend\Users\UserHandleUsersInfoAction;
 use App\Http\SingleActions\Backend\Users\UserHandleDeleteBankCardAction;
 use App\Http\SingleActions\Backend\Users\UserHandleTotalProxyListAction;
+use App\Http\SingleActions\Backend\Users\UserHandleSetDaysalaryPercentageAction;
+use App\Http\SingleActions\Backend\Users\UserHandleSetBonusPercentageAction;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -305,5 +309,33 @@ class UserHandleController extends BackEndApiMainController
     public function TotalProxyList(UserHandleTotalProxyListAction $action): JsonResponse
     {
         return $action->execute($this);
+    }
+
+    /**
+     * 设置用户日工资比例
+     * @param UserHandleSetDaysalaryPercentageRequest $request Request.
+     * @param UserHandleSetDaysalaryPercentageAction  $action  Action.
+     * @return JsonResponse
+     */
+    public function setDaysalaryPercentage(
+        UserHandleSetDaysalaryPercentageRequest $request,
+        UserHandleSetDaysalaryPercentageAction $action
+    ) :JsonResponse {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
+    }
+
+    /**
+     * 设置用户分红比例
+     * @param UserHandleSetBonusPercentageRequest $request Request.
+     * @param UserHandleSetBonusPercentageAction  $action  Action.
+     * @return JsonResponse
+     */
+    public function setBonusPercentage(
+        UserHandleSetBonusPercentageRequest $request,
+        UserHandleSetBonusPercentageAction $action
+    ) :JsonResponse {
+        $inputDatas = $request->validated();
+        return $action->execute($this, $inputDatas);
     }
 }

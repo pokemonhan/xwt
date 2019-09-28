@@ -50,7 +50,6 @@ class PaymentConfigsEditAction
             //执行添加操作
             if (!empty($inputDatas['id']) && isset($inputDatas['id'])) {
                 $payment_config = BackendPaymentConfig::find($inputDatas['id']);
-
                 //判断支付方式配置表是否重复编辑信息
                 $isExistPaymentConfig = $this->isExistPaymentConfig($inputDatas, $payment_config);
                 if (!empty($isExistPaymentConfig) && isset($isExistPaymentConfig)) {

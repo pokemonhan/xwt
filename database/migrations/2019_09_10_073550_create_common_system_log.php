@@ -95,6 +95,7 @@ class CreateCommonSystemLog extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('common_system_log');
+        Schema::dropIfExists('backend_system_logs');
+        Schema::dropIfExists('frontend_system_logs');
     }
 }

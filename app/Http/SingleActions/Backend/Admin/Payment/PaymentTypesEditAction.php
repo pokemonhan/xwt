@@ -117,13 +117,13 @@ class PaymentTypesEditAction
         //判断修改第三方厂商表的数据是否存在
         if (!empty($inputDatas['payment_type_sign']) && isset($inputDatas['payment_type_sign'])) {
             $array = [
-                ['payment_type_name', '=', $pastDataEloq['payment_type_name']],
+                ['payment_type_name', '=', $pastDataEloq->payment_type_name],
                 ['payment_type_sign', '=', $inputDatas['payment_type_sign']],
             ];
         } elseif (!empty($inputDatas['payment_type_name']) && isset($inputDatas['payment_type_name'])) {
             $array = [
                 ['payment_type_name', '=', $inputDatas['payment_type_name']],
-                ['payment_type_sign', '=', $pastDataEloq['payment_type_sign']],
+                ['payment_type_sign', '=', $pastDataEloq->payment_type_sign],
             ];
         } elseif (empty($inputDatas['payment_type_name']) &&
             empty($inputDatas['payment_type_sign']) && !isset($inputDatas['payment_type_name']) && !isset($inputDatas['payment_type_sign'])) {

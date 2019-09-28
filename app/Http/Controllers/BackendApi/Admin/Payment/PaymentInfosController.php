@@ -88,6 +88,7 @@ class PaymentInfosController extends BackEndApiMainController
     }
 
     /**
+     * 更改支付方式详情表状态
      * @param PaymentInfosUpdateStatusRequest $request 验证器.
      * @param PaymentInfosUpdateStatusAction  $action  逻辑处理.
      * @return JsonResponse

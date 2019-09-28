@@ -184,6 +184,14 @@ class CreateCommonPay extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('users_recharge_histories');
+        Schema::dropIfExists('users_recharge_logs');
+        Schema::dropIfExists('backend_admin_recharge_permit_groups');
+        Schema::dropIfExists('backend_admin_recharge_pocess_amounts');
+        Schema::dropIfExists('backend_admin_rechargehuman_logs');
+        Schema::dropIfExists('backend_payment_configs');
+        Schema::dropIfExists('backend_payment_types');
+        Schema::dropIfExists('backend_payment_vendors');
+        Schema::dropIfExists('payment_infos');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Backend\Admin\Payment;
 use App\Http\Requests\BaseFormRequest;
 
 /**
+ * 编辑支付方式详情表状态
  * Class PaymentInfosUpdateStatusRequest
  * @package App\Http\Requests\Backend\Admin\Payment
  */

@@ -68,6 +68,7 @@ class CreateFrontendUserfundTransfered extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('user_transfer_records');
+        Schema::dropIfExists('frontend_users_transfered_records');
     }
 }

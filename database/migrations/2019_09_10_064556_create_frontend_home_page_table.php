@@ -41,6 +41,6 @@ class CreateFrontendHomePageTable extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('frontend_page_banners');
     }
 }

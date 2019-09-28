@@ -37,6 +37,6 @@ class CreateCommonSystemMenu extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('backend_system_menus');
     }
 }

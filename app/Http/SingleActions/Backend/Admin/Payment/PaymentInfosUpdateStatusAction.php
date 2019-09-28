@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Lib\BaseCache;
 
 /**
+ * 编辑支付方式详情表状态
  * Class PaymentInfosUpdateStatusAction
  * @package App\Http\SingleActions\Backend\Admin\Payment
  */

@@ -49,8 +49,9 @@ class TransferInAction
                 return $contll->msgOut(false, [], '100313');
             }
             $params = [
-                'user_id' => $user->id,
-                'amount' => $inputDatas['price'],
+                'user_id'           => $user->id,
+                'amount'            => $inputDatas['price'],
+                'casino_game_plat'  => $inputDatas['mainGamePlat'],
             ];
 
             $resStatus = $account->operateAccount($params, 'casino_in');
@@ -72,7 +73,7 @@ class TransferInAction
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);
 
-            $apiUrl = $contll->apiUrl . '/transferIn?' . $paramStr . '&param=' . $paramEncode;
+            $apiUrl = $contll->apiUrl . '/transferIn?' . $paramStr . '&param=' . urlencode($paramEncode);
             $returnVal['call_url'] = $apiUrl;                   // 日志
 
             $data   = casino_request('GET', $apiUrl, [], '', 0, 0, 0);

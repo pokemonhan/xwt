@@ -179,6 +179,8 @@ class CreateFrontendProject extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('lottery_trace_lists');
+        Schema::dropIfExists('lottery_traces');
+        Schema::dropIfExists('projects');
     }
 }

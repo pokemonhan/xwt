@@ -34,6 +34,6 @@ class CreateCommonDomain extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('backend_domains');
     }
 }

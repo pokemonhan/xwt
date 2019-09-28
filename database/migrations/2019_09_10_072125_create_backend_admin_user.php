@@ -71,6 +71,8 @@ class CreateBackendAdminUser extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('backend_admin_access_groups');
+        Schema::dropIfExists('backend_admin_audit_passwords_lists');
+        Schema::dropIfExists('backend_admin_users');
     }
 }

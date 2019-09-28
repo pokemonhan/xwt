@@ -118,6 +118,11 @@ class CreateCommonSystem extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('system_address_ips');
+        Schema::dropIfExists('system_configurations');
+        Schema::dropIfExists('system_platforms');
+        Schema::dropIfExists('users_regions');
+        Schema::dropIfExists('frontend_system_ads_types');
+        Schema::dropIfExists('frontend_system_banks');
     }
 }

@@ -89,15 +89,16 @@ class PaymentVendorsEditAction
         //判断第三方厂商表的数据是否存在
         if (!empty($inputDatas['payment_vendor_sign']) && isset($inputDatas['payment_vendor_sign'])) {
             $array = [
-                ['payment_vendor_name', '=', $payment_vendor['payment_vendor_name']],
+                ['payment_vendor_name', '=', $payment_vendor->payment_vendor_name],
                 ['payment_vendor_sign', '=', $inputDatas['payment_vendor_sign']],
             ];
         } elseif (!empty($inputDatas['payment_vendor_name']) && isset($inputDatas['payment_vendor_name'])) {
             $array = [
                 ['payment_vendor_name', '=', $inputDatas['payment_vendor_name']],
-                ['payment_vendor_sign', '=', $payment_vendor['payment_vendor_sign']],
+                ['payment_vendor_sign', '=', $payment_vendor->payment_vendor_sign],
             ];
-        } elseif (empty($inputDatas['payment_vendor_name']) && empty($inputDatas['payment_vendor_sign']) && !isset($inputDatas['payment_vendor_name']) && !isset($inputDatas['payment_vendor_sign'])) {
+        } elseif (empty($inputDatas['payment_vendor_name']) &&
+            empty($inputDatas['payment_vendor_sign']) && !isset($inputDatas['payment_vendor_name']) && !isset($inputDatas['payment_vendor_sign'])) {
             $array = [];
         } else {
             $array = [

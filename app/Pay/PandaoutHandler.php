@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Pay;
 
 use App\Pay\Core\BasePay;
@@ -7,10 +8,10 @@ use Curl\Curl;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Class Panda_zfbscanHandler
+ * Class PandaoutHandler
  * @package App\Pay
  */
-class Panda_zfbscanHandler extends BasePay
+class PandaoutHandler extends BasePay
 {
     /**
      * @return mixed|void
@@ -21,13 +22,13 @@ class Panda_zfbscanHandler extends BasePay
         //1.组装数据
         $postData = [
             'merchant_id' => $this->payInfo['merchant_code'],
-            'amount' => sprintf('%d', $this->payInfo['money']),
             'order_id' => $this->payInfo['order_no'],
-            'source' => $this->payInfo['source'],
-            'channel' => 'zfb',
-            'callback_url' => $this->payInfo['callback_url'],
+            'source' => 'web',
+            'amount' => $this->payInfo['money'],
+            'bank_sign' => $this->payInfo['bank_code'],
+            'card_number' => $this->payInfo['card_number'],
+            'card_username' => $this->payInfo['card_username'],
             'client_ip' => real_ip(),
-            'time' => time(),
         ];
         //2.生成签名
         $postData['sign'] = $this->getSign($postData);
@@ -36,11 +37,6 @@ class Panda_zfbscanHandler extends BasePay
         $requestRes = (new Curl())->post($this->payInfo['request_url'], $postData);
         $requestRes = json_decode(json_encode($requestRes), true);
         Log::channel('curl-res')->info($requestRes);
-        if ($requestRes['status'] === 'success') {
-            return redirect($requestRes['data']['pay_url']);
-        } else {
-            return $requestRes['msg']??'通道异常';
-        }
     }
 
     /**
@@ -56,23 +52,37 @@ class Panda_zfbscanHandler extends BasePay
         Log::channel('sign')->info($signClear.'------'.$sign);
         return $sign;
     }
-
     /**
-     * @param array|null $data 回调参数.
+     * @param array|null $data 回调数据.
      * @return array
      */
-    public function verify(?array $data) :array
+    public function verify(?array $data): array
     {
-        $originSign = $data['sign'];
-        unset($data['sign']);
-        $nowSign = $this->getSign($data);
-        if ($originSign === $nowSign && (int) $data['status'] === 1) {
-            $this->verifyRes['flag'] = true;
-        }
+        $this->verifyRes['flag'] = false;
         $this->verifyRes['back_param'] = 'success';
         $this->verifyRes['order_money'] = $data['money']??0;
         $this->verifyRes['real_money'] = $data['money']??0;
         $this->verifyRes['merchant_order_no'] = $data['game_order_id'];
         return $this->verifyRes;
+    }
+
+    /**
+     * @return boolean
+     * @throws \ErrorException 异常.
+     */
+    public function check(): bool
+    {
+        $postData = [
+            'merchant_id' => $this->payInfo['merchant_code'],
+            'order_id' => $this->payInfo['order_no'],
+            'client_ip' => real_ip(),
+        ];
+        $postData['sign'] = $this->getSign($postData);
+        Log::channel('post-data')->info($postData);
+        $request_url = $this->payInfo['request_url'].'_query';
+        $requestRes = (new Curl())->post($request_url, $postData);
+        $requestRes = json_decode(json_encode($requestRes), true);
+        Log::channel('curl-res')->info($requestRes);
+        return $requestRes['status'] === 'success';
     }
 }

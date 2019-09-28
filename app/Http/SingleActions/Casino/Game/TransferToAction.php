@@ -29,10 +29,10 @@ class TransferToAction
      * @param  array                   $inputDatas 参数.
      * @return string
      */
-    public function execute(CasinoApiMainController $contll, array $inputDatas): JsonResponse
+    public function execute(CasinoApiMainController $contll, array $inputDatas)
     {
         $returnVal  = [
-            'api'       => 'GetBalance',
+            'api'       => 'transferTo',
             'username'  => $contll->partnerUser->username,
             'user_id'   => $contll->partnerUser->id,
             'ip'        => real_ip(),
@@ -67,7 +67,7 @@ class TransferToAction
                 'accountUserName'   => $contll->partnerUser->username,
                 'price'             => $inputDatas['price'],
             ];
-            $returnVal['param'] = json_encode($paramArr);       // 日志
+            $returnVal['params'] = json_encode($paramArr);       // 日志
 
             $paramStr       = http_build_query($paramArr);
             $paramEncode    = casino_authcode($paramStr, 'ENCODE', $contll->secretkey, 0);

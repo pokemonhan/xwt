@@ -32,9 +32,9 @@ class TransferInAction
     public function execute(CasinoApiMainController $contll, array $inputDatas)
     {
         $returnVal  = [
-            'api'       => 'GetBalance',
-            'username'  => $contll->partnerUser->username ?? 'lin1',
-            'user_id'   => $contll->partnerUser->id ?? 16,
+            'api'       => 'transferIn',
+            'username'  => $contll->partnerUser->username,
+            'user_id'   => $contll->partnerUser->id,
             'ip'        => real_ip(),
         ];
 

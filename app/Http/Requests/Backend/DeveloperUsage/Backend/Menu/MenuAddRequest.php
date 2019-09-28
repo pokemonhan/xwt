@@ -4,12 +4,16 @@ namespace App\Http\Requests\Backend\DeveloperUsage\Backend\Menu;
 
 use App\Http\Requests\BaseFormRequest;
 
+/**
+ * Class MenuAddRequest
+ * @package App\Http\Requests\Backend\DeveloperUsage\Backend\Menu
+ */
 class MenuAddRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -31,7 +35,8 @@ class MenuAddRequest extends BaseFormRequest
             'icon' => 'regex:/^(?!\-)(?!.*\-$)(?!.*?\-\-)(?!\ )(?!.*\ $)(?!.*?\ \ )[a-z0-9 -]+$/',
             'sort' => 'required|integer',
             'parentId' => 'numeric|required_unless:isParent,1',
-            'level' => 'numeric|in:1,2,3|required_unless:isParent,1',
+            'level' => 'numeric|required_unless:isParent,1',
+            'type' => 'required|integer|in:1,2,3', //1 代表菜单要在左侧显示 2 代表按钮  3 代表普通链接
             //anticon anticon-appstore  icon-6-icon
         ];
     }

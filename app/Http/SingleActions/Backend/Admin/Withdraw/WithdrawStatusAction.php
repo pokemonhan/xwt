@@ -12,6 +12,7 @@ use App\Pay\Core\PayHandlerFactory;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class WithdrawStatusAction
@@ -99,6 +100,7 @@ class WithdrawStatusAction
                 return $contll->msgOut(false, [], '400', '执行失败');
             }
         } catch (\Exception $e) {
+            Log::channel('withdrawstatus-log')->info($e);
             return $contll->msgOut(false, [], '400', '系统错误');
         }
     }
@@ -231,7 +233,7 @@ class WithdrawStatusAction
         }
         $payParams = [
             'payment_sign' => $inputDatas['channel'],
-            'order_no' => $this->userWithdrawHistory->company_order_num,
+            'order_no' => $this->userWithdrawHistory->order_id,
             'money' => $this->userWithdrawHistory->real_amount,
             'bank_code' => $payment_bank_code??'',
             'card_number' => $this->userWithdrawHistory->card_number??'',

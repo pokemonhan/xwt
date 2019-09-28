@@ -14,14 +14,23 @@ use App\Http\SingleActions\Backend\DeveloperUsage\Backend\Menu\MenuDeleteAction;
 use App\Http\SingleActions\Backend\DeveloperUsage\Backend\Menu\MenuEditAction;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class MenuController
+ * @package App\Http\Controllers\BackendApi\DeveloperUsage\Backend\Menu
+ */
 class MenuController extends BackEndApiMainController
 {
-
+    /**
+     * @return JsonResponse
+     */
     public function getAllMenu()
     {
         return $this->msgOut(true, $this->fullMenuLists);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function currentPartnerMenu()
     {
         return $this->msgOut(true, $this->partnerMenulists);
@@ -29,8 +38,8 @@ class MenuController extends BackEndApiMainController
 
     /**
      *
-     * @param  MenuAllRequireInfosRequest $request
-     * @param  MenuAllRequireInfosAction  $action
+     * @param  MenuAllRequireInfosRequest $request 验证器.
+     * @param  MenuAllRequireInfosAction  $action  处理器.
      * @return JsonResponse
      */
     public function allRequireInfos(
@@ -42,19 +51,19 @@ class MenuController extends BackEndApiMainController
     }
 
     /**
-     * @param   MenuAddRequest $request
-     * @param   MenuAddAction  $action
+     * @param   MenuAddRequest $request 验证器.
+     * @param   MenuAddAction  $action  处理器.
      * @return  JsonResponse
      */
-    public function add(MenuAddRequest $request, MenuAddAction $action): JsonResponse
+    public function doadd(MenuAddRequest $request, MenuAddAction $action): JsonResponse
     {
         $inputDatas = $request->validated();
         return $action->execute($this, $inputDatas);
     }
 
     /**
-     * @param   MenuDeleteRequest $request
-     * @param   MenuDeleteAction  $action
+     * @param   MenuDeleteRequest $request 验证器.
+     * @param   MenuDeleteAction  $action  处理器.
      * @return  JsonResponse
      */
     public function delete(MenuDeleteRequest $request, MenuDeleteAction $action): JsonResponse
@@ -68,8 +77,8 @@ class MenuController extends BackEndApiMainController
      * (?!\.) - don't allow . at start
      * (?!.*?\.\.) - don't allow 2 consecutive dots
      * (?!.*\.$) - don't allow . at end
-     * @param   MenuEditRequest $request
-     * @param   MenuEditAction  $action
+     * @param   MenuEditRequest $request 验证器.
+     * @param   MenuEditAction  $action  处理器.
      * @return  JsonResponse
      */
     public function edit(MenuEditRequest $request, MenuEditAction $action): JsonResponse
@@ -79,7 +88,7 @@ class MenuController extends BackEndApiMainController
     }
 
     /**
-     * @param   MenuChangeParentAction  $action
+     * @param MenuChangeParentAction $action 处理器.
      * @return  JsonResponse
      */
     public function changeParent(MenuChangeParentAction $action): JsonResponse

@@ -32,7 +32,7 @@ class PaymentConfigsDetailAction
      */
     public function execute(PaymentConfigsController $contll): JsonResponse
     {
-        $searchAbleFields = [];
+        $searchAbleFields = ['id'];
         $orderFields = 'id';
         $orderFlow = 'asc';
         //处理执行支付方式配置表异常

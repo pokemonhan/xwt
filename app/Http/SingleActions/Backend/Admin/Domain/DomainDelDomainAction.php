@@ -6,12 +6,19 @@ use App\Http\Controllers\BackendApi\BackEndApiMainController;
 use App\Models\Admin\Domain\BackendDomain;
 use Illuminate\Http\JsonResponse;
 
-class DomainModAction
+/**
+ * Class DomainDelAction
+ * @package App\Http\SingleActions\Backend\Admin\Domain
+ */
+class DomainDelDomainAction
 {
+    /**
+     * @var BackendDomain
+     */
     protected $model;
 
     /**
-     * @param  BackendDomain $backendDomain
+     * @param  BackendDomain $backendDomain BackendDomain.
      */
     public function __construct(BackendDomain $backendDomain)
     {
@@ -19,21 +26,15 @@ class DomainModAction
     }
 
     /**
-     * 修改域名
-     * @param  BackEndApiMainController $contll
-     * @param  mixed $inputDatas
+     * 删除域名
+     * @param  BackEndApiMainController $contll     BackEndApiMainController.
+     * @param  array                    $inputDatas 请求数据.
      * @return JsonResponse
      */
-    public function execute(BackEndApiMainController $contll, $inputDatas): JsonResponse
+    public function execute(BackEndApiMainController $contll, array $inputDatas): JsonResponse
     {
-        if (count($inputDatas) < 2) {
-            return $contll->msgOut(false, [], '102501');
-        }
-
-        $pastEloq = $this->model::find($inputDatas['id']);
-        $contll->editAssignment($pastEloq, $inputDatas);
         try {
-            $pastEloq->save();
+            $this->model::where('id', $inputDatas['id'])->delete();
             return $contll->msgOut(true);
         } catch (\Exception $e) {
             return $contll->msgOut(false, [], $e->getCode(), $e->getMessage());

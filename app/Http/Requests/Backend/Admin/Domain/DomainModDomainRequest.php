@@ -4,7 +4,11 @@ namespace App\Http\Requests\Backend\Admin\Domain;
 
 use App\Http\Requests\BaseFormRequest;
 
-class DomainListRequest extends BaseFormRequest
+/**
+ * Class DomainModRequest
+ * @package App\Http\Requests\Backend\Admin\Domain
+ */
+class DomainModDomainRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.git
@@ -24,7 +28,11 @@ class DomainListRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'int',
+            'id' => 'required|numeric|exists:backend_domains,id',
+            'user_id' => 'numeric',
+            'domain' => 'required|string',
+            'config_id' => 'numeric',
+            'is_use' => 'numeric|between:0,1',
         ];
     }
 }

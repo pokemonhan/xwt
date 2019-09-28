@@ -4,7 +4,11 @@ namespace App\Http\Requests\Backend\Admin\Domain;
 
 use App\Http\Requests\BaseFormRequest;
 
-class DomainAddRequest extends BaseFormRequest
+/**
+ * Class DomainAddRequest
+ * @package App\Http\Requests\Backend\Admin\Domain
+ */
+class DomainAddDomainRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.git

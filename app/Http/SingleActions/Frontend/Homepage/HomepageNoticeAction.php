@@ -8,12 +8,19 @@ use App\Models\Admin\Notice\FrontendMessageNoticesContent;
 use App\Models\DeveloperUsage\Frontend\FrontendAllocatedModel;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * Class HomepageNoticeAction
+ * @package App\Http\SingleActions\Frontend\Homepage
+ */
 class HomepageNoticeAction
 {
+    /**
+     * @var FrontendAllocatedModel
+     */
     protected $model;
 
     /**
-     * @param  FrontendAllocatedModel  $frontendAllocatedModel
+     * @param FrontendAllocatedModel $frontendAllocatedModel FrontendAllocatedModel.
      */
     public function __construct(FrontendAllocatedModel $frontendAllocatedModel)
     {
@@ -22,12 +29,13 @@ class HomepageNoticeAction
 
     /**
      * 首页 公告|站内信 列表
-     * @param FrontendApiMainController $contll
+     * @param FrontendApiMainController $contll     FrontendApiMainController.
+     * @param array                     $inputDatas 请求数据.
      * @return JsonResponse
      */
-    public function execute(FrontendApiMainController $contll, $inputDatas): JsonResponse
+    public function execute(FrontendApiMainController $contll, array $inputDatas): JsonResponse
     {
-        $noticeEloq = $this->model::select('show_num', 'status')->where('en_name', 'notice')->first();
+        $noticeEloq = $this->model->select('show_num', 'status')->where('en_name', 'notice')->first();
         if ($noticeEloq->status !== 1) {
             return $contll->msgOut(false, [], '100400');
         }
@@ -40,14 +48,17 @@ class HomepageNoticeAction
         return $contll->msgOut(true, $data);
     }
 
-    //公告列表
-    public function getNoticeList($contll)
+    /**
+     * @param FrontendApiMainController $contll FrontendApiMainController.
+     * @return mixed
+     */
+    public function getNoticeList(FrontendApiMainController $contll)
     {
         $eloqM = new FrontendMessageNoticesContent();
         //仅查询未过期公告
         $time = [
-            ['start_time','<=',date('Y-m-d H:i:s',time())],
-            ['end_time','>=',date('Y-m-d H:i:s',time())]
+            ['start_time', '<=', date('Y-m-d H:i:s', time())],
+            ['end_time', '>=', date('Y-m-d H:i:s', time())],
         ];
         $timeStr = json_encode($time);
         $contll->inputs['time_condtions'] = $timeStr;
@@ -58,8 +69,11 @@ class HomepageNoticeAction
         return $contll->generateSearchQuery($eloqM, $searchAbleFields, 0, null, null, $orderFields, $orderFlow);
     }
 
-    //站内信列表
-    public function getMessageList($contll)
+    /**
+     * @param FrontendApiMainController $contll FrontendApiMainController.
+     * @return mixed
+     */
+    public function getMessageList(FrontendApiMainController $contll)
     {
         $eloqM = new FrontendMessageNotice();
         $contll->inputs['receive_user_id'] = $contll->partnerUser->id ?? null;
@@ -76,10 +90,13 @@ class HomepageNoticeAction
             $withTable,
             $withSearchAbleFields,
             $orderFields,
-            $orderFlow
+            $orderFlow,
         );
         $data['message'] = $messages;
-        $data['unread_num'] = $contll->partnerUser->unreadMessageNum(); //获取站内所有未读消息
+        if ($contll->partnerUser === null) {
+            return $contll->msgOut(false, [], '100402');
+        }
+        $data['unread_num'] = $contll->partnerUser->unreadMessageNum();
         return $data;
     }
 }

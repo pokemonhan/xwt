@@ -108,4 +108,16 @@ Route::group(['prefix' => 'user-handle', 'namespace' => 'Users'], static functio
         'total_proxy_list',
         ['as' => $namePrefix . 'total_proxy_list', 'uses' => $controller . 'totalProxyList'],
     );
+    //设置用户日工资比例
+    Route::match(
+        ['post', 'options'],
+        'set-daysalary-percentage',
+        ['as' => $namePrefix . 'set-daysalary-percentage', 'uses' => $controller . 'setDaysalaryPercentage'],
+    );
+    //设置用户分红比例
+    Route::match(
+        ['post', 'options'],
+        'set-bonus-percentage',
+        ['as' => $namePrefix . 'set-bonus-percentage', 'uses' => $controller . 'setBonusPercentage'],
+    );
 });

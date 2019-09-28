@@ -19,17 +19,6 @@ class CronJobsTableSeeder extends Seeder
         \DB::table('cron_jobs')->insert(array (
             0 => 
             array (
-                'id' => 1,
-                'command' => 'LotterySchedule',
-                'param' => '{"lottery_sign":"zx115"}',
-                'schedule' => '*/1 * * * *',
-                'status' => 1,
-                'remarks' => '中兴11选5->自动开奖任务',
-                'created_at' => NULL,
-                'updated_at' => NULL,
-            ),
-            1 => 
-            array (
                 'id' => 3,
                 'command' => 'LotterySchedule',
                 'param' => '{"lottery_sign":"zx1fc"}',
@@ -39,7 +28,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            2 => 
+            1 => 
             array (
                 'id' => 4,
                 'command' => 'DeleteCachePic',
@@ -50,7 +39,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            3 => 
+            2 => 
             array (
                 'id' => 5,
                 'command' => 'AllocationRechargeFund',
@@ -61,7 +50,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            4 => 
+            3 => 
             array (
                 'id' => 6,
                 'command' => 'GenerateIssue',
@@ -72,18 +61,18 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            5 => 
+            4 => 
             array (
                 'id' => 7,
                 'command' => 'UserProfits',
                 'param' => NULL,
-                'schedule' => '*/5 * * * *',
+                'schedule' => '0 1 * * * ',
                 'status' => 1,
                 'remarks' => '团队盈亏处理脚本',
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            6 => 
+            5 => 
             array (
                 'id' => 9,
                 'command' => 'UserDaysalary',
@@ -94,7 +83,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            7 => 
+            6 => 
             array (
                 'id' => 10,
                 'command' => 'SendDaysalary',
@@ -105,7 +94,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            8 => 
+            7 => 
             array (
                 'id' => 11,
                 'command' => 'UserBonus',
@@ -116,7 +105,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            9 => 
+            8 => 
             array (
                 'id' => 12,
                 'command' => 'LotterySchedule',
@@ -127,7 +116,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            10 => 
+            9 => 
             array (
                 'id' => 14,
                 'command' => 'LotterySchedule',
@@ -138,7 +127,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
-            11 => 
+            10 => 
             array (
                 'id' => 17,
                 'command' => 'LotterySchedule',
@@ -149,7 +138,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-11 20:20:58',
                 'updated_at' => '2019-08-11 20:31:11',
             ),
-            12 => 
+            11 => 
             array (
                 'id' => 18,
                 'command' => 'LotterySchedule',
@@ -160,7 +149,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-11 22:28:29',
                 'updated_at' => '2019-08-11 22:29:06',
             ),
-            13 => 
+            12 => 
             array (
                 'id' => 19,
                 'command' => 'LotterySchedule',
@@ -171,7 +160,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-18 14:23:30',
                 'updated_at' => '2019-08-18 14:32:08',
             ),
-            14 => 
+            13 => 
             array (
                 'id' => 20,
                 'command' => 'LotterySchedule',
@@ -182,7 +171,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-18 14:28:28',
                 'updated_at' => '2019-08-18 14:32:12',
             ),
-            15 => 
+            14 => 
             array (
                 'id' => 21,
                 'command' => 'LotterySchedule',
@@ -193,7 +182,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-20 17:02:54',
                 'updated_at' => '2019-08-20 17:08:25',
             ),
-            16 => 
+            15 => 
             array (
                 'id' => 23,
                 'command' => 'LotterySchedule',
@@ -204,7 +193,7 @@ class CronJobsTableSeeder extends Seeder
                 'created_at' => '2019-08-20 18:03:06',
                 'updated_at' => '2019-08-20 18:03:50',
             ),
-            17 => 
+            16 => 
             array (
                 'id' => 24,
                 'command' => 'LotterySchedule',
@@ -214,6 +203,17 @@ class CronJobsTableSeeder extends Seeder
                 'remarks' => '阿里云赛车->自动开奖任务',
                 'created_at' => '2019-08-20 20:06:46',
                 'updated_at' => '2019-08-20 20:08:18',
+            ),
+            17 => 
+            array (
+                'id' => 28,
+                'command' => 'LotterySchedule',
+                'param' => '{"lottery_sign":"zx115"}',
+                'schedule' => '*/1 * * * *',
+                'status' => 1,
+                'remarks' => '中兴11选5->自动开奖任务',
+                'created_at' => '2019-09-28 10:45:29',
+                'updated_at' => '2019-09-28 16:10:53',
             ),
         ));
         

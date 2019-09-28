@@ -2,12 +2,14 @@
 
 namespace App\Models\User\Logics;
 
+use Illuminate\Support\Facades\Log;
+
 trait UserDaysalaryTraits
 {
     /**
      * 更新用户日工资
      * @param array $data 日工资数据.
-     * @return array
+     * @return boolean
      */
     public static function updateUserDaysalary(array $data)
     {
@@ -35,7 +37,8 @@ trait UserDaysalaryTraits
                     $logInfo = '更新用户日工资失败 '.json_encode($data);
                 }
             }
-            return ['success' => $saveStatus, 'log_info' => $logInfo];
+            Log::channel('daysalary')->info($logInfo);
+            return $saveStatus;
         }
     }
 }

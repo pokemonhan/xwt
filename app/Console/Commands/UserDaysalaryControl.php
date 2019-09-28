@@ -62,8 +62,7 @@ class UserDaysalaryControl extends Command
             DB::beginTransaction();
 
             $resource = UserDaysalary::updateUserDaysalary($data);
-            Log::channel('daysalary')->info($resource['log_info']);
-            if ($resource['success'] === false) {
+            if ($resource === false) {
                 DB::rollback();
                 continue;
             }
@@ -75,8 +74,7 @@ class UserDaysalaryControl extends Command
                 $parentData['team_turnover'] = $usersProjectItem->total_cost;
 
                 $resource = UserDaysalary::updateUserDaysalary($parentData);
-                Log::channel('daysalary')->info($resource['log_info']);
-                if ($resource['success'] === false) {
+                if ($resource === false) {
                     DB::rollback();
                     continue;
                 }

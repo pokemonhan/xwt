@@ -395,6 +395,23 @@ class CreateCommonGameLottery extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('lottery_basic_methods');
+        Schema::dropIfExists('lottery_basic_ways');
+        Schema::dropIfExists('lottery_issue_rules');
+        Schema::dropIfExists('lottery_issues');
+        Schema::dropIfExists('lottery_lists');
+        Schema::dropIfExists('lottery_methods');
+        Schema::dropIfExists('lottery_methods_layout_displays');
+        Schema::dropIfExists('lottery_methods_layouts');
+        Schema::dropIfExists('lottery_methods_number_button_rules');
+        Schema::dropIfExists('lottery_methods_standards');
+        Schema::dropIfExists('lottery_methods_validations');
+        Schema::dropIfExists('lottery_methods_ways_levels');
+        Schema::dropIfExists('lottery_series');
+        Schema::dropIfExists('lottery_series_methods');
+        Schema::dropIfExists('lottery_series_ways');
+        Schema::dropIfExists('lottery_prize_details');
+        Schema::dropIfExists('lottery_prize_groups');
+        Schema::dropIfExists('lottery_prize_levels');
     }
 }

@@ -65,5 +65,7 @@ class CreateFrontendUserUserRegister extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('frontend_user_invited_records');
+        Schema::dropIfExists('frontend_users_registerable_links');
     }
 }

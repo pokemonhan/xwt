@@ -37,6 +37,6 @@ class CreateBackendFlow extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('backend_admin_audit_flow_lists');
     }
 }

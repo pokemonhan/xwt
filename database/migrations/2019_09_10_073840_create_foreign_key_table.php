@@ -55,6 +55,19 @@ class CreateForeignKeyTable extends Migration
      */
     public function down()
     {
-
+        Schema::table('backend_admin_access_groups', function(Blueprint $table)
+        {
+            $table->dropForeign('fk_partner_access_platform_id');
+        });
+        Schema::table('backend_admin_routes', function(Blueprint $table)
+        {
+            $table->dropForeign('fk_partner_admin_route_menu_group');
+        });
+        Schema::table('backend_admin_users', function(Blueprint $table)
+        {
+            $table->dropForeign('backend_admin_users_group_id_fk');
+            $table->dropForeign('backend_admin_users_status_foreign');
+            $table->dropForeign('backend_admin_users_super_id_foreign');
+        });
     }
 }

@@ -47,6 +47,7 @@ class CreateBackendJob extends Migration
      */
     public function down()
     {
-
+        Schema::dropIfExists('cron_jobs');
+        Schema::dropIfExists('failed_jobs');
     }
 }

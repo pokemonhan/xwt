@@ -65,13 +65,13 @@ class CreateCommonActivity extends Migration
             $table->string('uname',200)->default('')->comment('活动的别名,用于确定活动的处理器');
             $table->string('pc_pic',255)->default('')->comment('pc端活动的导入图');
             $table->string('wap_pic',)->default('')->comment('wap端活动的导入图');
-            $table->string('rule_file')->default('')->comment('规则文件名');
+            $table->string('rule_file',200)->default('')->comment('规则文件名');
             $table->timestamp('start_time')->useCurrent()->comment('活动开始时间');
             $table->timestamp('end_time')->useCurrent()->comment('活动结束时间');
             $table->tinyInteger('status')->default(0)->comment('活动的状态');
             $table->integer('sort')->default(0)->comment('排序');
             $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent();
             $table->index('name','backend_dyn_activity_lists_name');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';

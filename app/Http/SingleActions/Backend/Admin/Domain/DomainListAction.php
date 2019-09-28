@@ -3,7 +3,7 @@
 namespace App\Http\SingleActions\Backend\Admin\Domain;
 
 use App\Http\Controllers\BackendApi\BackEndApiMainController;
-use App\Models\Admin\Domain\BackendDomain;
+use App\Models\Admin\Domain\Domain;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -13,16 +13,16 @@ use Illuminate\Http\JsonResponse;
 class DomainListAction
 {
     /**
-     * @var BackendDomain
+     * @var Domain
      */
     protected $model;
 
     /**
-     * @param  BackendDomain $backendDomain BackendDomain.
+     * @param  Domain $domain Domain.
      */
-    public function __construct(BackendDomain $backendDomain)
+    public function __construct(Domain $domain)
     {
-        $this->model = $backendDomain;
+        $this->model = $domain;
     }
 
     /**
@@ -32,7 +32,7 @@ class DomainListAction
      */
     public function execute(BackEndApiMainController $contll): JsonResponse
     {
-        $searchAbleFields = ['id', 'user_id', 'domain', 'config_id', 'is_use', 'created_at', 'updated_at'];
+        $searchAbleFields = ['id', 'user_id', 'domain', 'created_at', 'updated_at'];
         $data = $contll->generateSearchQuery($this->model, $searchAbleFields);
         return $contll->msgOut(true, $data);
     }

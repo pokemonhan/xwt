@@ -104,6 +104,7 @@ class CreateCommonGameLottery extends Migration
             $table->string('encode_name',64)->nullable();
             $table->integer('day')->default(0);
             $table->nullableTimestamps();
+            $table->index(['lottery_id', 'end_time'],'index');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
@@ -133,6 +134,7 @@ class CreateCommonGameLottery extends Migration
             $table->tinyInteger('status')->default(0)->comment('状态 0关闭 1开启');
             $table->string('icon_path',128)->nullable();
             $table->nullableTimestamps();
+            $table->index('en_name','index');
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
@@ -146,9 +148,9 @@ class CreateCommonGameLottery extends Migration
             $table->string('method_id',32)->collation('utf8mb4_unicode_ci')->comment('玩法标识');
             $table->string('method_name',32)->collation('utf8mb4_unicode_ci')->comment('玩法中文名');
             $table->string('method_group',32)->collation('utf8mb4_unicode_ci')->comment('玩法组');
-            $table->string('method_group_name',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法组中文名');
+            $table->string('method_group_name',32)->collation('utf8_general_ci')->nullable()->comment('玩法组中文名');
             $table->string('method_row',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法行');
-            $table->string('method_row_name',32)->collation('utf8mb4_unicode_ci')->nullable()->comment('玩法行中文名');
+            $table->string('method_row_name',32)->collation('utf8_general_ci')->nullable()->comment('玩法行中文名');
             $table->integer('group_sort')->default(0);
             $table->integer('row_sort')->default(0);
             $table->integer('method_sort')->default(0);
@@ -187,7 +189,7 @@ class CreateCommonGameLottery extends Migration
         Schema::create('lottery_methods_number_button_rules', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type',32);
-            $table->json('value');
+            $table->longText('value')->collation('utf8mb4_bin');
             $table->tinyInteger('status')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

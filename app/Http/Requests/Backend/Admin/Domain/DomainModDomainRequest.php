@@ -13,7 +13,7 @@ class DomainModDomainRequest extends BaseFormRequest
     /**
      * Determine if the user is authorized to make this request.git
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -28,11 +28,9 @@ class DomainModDomainRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|numeric|exists:backend_domains,id',
+            'id' => 'required|numeric|exists:domains,id',
             'user_id' => 'numeric',
             'domain' => 'required|string',
-            'config_id' => 'numeric',
-            'is_use' => 'numeric|between:0,1',
         ];
     }
 }

@@ -13,12 +13,10 @@ class CreateCommonDomain extends Migration
      */
     public function up()
     {
-        Schema::create('backend_domains', function (Blueprint $table) {
+        Schema::create('domains', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->nullable()->comment('用户ID 属于哪个用户');
             $table->string('domain',255)->comment('域名');
-            $table->integer('config_id')->default(0)->comment('配置文件');
-            $table->tinyInteger('is_use')->default(1)->comment('是否启用,默认启用');
             $table->index('domain','domain');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
@@ -34,6 +32,6 @@ class CreateCommonDomain extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('backend_domains');
+        Schema::dropIfExists('domains');
     }
 }

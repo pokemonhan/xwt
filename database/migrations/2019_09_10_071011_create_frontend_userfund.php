@@ -109,6 +109,7 @@ class CreateFrontendUserfund extends Migration
             $table->unsignedDecimal('frozen_balance',18,4)->default(0.0000);
             $table->tinyInteger('frozen_type')->default(0);
             $table->tinyInteger('is_tester')->default(0)->comment('是否是测试用户（frontend_users表is_tester）');
+            $table->string('param',64)->nullable()->comment('账变类型id');
             $table->integer('process_time')->default(0);
             $table->string('desc',256);
             $table->index(['sign' , 'user_id', 'process_time'], 'account_change_report_sign_user_id_process_time_index');
@@ -146,6 +147,7 @@ class CreateFrontendUserfund extends Migration
             $table->increments('id');
             $table->string('label',32)->nullable();
             $table->string('param',32)->nullable();
+            $table->unsignedTinyInteger('compatible')->nullable()->default(1)->comment('1兼容两张表都存在数据');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';
@@ -175,6 +177,28 @@ class CreateFrontendUserfund extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';
         });
+
+        Schema::create('frontend_users_accounts_reports_params_with_values', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('parent_id')->nullable();
+            $table->string('casino_game_code',255)->nullable();
+            $table->unsignedDecimal('amount',18,4)->default(0.0000)->comment('变动前的资金');
+            $table->integer('user_id')->comment('用户id（frontend_users表id）');
+            $table->integer('project_id')->default(0);
+            $table->integer('from_id')->default(0);
+            $table->integer('from_admin_id')->default(0);
+            $table->integer('to_id')->default(0);
+            $table->string('lottery_id',32)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->nullable()->comment('彩票（lottery_lists表en_name）');
+            $table->string('method_id',32)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment('彩票玩法（lottery_methods表method_id）');
+            $table->string('issue',64)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->comment('彩票期号（lottery_issues表issue）');
+            $table->string('casino_game_category',64)->charset('utf8')->collation('utf8_general_ci')->nullable();
+            $table->string('casino_game_plat',64)->charset('utf8')->collation('utf8_general_ci')->nullable();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrent();
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_general_ci';
+        });
     }
 
     /**
@@ -191,5 +215,6 @@ class CreateFrontendUserfund extends Migration
         Schema::dropIfExists('frontend_users_accounts_types');
         Schema::dropIfExists('frontend_users_accounts_types_params');
         Schema::dropIfExists('frontend_users_bank_cards');
+        Schema::dropIfExists('frontend_users_accounts_reports_params_with_values');
     }
 }

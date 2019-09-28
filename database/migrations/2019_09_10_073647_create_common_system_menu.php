@@ -23,6 +23,7 @@ class CreateCommonSystemMenu extends Migration
             $table->tinyInteger('display')->default(1)->nullable()->comment('是否显示');
             $table->integer('level')->default(1)->nullable()->comment('等级');
             $table->integer('sort')->nullable()->comment('排序');
+            $table->tinyInteger('type')->default(1)->comment('1 代表菜单要在左侧显示 2 代表按钮  3 代表普通链接');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';

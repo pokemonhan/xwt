@@ -37,7 +37,7 @@ class CreateFrontendUserUserRegister extends Migration
             $table->integer('prize_group')->nullable()->comment('奖金组');
             $table->tinyInteger('type')->nullable()->default(0)->comment('链接注册还是扫描注册');
             $table->unsignedInteger('valid_days')->comment('有效时间 单位天');
-            $table->tinyInteger('user_type')->default(0)->comment('0  用户 1 代理');
+            $table->tinyInteger('user_type')->default(0)->comment('2 代理 3用户');
             $table->char('keyword',32);
             $table->string('note',100)->nullable()->comment('链接备注');
             $table->string('channel',50)->nullable()->comment('推广渠道');

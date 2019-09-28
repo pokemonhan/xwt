@@ -13,7 +13,7 @@ class DomainAddDomainRequest extends BaseFormRequest
     /**
      * Determine if the user is authorized to make this request.git
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -30,8 +30,6 @@ class DomainAddDomainRequest extends BaseFormRequest
         return [
             'user_id' => 'numeric',
             'domain' => 'required|string',
-            'config_id' => 'numeric',
-            'is_use' => 'numeric',
         ];
     }
 }

@@ -48,6 +48,7 @@ class CreateFrontendProject extends Migration
             $table->timestamp('cancel_time')->default(Facades\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             $table->integer('challenge')->nullable()->default(0)->comment('单挑模式');
             $table->decimal('challenge_prize',15,4)->nullable()->default(0.0000)->comment('单挑奖金');
+            $table->decimal('bonus',15,4)->default(0.0000);
             $table->integer('issue_end_time')->nullable();
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';

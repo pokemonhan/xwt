@@ -31,7 +31,7 @@ class CreateFrontendUser extends Migration
             $table->integer('platform_id')->nullable();
             $table->string('sign',32)->comment('所属平台标识!');
             $table->integer('account_id')->nullable();
-            $table->tinyInteger('type')->default(1)->comment('用户类型你:1 直属  2 代理 3 会员');
+            $table->tinyInteger('type')->default(3)->comment('用户类型你:1 直属  2 代理 3 会员');
             $table->integer('vip_level')->nullable()->default(0)->comment('vip等级');
             $table->tinyInteger('is_tester')->nullable()->default(0);
             $table->tinyInteger('frozen_type')->nullable()->default(0)->comment('冻结类型:1, 禁止登录, 2, 禁止投注 3, 禁止提现,4禁止资金操作,5禁止投注');
@@ -49,10 +49,10 @@ class CreateFrontendUser extends Migration
             $table->decimal('daysalary_percentage',3,1)->default(0.0)->comment('日工资比例');
             $table->tinyInteger('bonus_percentage')->default(0)->comment('分红比例');
             $table->string('pic_path',128)->nullable()->collation('utf8_general_ci')->comment('头像');
-            $table->index(['sign', 'username'],'users_sign_username_index');
-            $table->index(['sign', 'parent_id'],'users_sign_parent_id_index');
-            $table->index(['sign', 'rid'],'users_sign_rid_index');
-            $table->index(['sign', 'vip_level'],'users_sign_vip_level_index');
+            $table->index('username','users_sign_username_index');
+            $table->index('parent_id','users_sign_parent_id_index');
+            $table->index('rid','users_sign_rid_index');
+            $table->index('vip_level','users_sign_vip_level_index');
             $table->nullableTimestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
@@ -96,7 +96,7 @@ class CreateFrontendUser extends Migration
             $table->string('address',128)->nullable()->comment('详细地址');
             $table->tinyInteger('register_type')->default(0)->comment('注册类型：0.普通注册1.人工开户注册2.链接开户注册3.扫码开户注册');
             $table->integer('total_members')->nullable()->default(0)->comment('用户发展客户总数');
-            $table->integer('user_id')->nullable()->comment('用户id');
+            $table->integer('user_id')->default(0)->comment('用户id');
             $table->timestamps();
             $table->engine = 'InnoDB';
             $table->charset = 'utf8';

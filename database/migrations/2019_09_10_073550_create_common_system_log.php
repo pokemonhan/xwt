@@ -74,7 +74,7 @@ class CreateCommonSystemLog extends Migration
             $table->string('user_agent',200)->nullable();
             $table->text('inputs')->nullable()->comment('传递参数');
             $table->text('route')->nullable()->comment('路由');
-            $table->unsignedInteger('route_id')->nullable()->comment('路由id （backend_admin_routes表id）');
+            $table->unsignedInteger('route_id')->nullable()->comment('路由id');
             $table->integer('admin_id')->nullable();
             $table->string('admin_name',64)->nullable();
             $table->string('username',64)->nullable();

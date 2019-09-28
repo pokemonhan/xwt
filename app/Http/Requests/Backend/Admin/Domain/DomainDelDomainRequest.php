@@ -13,7 +13,7 @@ class DomainDelDomainRequest extends BaseFormRequest
     /**
      * Determine if the user is authorized to make this request.git
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize(): bool
     {
@@ -28,7 +28,7 @@ class DomainDelDomainRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|exists:backend_domains,id',
+            'id' => 'required|exists:domains,id',
         ];
     }
 }

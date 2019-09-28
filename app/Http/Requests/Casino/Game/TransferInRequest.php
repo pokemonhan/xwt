@@ -33,7 +33,7 @@ class TransferInRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'mainGamePlat' => 'required|string',
+            'mainGamePlat' => 'required|min:2|max:24|string',
             'price' => 'required|numeric|min:1',
         ];
     }

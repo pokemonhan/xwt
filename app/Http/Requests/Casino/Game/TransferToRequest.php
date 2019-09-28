@@ -33,8 +33,8 @@ class TransferToRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'mainGamePlat' => 'required|string|exists:def_main_game_plats,main_game_plat_code',
-            'accountUserName' => 'required|min:4|max:255|string',
+            'mainGamePlat' => 'required|min:2|max:24|string',
+            'accountUserName' => 'required|min:4|max:64|string',
             'price' => 'required|numeric|min:1',
         ];
     }
